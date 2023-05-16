@@ -1,6 +1,3 @@
-[submodule "env"]
-	path = env
-	url = https://github.com/BeginVegan/BV-Backend-env.git
-[submodule "BV-Backend-env"]
-	path = BV-Backend-env
+[submodule "BeginVegan/src/main/resources/env"]
+	path = BeginVegan/src/main/resources/env
 	url = https://github.com/BeginVegan/BV-Backend-env.git
