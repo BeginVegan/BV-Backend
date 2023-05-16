@@ -9,5 +9,4 @@ public class BeginVeganApplication {
     public static void main(String[] args) {
         SpringApplication.run(BeginVeganApplication.class, args);
     }
-
 }
