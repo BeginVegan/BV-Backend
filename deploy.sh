@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 APP_NAME=begin_vegan
-REPOSITORY=/home/ubuntu/
+REPOSITORY=/home/ubuntu/app
 
 echo "> Check the currently running container"
 CONTAINER_ID=$(docker ps -aqf "name=$APP_NAME")
