@@ -3,7 +3,7 @@ name: Deploy to Amazon EC2 / Spring Boot with Maven
 
 # 환경 변수 $변수명으로 사용
 env:
-  PROJECT_NAME: BV-Backend
+  PROJECT_NAME: BeginVegan
   BUCKET_NAME: bv-backend-actions-s3-bucket
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
