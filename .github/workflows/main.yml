@@ -5,6 +5,9 @@ name: Deploy to Amazon EC2 / Spring Boot with Maven
 env:
   PROJECT_NAME: BeginVegan
   BUCKET_NAME: bv-backend-actions-s3-bucket
+  CODE_DEPLOY_APP: BV-Backedn-codedploy-app
+  CODE_DEPLOY_DEPLOYMENT_GROUP: BV-Backend-codedeploy-deployment-group
+
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
@@ -60,7 +63,7 @@ jobs:
       # CodeDeploy에게 배포 명령을 내린다.
       - name: Code Deploy
         run: >
-         aws deploy create-deployment --application-name chanmin-codedeploy-app
+         aws deploy create-deployment --application-name $CODEDEPLOY_APP
          --deployment-config-name CodeDeployDefault.AllAtOnce
-         --deployment-group-name chanmin-codedeploy-deployment-group
+         --deployment-group-name $CODE_DEPLOY_DEPLOYMENT_GROUP
          --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=deploy/$PROJECT_NAME.zip
