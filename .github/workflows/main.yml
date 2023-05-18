@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-     # 작업에서 액세스할 수 있도록 $GITHUB_WORKSPACE에서 저장소를 체크아웃합니다.
+      # 작업에서 액세스할 수 있도록 $GITHUB_WORKSPACE에서 저장소를 체크아웃합니다.
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -36,7 +36,7 @@ jobs:
           java-version: '11'
           distribution: 'zulu'
      
-     # Caching dependencies (디펜던시를 캐싱하여 반복적인 빌드 작업의 시간을 단축할 수 있다.)
+      # Caching dependencies (디펜던시를 캐싱하여 반복적인 빌드 작업의 시간을 단축할 수 있다.)
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
