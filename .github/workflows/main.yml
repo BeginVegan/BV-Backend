@@ -29,6 +29,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'zulu'
+          submodules: true
      
      # Caching dependencies (디펜던시를 캐싱하여 반복적인 빌드 작업의 시간을 단축할 수 있다.)
       - name: Cache Maven packages
