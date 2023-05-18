@@ -19,7 +19,7 @@ public class TestConroller {
     }
 
     @GetMapping("/test2")
-    public String test222() {
+    public String test2222() {
         return test2;
     }
 }
