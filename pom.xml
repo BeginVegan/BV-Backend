@@ -15,34 +15,77 @@
     <description>BeginVegan</description>
     <properties>
         <java.version>11</java.version>
+        <spring-framework.version>5.3.27</spring-framework.version>
     </properties>
     <dependencies>
+        <!-- Spring : 웹 애플리케이션(RESTful)을 개발하는 데 필요한 구성 요소를 제공한다. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Spring : Spring으로 SOAP 웹 서비스를 개발하기 위한 추가 라이브러리를 제공한다.-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
-
+        <!-- Spring : 개발 중에 핫 스와핑 및 자동 애플리케이션 재시작을 활성화한다.-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!-- Spring : Junit, Hamcrest, Mockito를 포함하는 스프링 어플리케이션 테스트 가능하도록 한다.-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <!-- DB관련 dependency -->
+        <!-- JDBC(Java Database Connectivity) 작업(데이터 소스 제공, 트랜잭션 관리 등)을 지원한다. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <!-- MariaDB : 데이터베이스 서버에 연결하고 상호 작용할 수 있는 MariaDB JDBC 드라이버. -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+        </dependency>
+        <!-- MyBatis : Java 애플리케이션에서 데이터베이스 액세스를 단순화하는 지속성 프레임워크. 테이블 및 SQL 문에 매핑하는 ORM(개체 관계형 매핑) 계층을 제공한다. -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.5</version>
+        </dependency>
+        <!-- MyBatis  : Spring 애플리케이션에서 MyBatis를 원활하게 사용할 수 있도록 Spring 관련 기능 및 통합 지점을 제공한다. -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>2.0.5</version>
+        </dependency>
+        <!-- HikariCP : JDBC 커넥션 풀. 다중 스레드 환경에서 DB 연결을 관리하는 커넥션 풀링 라이브러리.  -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.0.1</version>
+        </dependency>
+
+        <!-- Log4j2 : JDBC가 실행하는 SQL 문을 로깅한다. SQL구문을 log로 출력하여준다.(DriverSpy 클래스) -->
+        <dependency>
+            <groupId>org.bgee.log4jdbc-log4j2</groupId>
+            <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
+            <version>1.16</version>
+        </dependency>
+
+        <!-- LOMBOK : Getter, Setter, 생성자 등을 어노테이션으로 자동 생성을 도와준다. -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>

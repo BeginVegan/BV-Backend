@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- Java의 null값을 DB의 null 값으로 세팅 -->
+        <setting name="jdbcTypeForNull" value="NULL"/>
+    </settings>
+    <typeAliases>
+        <typeAlias type="com.beginvegan.dto.BookmarkDTO" alias="BookmarkDTO"/>
+        <typeAlias type="com.beginvegan.dto.MemberDTO" alias="MemberDTO"/>
+        <typeAlias type="com.beginvegan.dto.MenuDTO" alias="MenuDTO"/>
+        <typeAlias type="com.beginvegan.dto.PointDTO" alias="PointDTO"/>
+        <typeAlias type="com.beginvegan.dto.ReservationDTO" alias="ReservationDTO"/>
+        <typeAlias type="com.beginvegan.dto.ReservationMenuDTO" alias="ReservationMenuDTO"/>
+        <typeAlias type="com.beginvegan.dto.RestaurantDTO" alias="RestaurantDTO"/>
+        <typeAlias type="com.beginvegan.dto.ReviewDTO" alias="ReviewDTO"/>
+
+    </typeAliases>
+    <mappers>
+        <mapper resource="./mapper/MemberMapper.xml"/>
+    </mappers>
+</configuration>
