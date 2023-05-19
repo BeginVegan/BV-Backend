@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -13,14 +14,21 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DatabaseConfig {
-
+    @Value("${datasource.driver-class-name}")
+    private String setDriverClassName;
+    @Value("${datasource.url}")
+    private String setJdbcUrl;
+    @Value("${datasource.username}")
+    private String setUsername;
+    @Value("${datasource.password}")
+    private String setPassword;
     @Bean
     HikariConfig hikariConfig() {
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName("org.mariadb.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mariadb://db-begin-vegan.cahc6jjdhfq8.ap-northeast-2.rds.amazonaws.com:3306/test_db");
-        config.setUsername("root");
-        config.setPassword("yh4LidyF!");
+        config.setDriverClassName(setDriverClassName);
+        config.setJdbcUrl(setJdbcUrl);
+        config.setUsername(setUsername);
+        config.setPassword(setPassword);
         config.setMinimumIdle(3);
         return config;
     }

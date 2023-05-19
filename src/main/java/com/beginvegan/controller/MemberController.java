@@ -2,7 +2,6 @@ package com.beginvegan.controller;
 
 import com.beginvegan.dto.MemberDTO;
 import com.beginvegan.service.MemberService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
 @RequestMapping("member/*")
 public class MemberController {
+
 
     @Autowired
     private MemberService memberServiceervice;
