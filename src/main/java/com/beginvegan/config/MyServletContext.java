@@ -10,6 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MyServletContext implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowCredentials(true).allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE");
+        registry.addMapping("/**").allowCredentials(true).allowedOriginPatterns("http://localhost:3000", "http://localhost:5173","http//:beginvegan.kro.kr","https//:beginvegan.kro.kr").allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }
