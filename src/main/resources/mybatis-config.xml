@@ -20,6 +20,8 @@
 
     </typeAliases>
     <mappers>
+        <!--
         <mapper resource="./mapper/MemberMapper.xml"/>
+        -->
     </mappers>
 </configuration>
