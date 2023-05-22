@@ -1,4 +1,4 @@
 package com.beginvegan.repository;
 
-public interface MyPageRepository {
+public interface BookmarkRepository {
 }
