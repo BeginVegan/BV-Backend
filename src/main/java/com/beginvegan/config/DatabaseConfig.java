@@ -14,14 +14,11 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DatabaseConfig {
-    @Value("${datasource.driver-class-name}")
-    private String setDriverClassName;
-    @Value("${datasource.url}")
-    private String setJdbcUrl;
-    @Value("${datasource.username}")
-    private String setUsername;
-    @Value("${datasource.password}")
-    private String setPassword;
+    @Value("${datasource.driver-class-name}") private String setDriverClassName;
+    @Value("${datasource.url}") private String setJdbcUrl;
+    @Value("${datasource.username}") private String setUsername;
+    @Value("${datasource.password}") private String setPassword;
+
     @Bean
     HikariConfig hikariConfig() {
         HikariConfig config = new HikariConfig();
@@ -42,7 +39,6 @@ public class DatabaseConfig {
     SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource());
-
         org.springframework.core.io.Resource resource = new ClassPathResource("mybatis-config.xml");
         sqlSessionFactory.setConfigLocation(resource);
         sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*.xml"));

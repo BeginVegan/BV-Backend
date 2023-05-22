@@ -17,11 +17,11 @@
         <typeAlias type="com.beginvegan.dto.ReservationMenuDTO" alias="ReservationMenuDTO"/>
         <typeAlias type="com.beginvegan.dto.RestaurantDTO" alias="RestaurantDTO"/>
         <typeAlias type="com.beginvegan.dto.ReviewDTO" alias="ReviewDTO"/>
-
     </typeAliases>
     <mappers>
         <!--
         <mapper resource="./mapper/MemberMapper.xml"/>
+        DatabaseConfig.java 파일에서 설정해주었습니다.
         -->
     </mappers>
 </configuration>
