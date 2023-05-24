@@ -2,8 +2,7 @@ package com.beginvegan.controller;
 
 import com.beginvegan.dto.MemberDTO;
 import com.beginvegan.service.MemberService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("member/*")
 public class MemberController {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     @Autowired
     private MemberService memberServiceervice;

@@ -1,25 +1,24 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.MemberDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+
+@Slf4j
 @Repository("MemberRepository")
 public class MemberRepositoryMariaDB implements MemberRepository {
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
     /**
      * 테스트용 메소드입니다. DB 연동 테스트
+     *
      * @return
      */
     @Override
@@ -44,6 +43,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
     /**
      * 테스트용 메소드입니다. DB 연동 테스트
+     *
      * @return
      */
     @Override
