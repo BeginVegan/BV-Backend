@@ -1,22 +1,42 @@
 package com.beginvegan.repository;
 
+import com.beginvegan.dto.BookmarkDTO;
 import com.beginvegan.dto.MemberDTO;
+import com.beginvegan.dto.PointDTO;
+import com.beginvegan.exception.AddException;
+import com.beginvegan.exception.FindException;
+import com.beginvegan.exception.ModifyException;
+import com.beginvegan.exception.RemoveException;
 
 import java.util.List;
 
 public interface MemberRepository {
 
     /**
-     * 테스트용 메소드입니다. DB 연동 테스트
-     * @return 모든 멤버의 정보를 리스트로 반환한다.
+     * 회원가입 정보를 추가한다.
+     * @param memberInfo 회원 가입 정보
+     * @throws
      */
-    public List<MemberDTO> getMemberList();
+    public void insertMember(MemberDTO memberInfo) throws AddException;
 
     /**
-     * 테스트용 메소드입니다. DB 연동 테스트
-     * @param name
-     * @return name 조건에 해당하는 멤버의 정보를 반환한다.
+     * 회원 정보를 수정한다.
+     * @param memeberInfo
+     * @throws ModifyException
      */
-    public  MemberDTO getMemberByName(String name);
+    public void updateMember(MemberDTO memeberInfo) throws ModifyException;
 
+    public void deleteMember(String memberEmail) throws RemoveException;
+
+    public MemberDTO selectMemberByMemberEmail(String memberEmail) throws FindException;
+
+    public void insertPoint(PointDTO pointInfo) throws AddException;
+
+    public List<PointDTO> selectAllPointsByMemberEmail(String memberEmail) throws FindException;
+
+    public void insertBookmark(int restaurantNo) throws AddException;
+
+    public void deleteBookmark(int restaurantNo) throws RemoveException;
+
+    public List<BookmarkDTO> selectAllBookmarkByMemberEmail(String memberEmail) throws FindException;
 }
