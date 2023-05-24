@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 public class ReservationDTO {
     private int reservationNo; // reservation_no
-    private String memberId; // member_id
+    private String memberEmail; // member_email
     private int restaurantNo; // restaurant_no
     private Date reservationTime; // reservation_time
     private Date reservationVisitTime; // reservation_visit_time
