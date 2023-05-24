@@ -21,16 +21,16 @@ public class MemberService {
      * 테스트용 메소드입니다. DB 연동 테스트
      * @return
      */
-    public List<MemberDTO> getMemberAll() {
-        return memberRepository.getMemberList();
-    }
+//    public List<MemberDTO> getMemberAll() {
+//        return memberRepository.getMemberList();
+//    }
 
     /**
      * 테스트용 메소드입니다. DB 연동 테스트
      * @return
-     */
-    public MemberDTO searchMemberByName(String name) {
-        return memberRepository.getMemberByName(name);
-    }
+//     */
+//    public MemberDTO searchMemberByName(String name) {
+//        return memberRepository.getMemberByName(name);
+//    }
 
 }
