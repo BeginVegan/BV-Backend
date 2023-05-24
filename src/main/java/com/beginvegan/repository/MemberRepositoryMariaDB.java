@@ -1,6 +1,12 @@
 package com.beginvegan.repository;
 
+import com.beginvegan.dto.BookmarkDTO;
 import com.beginvegan.dto.MemberDTO;
+import com.beginvegan.dto.PointDTO;
+import com.beginvegan.exception.AddException;
+import com.beginvegan.exception.FindException;
+import com.beginvegan.exception.ModifyException;
+import com.beginvegan.exception.RemoveException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -21,7 +27,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
      *
      * @return
      */
-    @Override
+
     public List<MemberDTO> getMemberList() {
         SqlSession session = null;
 
@@ -46,7 +52,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
      *
      * @return
      */
-    @Override
+
     public MemberDTO getMemberByName(String name) {
         SqlSession session = null;
 
