@@ -4,4 +4,7 @@
 
 <mapper namespace="com.beginvegan.mybatis.RestaurantMapper">
 
+    <select id="selectAllRestaurant" resultType="RestaurantDTO">
+        SELECT * FROM Restaurant;
+    </select>
 </mapper>
