@@ -26,7 +26,7 @@ public class RestaurantController {
      * 모든 레스토랑 리스트를 가져온다.
      * @param session 세션정보
      * @return 레스토랑의 리스트와 상태정보
-     * @throws FindException
+     * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
     @GetMapping("list")
     public ResponseEntity<?> restaurantList(HttpSession session) throws FindException {
