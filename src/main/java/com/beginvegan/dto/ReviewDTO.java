@@ -2,7 +2,7 @@ package com.beginvegan.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class ReviewDTO {
@@ -12,7 +12,7 @@ public class ReviewDTO {
     private String memberEmail; // member_email
     private int reviewStar; // review_star
     private String reviewContent; // review_content
-    private LocalDateTime reviewTime; // review_time
+    private Date reviewTime; // review_time
     private String reviewPhotoDir; // review_photo_dir
 
 }
