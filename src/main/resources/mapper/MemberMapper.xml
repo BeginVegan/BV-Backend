@@ -6,7 +6,7 @@
 
     <insert id="insertMember" parameterType="MemberDTO">
         INSERT INTO Member (member_email, member_name, member_point)
-        VALUES  {#{memberEmail}, #{memberName}, #{memberPoint};
+        VALUES  (#{memberEmail}, #{memberName}, #{memberPoint});
     </insert>
 
     <update id="updateMember" parameterType="MemberDTO">
@@ -27,7 +27,7 @@
 
     <insert id="insertPoint" parameterType="PointDTO">
         INSERT INTO Point (member_email, point_div, point_time, point_change, point_result)
-        VALUES {#{mmemberEmail}, #{pointDiv}, #{pointTime}, #{pointChange}, #{pointResult};
+        VALUES (#{memberEmail}, #{pointDiv}, #{pointTime}, #{pointChange}, #{pointResult});
     </insert>
 
     <select id="selectAllPointsByMemberEmail" parameterType="String" resultType="PointDTO">
@@ -48,6 +48,21 @@
     <select id="selectAllBookmarkByMemberEmail" parameterType="String" resultType="BookmarkDTO">
         SELECT * FROM Bookmark
         WHERE member_email = #{memberEmail};
+    </select>
+
+    <select id="selectPointTEST" parameterType="PointDTO" resultType="PointDTO">
+        SELECT * FROM Point
+        WHERE member_email = #{memberEmail} AND point_time = #{pointTime};
+    </select>
+
+    <delete id="deletePointTEST" parameterType="java.util.Map">
+        DELETE FROM Point
+        WHERE member_email = #{memberEmail} AND point_time = #{date};
+    </delete>
+
+    <select id="selectBookmarkTEST" parameterType="java.util.Map" resultType="BookmarkDTO">
+        SELECT * FROM Bookmark
+        WHERE restaurant_no = #{restaurantNo} AND member_email = #{memberEmail};
     </select>
 
 </mapper>

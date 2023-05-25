@@ -13,7 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Member;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -227,6 +227,82 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             }
 
             log.info("selectAllBookmarkByMemberEmail 종료");
+        }
+    }
+
+    //아래 메소드는 단위 테스트를 위한 CRUD 메소드입니다.
+    // Selects a specific point for testing
+    public PointDTO selectPointTEST(PointDTO pointDTO) throws FindException {
+        log.info("selectPointTEST 시작 - memberEmail : " + pointDTO.getMemberEmail() + ", getPointTime : " + pointDTO.getPointTime());
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            PointDTO point = sqlSession.selectOne("com.beginvegan.mybatis.MemberMapper.selectPointTEST", pointDTO);
+            return point;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectPointTEST 종료");
+        }
+    }
+
+    // Deletes a specific point for testing
+    public void deletePointTEST(String memberEmail, Date date) throws RemoveException {
+        log.info("deletePointTEST 시작 - memberEmail : " + memberEmail + ", date : " + date);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            Map<String, Object> map = new HashMap<>();
+            map.put("memberEmail", memberEmail);
+            map.put("date", date);
+            sqlSession.delete("com.beginvegan.mybatis.MemberMapper.deletePointTEST", map);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoveException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("deletePointTEST 종료");
+        }
+    }
+
+    // Selects a specific bookmark for testing
+    public BookmarkDTO selectBookmarkTEST(int restaurantNo, String memberEmail) throws FindException {
+        log.info("selectBookmarkTEST 시작 - restaurantNo : " + restaurantNo + ", memberEmail : " + memberEmail);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("restaurantNo", restaurantNo);
+        map.put("memberEmail", memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            BookmarkDTO bookmark = sqlSession.selectOne("com.beginvegan.mybatis.MemberMapper.selectBookmarkTEST", map);
+            return bookmark;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectBookmarkTEST 종료");
         }
     }
 }
