@@ -13,7 +13,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Member;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository("MemberRepository")
@@ -22,53 +25,208 @@ public class MemberRepositoryMariaDB implements MemberRepository {
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
-    /**
-     * 테스트용 메소드입니다. DB 연동 테스트
-     *
-     * @return
-     */
+    @Override
+    public void insertMember(MemberDTO memberInfo) throws AddException {
+        log.info("insertMember 시작 - memberInfo : " + memberInfo.toString());
 
-    public List<MemberDTO> getMemberList() {
-        SqlSession session = null;
+        SqlSession sqlSession = null;
 
         try {
-            session = sqlSessionFactory.openSession();
-            List<MemberDTO> memberList = session.selectList("com.beginvegan.mybatis.MemberMapper.selectMemberAll");
-            return memberList;
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.insert("com.beginvegan.mybatis.MemberMapper.insertMember", memberInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            throw new AddException("e.getMessage");
         } finally {
-            if (session != null) {
-                session.close();
+            if (sqlSession != null) {
+                sqlSession.close();
             }
-        }
 
-        return null;
+            log.info("insertMember 종료");
+        }
     }
 
-    /**
-     * 테스트용 메소드입니다. DB 연동 테스트
-     *
-     * @return
-     */
+    @Override
+    public void updateMember(MemberDTO memberInfo) throws ModifyException {
+        log.info("updateMember 시작 - memberInfo : " + memberInfo.toString());
 
-    public MemberDTO getMemberByName(String name) {
-        SqlSession session = null;
+        SqlSession sqlSession = null;
 
         try {
-            session = sqlSessionFactory.openSession();
-            MemberDTO member = session.selectOne("com.beginvegan.mybatis.MemberMapper.selectMemberByName", name);
-            return member;
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMember", memberInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            throw new ModifyException("e.getMessage");
         } finally {
-            if (session != null) {
-                session.close();
+            if (sqlSession != null) {
+                sqlSession.close();
             }
-        }
 
-        return null;
+            log.info("updateMember 종료");
+        }
+    }
+
+    @Override
+    public void deleteMember(String memberEmail) throws RemoveException {
+        log.info("deleteMember 시작 - memberEmail : " + memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.delete("com.beginvegan.mybatis.MemberMapper.deleteMember", memberEmail);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoveException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("deleteMember 종료");
+        }
+    }
+
+    @Override
+    public MemberDTO selectMemberByMemberEmail(String memberEmail) throws FindException {
+        log.info("selectMemberByMemberEmail 시작 - memberEmail : " + memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            MemberDTO memberInfo = sqlSession.selectOne("com.beginvegan.mybatis.MemberMapper.selectMemberByMemberEmail", memberEmail);
+            return memberInfo;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectMemberByMemberEmail 종료");
+        }
+    }
+
+    @Override
+    public void insertPoint(PointDTO pointInfo) throws AddException {
+        log.info("insertPoint 시작 - pointInfo : " + pointInfo.toString());
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.insert("com.beginvegan.mybatis.MemberMapper.insertPoint", pointInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AddException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("insertPoint 종료");
+        }
+    }
+
+    @Override
+    public List<PointDTO> selectAllPointsByMemberEmail(String memberEmail) throws FindException {
+        log.info("selectAllPointsByMemberEmail 시작 - memberEmail : " + memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            List<PointDTO> pointList = sqlSession.selectList("com.beginvegan.mybatis.MemberMapper.selectAllPointsByMemberEmail", memberEmail);
+            return pointList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectAllPointsByMemberEmail 종료");
+        }
+    }
+
+    @Override
+    public void insertBookmark(int restaurantNo, String memberEmail) throws AddException {
+        log.info("insertBookmark 시작 - restaurantNo : " + restaurantNo + ", memberEmail : " + memberEmail);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("restaurantNo", restaurantNo);
+        map.put("memberEmail", memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.insert("com.beginvegan.mybatis.MemberMapper.insertBookmark", map);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AddException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("insertBookmark 종료");
+        }
+    }
+
+    @Override
+    public void deleteBookmark(int restaurantNo, String memberEmail) throws RemoveException {
+        log.info("deleteBookmark 시작 - restaurantNo : " + restaurantNo + ", memberEmail : " + memberEmail);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("restaurantNo", restaurantNo);
+        map.put("memberEmail", memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.insert("com.beginvegan.mybatis.MemberMapper.deleteBookmark", map);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoveException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("deleteBookmark 종료");
+        }
+    }
+
+    @Override
+    public List<BookmarkDTO> selectAllBookmarkByMemberEmail(String memberEmail) throws FindException {
+        log.info("selectAllBookmarkByMemberEmail 시작 - memberEmail : " + memberEmail);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            List<BookmarkDTO> bookmarkList = sqlSession.selectList("com.beginvegan.mybatis.MemberMapper.selectAllBookmarkByMemberEmail", memberEmail);
+            return bookmarkList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException("e.getMessage");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectAllBookmarkByMemberEmail 종료");
+        }
     }
 }
