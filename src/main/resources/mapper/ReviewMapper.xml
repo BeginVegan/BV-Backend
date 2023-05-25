@@ -3,5 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.beginvegan.mybatis.ReviewMapper">
-
+    <select id="selectAllReviewByMemberEmail" resultType="ReviewDTO" parameterType="String">
+        SELECT *
+        FROM Review
+        WHERE member_email = #{userEmail};
+    </select>
 </mapper>
