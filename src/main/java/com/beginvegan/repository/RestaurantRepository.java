@@ -9,6 +9,7 @@ public interface RestaurantRepository {
     /**
      * 전체 레스토랑을 조회한다.
      * @return 레스토랑의 리스트
+     * @throws FindException
      */
     public List<RestaurantDTO> selectAllRestaurant() throws FindException;
 }
