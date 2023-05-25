@@ -4,11 +4,50 @@
 
 <mapper namespace="com.beginvegan.mybatis.MemberMapper">
 
-    <select id="selectMemberAll" resultType="MemberDTO">
-        SELECT * from Member;
+    <insert id="insertMember" parameterType="MemberDTO">
+        INSERT INTO Member (member_email, member_name, member_point)
+        VALUES  {#{memberEmail}, #{memberName}, #{memberPoint};
+    </insert>
+
+    <update id="updateMember" parameterType="MemberDTO">
+        UPDATE Member
+        SET member_name = #{memberName}, member_point = #{memberPoint}
+        WHERE member_email = #{memberEmail};
+    </update>
+
+    <delete id="deleteMember" parameterType="String">
+        DELETE FROM Member
+        WHERE member_email = #{memberEmail};
+    </delete>
+
+    <select id="selectMemberByMemberEmail" parameterType="String" resultType="MemberDTO">
+        SELECT * FROM Member
+        WHERE member_email = #{memberEmail};
     </select>
 
-    <select id="selectMemberByName" parameterType="String" resultType="MemberDTO">
-        SELECT * from Member where member_name=#{name};
+    <insert id="insertPoint" parameterType="PointDTO">
+        INSERT INTO Point (member_email, point_div, point_time, point_change, point_result)
+        VALUES {#{mmemberEmail}, #{pointDiv}, #{pointTime}, #{pointChange}, #{pointResult};
+    </insert>
+
+    <select id="selectAllPointsByMemberEmail" parameterType="String" resultType="PointDTO">
+        SELECT * FROM Point
+        WHERE member_email = #{memberEmail};
     </select>
+
+    <insert id="insertBookmark" parameterType="hashmap">
+        INSERT INTO Bookmark (member_email, restaurant_no)
+        VALUES (#{memberEmail}, #{restaurantNo});
+    </insert>
+
+    <delete id="deleteBookmark"  parameterType="hashmap">
+        DELETE FROM Bookmark
+        WHERE member_email = #{memberEmail} AND restaurant_no = #{restaurantNo}
+    </delete>
+
+    <select id="selectAllBookmarkByMemberEmail" parameterType="String" resultType="BookmarkDTO">
+        SELECT * FROM Bookmark
+        WHERE member_email = #{memberEmail};
+    </select>
+
 </mapper>
