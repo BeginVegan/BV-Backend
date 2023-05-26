@@ -14,5 +14,4 @@ public class ReviewDTO {
     private String reviewContent; // review_content
     private Date reviewTime; // review_time
     private String reviewPhotoDir; // review_photo_dir
-
 }
