@@ -8,4 +8,36 @@
         FROM Review
         WHERE member_email = #{userEmail};
     </select>
+
+    <select id="selectAllReviewByRestaurantId" resultType="ReviewDTO" parameterType="Int">
+        SELECT *
+        FROM Review
+        WHERE restaurant_no = #{id};
+    </select>
+
+    <insert id="insertReview" parameterType="ReviewDTO">
+        INSERT INTO Review (review_no, reservation_no, restaurant_no, member_email, review_star, review_content,
+                            review_time, review_photo_dir)
+        VALUES (#{reviewNo}, #{reservationNo}, #{restaurantNo}, #{memberEmail}, #{reviewStar}, #{reviewContent},
+                #{reviewTime}, #{reviewPhotoDir});
+    </insert>
+
+    <delete id="deleteReview" parameterType="Int">
+        DELETE
+        FROM Review
+        WHERE review_no = #{reviewNo};
+    </delete>
+
+    <update id="updateReview" parameterType="hashMap">
+        UPDATE Review
+        SET review_star      = #{reviewInfo.reviewStar},
+            review_content   = #{reviewInfo.reviewContent},
+            review_time      = #{reviewInfo.reviewTime},
+            review_photo_dir = #{reviewInfo.reviewPhotoDir}
+        WHERE review_no = #{reviewNo};
+    </update>
+
+
 </mapper>
+
+
