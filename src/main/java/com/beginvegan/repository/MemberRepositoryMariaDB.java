@@ -36,7 +36,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             sqlSession.insert("com.beginvegan.mybatis.MemberMapper.insertMember", memberInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AddException("e.getMessage");
+            throw new AddException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -57,7 +57,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMember", memberInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ModifyException("e.getMessage");
+            throw new ModifyException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -78,7 +78,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             sqlSession.delete("com.beginvegan.mybatis.MemberMapper.deleteMember", memberEmail);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RemoveException("e.getMessage");
+            throw new RemoveException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -101,7 +101,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -122,7 +122,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             sqlSession.insert("com.beginvegan.mybatis.MemberMapper.insertPoint", pointInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AddException("e.getMessage");
+            throw new AddException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -145,7 +145,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -171,7 +171,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AddException("e.getMessage");
+            throw new AddException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -197,7 +197,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RemoveException("e.getMessage");
+            throw new RemoveException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -220,7 +220,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -244,7 +244,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -269,7 +269,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RemoveException("e.getMessage");
+            throw new RemoveException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -296,7 +296,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
