@@ -1,6 +1,7 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.MenuDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
@@ -46,7 +47,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
 
         try {
             session = sqlSessionFactory.openSession();
-            RestaurantDTO restaurantInfo = session.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectRestaurantByRestaurantNo");
+            RestaurantDTO restaurantInfo = session.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectRestaurantByRestaurantNo", restaurantNo);
             return restaurantInfo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +111,23 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         } finally {
             if (session != null) {
                 session.close();
+            }
+        }
+    }
+
+    //아래 메소드는 단위 테스트를 위한 CRUD 메소드입니다.
+    public int selectMaxRestaurantNoTest() throws FindException {
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectMaxRestaurantNoTest");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
             }
         }
     }
