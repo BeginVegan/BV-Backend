@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class ReservationDTO {
@@ -30,7 +30,7 @@ public class ReservationDTO {
     private int reservationTotalPrice; // reservation_total_price
     @NonNull
     private String reservationStatus; // reservation_status
-    private ArrayList<ReservationMenuDTO> reservationMenuList;
+    private List<ReservationMenuDTO> reservationMenuList;
 
     public ReservationDTO(int reservationNo, String memberEmail, int restaurantNo, LocalDateTime reservationTime, LocalDateTime reservationVisitTime, String reservationType, int reservationPeople, int reservationDiscount, int reservationTotalPrice, String reservationStatus) {
         this.reservationNo = reservationNo;
@@ -45,6 +45,34 @@ public class ReservationDTO {
         this.reservationStatus = reservationStatus;
     }
 
+//    public ReservationDTO(int reservationNo, String memberEmail, int restaurantNo, Timestamp reservationTime, Timestamp reservationVisitTime, String reservationType, int reservationPeople, int reservationDiscount, int reservationTotalPrice, String reservationStatus, List<ReservationMenuDTO> reservationMenuList) {
+//        this.reservationNo = reservationNo;
+//        this.memberEmail = memberEmail;
+//        this.restaurantNo = restaurantNo;
+//        this.reservationTime = TimeUtil.toDateTime(reservationTime);
+//        this.reservationVisitTime = TimeUtil.toDateTime(reservationVisitTime);
+//        this.reservationType = reservationType;
+//        this.reservationPeople = reservationPeople;
+//        this.reservationDiscount = reservationDiscount;
+//        this.reservationTotalPrice = reservationTotalPrice;
+//        this.reservationStatus = reservationStatus;
+//        this.reservationMenuList = reservationMenuList;
+//    }
+
+//    public ReservationDTO(int reservationNo, String memberEmail, int restaurantNo, Timestamp reservationTime, Timestamp reservationVisitTime, String reservationType, int reservationPeople, int reservationDiscount, int reservationTotalPrice, String reservationStatus, int menuNo, int reservationMenuCount) {
+//        this.reservationNo = reservationNo;
+//        this.memberEmail = memberEmail;
+//        this.restaurantNo = restaurantNo;
+//        this.reservationTime = TimeUtil.toDateTime(reservationTime);
+//        this.reservationVisitTime = TimeUtil.toDateTime(reservationVisitTime);
+//        this.reservationType = reservationType;
+//        this.reservationPeople = reservationPeople;
+//        this.reservationDiscount = reservationDiscount;
+//        this.reservationTotalPrice = reservationTotalPrice;
+//        this.reservationStatus = reservationStatus;
+//        this.reservationMenuList = new ReservationMenuDTO(reservationNo, menuNo, reservationMenuCount);
+//    }
+
     public ReservationDTO(String memberEmail, int restaurantNo, LocalDateTime reservationTime, LocalDateTime reservationVisitTime, String reservationType, int reservationPeople, int reservationDiscount, int reservationTotalPrice, String reservationStatus) {
         this.memberEmail = memberEmail;
         this.restaurantNo = restaurantNo;
@@ -57,3 +85,4 @@ public class ReservationDTO {
         this.reservationStatus = reservationStatus;
     }
 }
+

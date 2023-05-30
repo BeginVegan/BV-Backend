@@ -30,9 +30,9 @@
         WHERE reservation_no = #{reservationNo}
     </select>
 
-    <select id="selectAllReservation" resultType="ReservationDTO">
-        SELECT * FROM Reservation
-    </select>
+<!--    <select id="selectAllReservation" resultType="ReservationDTO">-->
+<!--        SELECT * FROM Reservation-->
+<!--    </select>-->
 
     <select id="selectALLReservationByMemberEmail" parameterType="String" resultType="ReservationDTO">
         SELECT * FROM Reservation
@@ -57,5 +57,33 @@
         DELETE FROM Reservation
         WHERE reservation_no = #{reservationNo}
     </delete>
+
+    <resultMap id="reservationResultMap"          type="ReservationDTO">
+        <id property="reservationNo"                      column="reservation_no"/>
+        <result property="restaurantNo"                   column="restaurant_no"/>
+        <result property="memberEmail"                    column="member_email"/>
+        <result property="reservationTime"                column="reservation_time"/>
+        <result property="reservationVisitTime"           column="reservation_visit_time"/>
+        <result property="reservationType"                column="reservation_type" />
+        <result property="reservationPeople"              column="reservation_people" />
+        <result property="reservationDiscount"            column="reservation_discount" />
+        <result property="reservationTotalPrice"          column="reservation_total_price" />
+        <result property="reservationStatus"              column="reservation_status" />
+
+        <!--예약 메뉴 리스트-->
+        <collection property="reservationMenuList"       javaType="ReservationMenuDTO">
+            <id property="reservationNo"                 column="reservation_no"/>
+            <result property="menuNo"                    column="menu_no"/>
+            <result property="reservationMenuCount"      column="reservation_menu_count"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectAllReservation" resultMap="reservationResultMap">
+        SELECT Reservation.*,
+               Reservation_Menu.menu_no,
+               Reservation_Menu.reservation_menu_count
+        FROM Reservation
+                JOIN Reservation_Menu ON Reservation.reservation_no = Reservation_Menu.reservation_no
+    </select>
 
 </mapper>
