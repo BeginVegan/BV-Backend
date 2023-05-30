@@ -2,6 +2,7 @@ package com.beginvegan.dto;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -13,8 +14,8 @@ public class RestaurantDTO {
     private String restaurantAddressGu; // restaurant_address_gu
     private double restaurantX; // restaurant_x
     private double restaurantY; // restaurant_y
-    private Date restaurantOpen; // restaurant_open
-    private Date restaurantClose; // restaurant_close
+    private Timestamp restaurantOpen; // restaurant_open
+    private Timestamp restaurantClose; // restaurant_close
     private String restaurantDetail; // restaurant_detail
     private int restaurantAvgPrice; // restaurant_avg_price
     private int restaurantTable; // restaurant_table
