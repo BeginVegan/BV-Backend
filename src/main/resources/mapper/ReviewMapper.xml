@@ -15,10 +15,10 @@
         WHERE restaurant_no = #{id};
     </select>
 
-    <insert id="insertReview" parameterType="ReviewDTO">
-        INSERT INTO Review (review_no, reservation_no, restaurant_no, member_email, review_star, review_content,
+    <insert id="insertReview" parameterType="ReviewDTO" useGeneratedKeys="true" keyProperty="reviewNo">
+        INSERT INTO Review (reservation_no, restaurant_no, member_email, review_star, review_content,
                             review_time, review_photo_dir)
-        VALUES (#{reviewNo}, #{reservationNo}, #{restaurantNo}, #{memberEmail}, #{reviewStar}, #{reviewContent},
+        VALUES (#{reservationNo}, #{restaurantNo}, #{memberEmail}, #{reviewStar}, #{reviewContent},
                 #{reviewTime}, #{reviewPhotoDir});
     </insert>
 
