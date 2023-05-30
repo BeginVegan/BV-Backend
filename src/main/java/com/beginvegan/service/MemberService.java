@@ -41,7 +41,7 @@ public class MemberService {
                 memberExistInfo.setMemberName(memberInfo.getMemberName());
                 memberRepository.updateMember(memberExistInfo);
             }
-        } catch (FindException e) {
+        } catch (Exception e) {
             memberRepository.insertMember(memberInfo);
         }
         //세션에 이메일과 토큰 값 저장
