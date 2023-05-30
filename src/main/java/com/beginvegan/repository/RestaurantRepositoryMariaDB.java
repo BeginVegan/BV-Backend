@@ -1,10 +1,10 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.MenuDTO;
-import com.beginvegan.dto.PointDTO;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
+import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
@@ -99,6 +99,29 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
     }
 
     @Override
+    public List<MenuDTO> selectAllMenuByRestaurantNo(int restaurantNo) throws FindException {
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<MenuDTO> menuList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllMenuByRestaurantNo", restaurantNo);
+
+            for (MenuDTO menu : menuList) {
+                System.out.println(menu);
+            }
+
+            return menuList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
     public void deleteRestaurant(int restaurantNo) throws RemoveException {
         SqlSession session = null;
 
@@ -108,6 +131,58 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoveException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void deleteRestaurantMenu(int restaurantNo) throws RemoveException {
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            session.delete("com.beginvegan.mybatis.RestaurantMapper.deleteRestaurantMenu", restaurantNo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoveException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void updateRestaurant(RestaurantDTO restaurantInfo) throws ModifyException {
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            session.update("com.beginvegan.mybatis.RestaurantMapper.updateRestaurant", restaurantInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModifyException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public List<RestaurantDTO> selectBestRestaurant() throws FindException {
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestRestaurant");
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
         } finally {
             if (session != null) {
                 session.close();
