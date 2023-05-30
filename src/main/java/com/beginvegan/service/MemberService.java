@@ -6,7 +6,8 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.MemberRepository;
-import com.beginvegan.util.KakaoAPI;
+import com.beginvegan.util.GetGoogleAccount;
+import com.beginvegan.util.GetKakaoAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,16 +23,16 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     /**
-     * 로그인 한다.
+     * 로그인 한다. KAKAO API
      * @param session 클라이언트의 세션
      * @param accessToken API accessToken
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
-    public void login(HttpSession session, String accessToken) throws Exception {
-        log.info("login 시작");
+    public void loginKakao(HttpSession session, String accessToken) throws Exception {
+        log.info("login 시작 - Kakao API");
 
         // Kakao API 요청 : 멤버 정보를 가져온다.
-        MemberDTO memberInfo = KakaoAPI.getMemberInfo(accessToken);
+        MemberDTO memberInfo = GetKakaoAccount.getMemberInfo(accessToken);
 
         // DB에 저장된 회원 정보 조회
         try {
@@ -48,7 +49,37 @@ public class MemberService {
         session.setAttribute("memberEmail", memberInfo.getMemberEmail());
         session.setAttribute("accessToken", accessToken);
 
-        log.info("login 완료");
+        log.info("login 완료 - Kakao API");
+    }
+
+    /**
+     * 로그인 한다. Google API
+     * @param session 클라이언트의 세션
+     * @param googleCredential googleCredential
+     * @throws Exception 로그인 과정 중 오류에의해 발생
+     */
+    public void loginGoogle(HttpSession session, String googleCredential) throws Exception {
+        log.info("login 시작 - Google API");
+
+        // Kakao API 요청 : 멤버 정보를 가져온다.
+        MemberDTO memberInfo = GetGoogleAccount.getMemberInfo(googleCredential);
+
+        // DB에 저장된 회원 정보 조회
+        try {
+            MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
+            // 멤버의 닉네임 정보 업데이트
+            if(!memberInfo.getMemberName().equals(memberExistInfo.getMemberName())) {
+                memberExistInfo.setMemberName(memberInfo.getMemberName());
+                memberRepository.updateMember(memberExistInfo);
+            }
+        } catch (Exception e) {
+            memberRepository.insertMember(memberInfo);
+        }
+        //세션에 이메일과 토큰 값 저장
+        session.setAttribute("memberEmail", memberInfo.getMemberEmail());
+        session.setAttribute("googleCredential", googleCredential);
+
+        log.info("login 완료 - Google API");
     }
 
     /**
