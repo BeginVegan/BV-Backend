@@ -106,11 +106,15 @@ class MemberRepositoryMariaDBTest {
             memberRepository.deleteMember(memberDTO.getMemberEmail());
 
             // Try to retrieve the deleted member
-            MemberDTO deletedMember = memberRepository.selectMemberByMemberEmail(memberDTO.getMemberEmail());
-
+            MemberDTO deletedMember = null;
+            try {
+                deletedMember = memberRepository.selectMemberByMemberEmail(memberDTO.getMemberEmail());
+            } catch (FindException e) {
+                Assertions.assertEquals("해당 Email과 일치하는 멤버 정보가 없습니다.", e.getMessage());
+            }
             // Assert that the deleted member is not found
             Assertions.assertNull(deletedMember);
-        } catch (AddException | FindException | RemoveException e) {
+        } catch (AddException | RemoveException e) {
             e.printStackTrace();
             Assertions.fail("Exception occurred: " + e.getMessage());
         }

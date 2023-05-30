@@ -44,7 +44,7 @@ public interface MemberRepository {
      *
      * @param memberEmail 조회할 회원의 이메일
      * @return 회원 정보
-     * @throws FindException DB에서 회원 정보 조회에 실패할 경우 발생
+     * @throws FindException DB에서 회원 정보 조회에 실패할 경우 발생 또는 데이터가 없을 경우 발생
      */
     public MemberDTO selectMemberByMemberEmail(String memberEmail) throws FindException;
 

@@ -97,11 +97,12 @@ public class MemberRepositoryMariaDB implements MemberRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             MemberDTO memberInfo = sqlSession.selectOne("com.beginvegan.mybatis.MemberMapper.selectMemberByMemberEmail", memberEmail);
+            if(memberInfo == null) throw new FindException("해당 Email과 일치하는 멤버 정보가 없습니다.");
             return memberInfo;
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
