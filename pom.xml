@@ -23,6 +23,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
         <!-- Spring : Spring으로 SOAP 웹 서비스를 개발하기 위한 추가 라이브러리를 제공한다.-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
