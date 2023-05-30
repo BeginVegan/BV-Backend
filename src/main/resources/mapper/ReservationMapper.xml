@@ -4,4 +4,58 @@
 
 <mapper namespace="com.beginvegan.mybatis.ReservationMapper">
 
+    <insert id="insertReservation" parameterType="ReservationDTO">
+        INSERT INTO Reservation (member_email,
+                                 restaurant_no,
+                                 reservation_time,
+                                 reservation_visit_time,
+                                 reservation_type,
+                                 reservation_people,
+                                 reservation_discount,
+                                 reservation_total_price,
+                                 reservation_status)
+        Values (#{memberEmail},
+                #{restaurantNo},
+                #{reservationTime},
+                #{reservationVisitTime},
+                #{reservationType},
+                #{reservationPeople},
+                #{reservationDiscount},
+                #{reservationTotalPrice},
+                #{reservationStatus});
+    </insert>
+
+    <select id="selectReservationByReservationNo" parameterType="int" resultType="ReservationDTO">
+        SELECT * FROM Reservation
+        WHERE reservation_no = #{reservationNo}
+    </select>
+
+    <select id="selectAllReservation" resultType="ReservationDTO">
+        SELECT * FROM Reservation
+    </select>
+
+    <select id="selectALLReservationByMemberEmail" parameterType="String" resultType="ReservationDTO">
+        SELECT * FROM Reservation
+        WHERE member_email = #{memeberEmail}
+    </select>
+
+    <update id="updateReservation" parameterType="ReservationDTO">
+        UPDATE Reservation
+        SET member_email = #{memberEmail},
+            restaurant_no = #{restaurantNo},
+            reservation_time = #{reservationTime},
+            reservation_visit_time = #{reservationVisitTime},
+            reservation_type = #{reservationType},
+            reservation_people = #{reservationPeople},
+            reservation_discount = #{reservationDiscount},
+            reservation_total_price = #{reservationTotalPrice},
+            reservation_status = #{reservationStatus}
+        WHERE reservation_no = #{reservationNo};
+    </update>
+
+    <delete id="deleteReservation" parameterType="int">
+        DELETE FROM Reservation
+        WHERE reservation_no = #{reservationNo}
+    </delete>
+
 </mapper>
