@@ -340,22 +340,16 @@ class ReviewRepositoryMariaDBTest {
 
                     // 구현된 로직을 통해서 selectAllReviewByRestaurantId() 메소드 실행
                     List<ReviewDTO> reviewList_01 = reviewRepository.selectAllReviewByRestaurantId(1);
-                    List<ReviewDTO> reviewList_02 = reviewRepository.selectAllReviewByRestaurantId(1);
-                    List<ReviewDTO> reviewList_03 = reviewRepository.selectAllReviewByRestaurantId(1);
 
 
                     // Assertion을 통한 테스트
                     Assertions.assertNotNull(reviewList_01); // 반환 실패 확인
-                    Assertions.assertNotNull(reviewList_02); // 반환 실패 확인
-                    Assertions.assertNotNull(reviewList_03); // 반환 실패 확인
 
                     Assertions.assertFalse(reviewList_01.isEmpty()); // 빈 배열 반환 확인
-                    Assertions.assertFalse(reviewList_02.isEmpty()); // 빈 배열 반환 확인
-                    Assertions.assertFalse(reviewList_03.isEmpty()); // 빈 배열 반환 확인
 
                     Assertions.assertTrue(reviewList_01.contains(testReview01)); // 테스트 케이스 1번
-                    Assertions.assertTrue(reviewList_02.contains(testReview02)); // 테스트 케이스 2번
-                    Assertions.assertTrue(reviewList_03.contains(testReview03)); // 테스트 케이스 3번
+                    Assertions.assertTrue(reviewList_01.contains(testReview02)); // 테스트 케이스 2번
+                    Assertions.assertTrue(reviewList_01.contains(testReview03)); // 테스트 케이스 3번
 
                 } catch (AddException e) {
                     e.printStackTrace();
