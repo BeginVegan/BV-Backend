@@ -47,6 +47,7 @@ public class ReservationController {
     @PostMapping("add")
     public ResponseEntity<?> reservationAdd(@RequestBody Map<String, String> payload) throws AddException {
         ReservationDTO reservation = new ReservationDTO(
+                0,
                 payload.get("member_email"),
                 Integer.parseInt(payload.get("restaurant_no")),
                 TimeUtil.toDateTime(payload.get("reservation_time")),
