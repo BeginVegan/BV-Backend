@@ -1,5 +1,6 @@
 package com.beginvegan.controller;
 
+import com.beginvegan.dto.MenuDTO;
 import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
@@ -7,11 +8,15 @@ import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.ReservationService;
 import com.beginvegan.util.TimeUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,39 +50,13 @@ public class ReservationController {
     }
 
     @PostMapping("add")
-    public ResponseEntity<?> reservationAdd(@RequestBody Map<String, String> payload) throws AddException {
-        ReservationDTO reservation = new ReservationDTO(
-                0,
-                payload.get("member_email"),
-                Integer.parseInt(payload.get("restaurant_no")),
-                TimeUtil.toDateTime(payload.get("reservation_time")),
-                TimeUtil.toDateTime(payload.get("reservation_visit_time")),
-                payload.get("reservation_type"),
-                Integer.parseInt(payload.get("reservation_people")),
-                Integer.parseInt(payload.get("reservation_discount")),
-                Integer.parseInt(payload.get("reservation_total_price")),
-                payload.get("reservation_status")
-        );
-
-        return new ResponseEntity<ReservationDTO>(reservationService.addReservation(reservation), HttpStatus.CREATED);
+    public ResponseEntity<?> reservationAdd(@RequestBody ReservationDTO reservationDTO) throws AddException {
+        return new ResponseEntity<ReservationDTO>(reservationService.addReservation(reservationDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("modify")
-    public ResponseEntity<?> reservationModify(@RequestBody Map<String, String> payload) throws ModifyException {
-        ReservationDTO reservation = new ReservationDTO(
-                Integer.parseInt(payload.get("reservation_no")),
-                payload.get("member_email"),
-                Integer.parseInt(payload.get("restaurant_no")),
-                TimeUtil.toDateTime(payload.get("reservation_time")),
-                TimeUtil.toDateTime(payload.get("reservation_visit_time")),
-                payload.get("reservation_type"),
-                Integer.parseInt(payload.get("reservation_people")),
-                Integer.parseInt(payload.get("reservation_discount")),
-                Integer.parseInt(payload.get("reservation_total_price")),
-                payload.get("reservation_status")
-        );
-
-        return new ResponseEntity<ReservationDTO>(reservationService.modifyReservation(reservation), HttpStatus.OK);
+    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException, JsonProcessingException {
+        return new ResponseEntity<ReservationDTO>(reservationService.modifyReservation(reservationDTO), HttpStatus.OK);
     }
 
     @PostMapping("delete")

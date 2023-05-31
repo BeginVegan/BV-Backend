@@ -4,7 +4,7 @@
 
 <mapper namespace="com.beginvegan.mybatis.ReservationMapper">
 
-    <insert id="insertReservation" parameterType="ReservationDTO">
+    <insert id="insertReservation" parameterType="ReservationDTO" useGeneratedKeys="true" keyProperty="reservationNo">
         INSERT INTO Reservation (member_email,
                                  restaurant_no,
                                  reservation_time,
@@ -44,6 +44,23 @@
         WHERE reservation_no = #{reservationNo}
     </delete>
 
+    <insert id="insertReservationMenu" parameterType="List">
+        INSERT INTO Reservation_Menu (reservation_no, menu_no, reservation_menu_count)
+        Values
+        <foreach collection="list" item="reservationMenu" separator=",">
+            (
+                #{reservationMenu.reservationNo},
+                #{reservationMenu.menuNo},
+                #{reservationMenu.reservationMenuCount}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteReservationMenu" parameterType="int">
+        DELETE FROM Reservation_Menu
+        WHERE reservation_no = #{reservationNo}
+    </delete>
+
     <resultMap id="reservationResultMap" type="ReservationDTO">
         <id property="reservationNo"                      column="reservation_no"/>
         <result property="restaurantNo"                   column="restaurant_no"/>
@@ -58,7 +75,7 @@
 
         <!--예약 메뉴 리스트-->
         <collection property="reservationMenuList" javaType="List" ofType="ReservationMenuDTO">
-            <result property="reservationNo"                 column="reservation_no"/>
+            <result property="reservationNo"             column="reservation_no"/>
             <result property="menuNo"                    column="menu_no"/>
             <result property="restaurantNo"              column="restaurant_no"/>
             <result property="menuName"                  column="menu_name"/>

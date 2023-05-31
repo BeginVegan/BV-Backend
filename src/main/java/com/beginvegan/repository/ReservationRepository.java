@@ -1,6 +1,7 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.ReservationDTO;
+import com.beginvegan.dto.ReservationMenuDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -55,4 +56,11 @@ public interface ReservationRepository {
      * @return 삭제된 예약의 번호
      */
     public Integer deleteReservation(Integer ReservationNo) throws RemoveException;
+
+    /**
+     * 다음 생성될 예약 번호를 가져온다
+     * @return 다음 생성될 예약 번호
+     */
+    public Integer selectNextReservationNo();
+
 }
