@@ -77,11 +77,11 @@
             <version>5.0.1</version>
         </dependency>
 
-        <!-- Log4j2 : JDBC가 실행하는 SQL 문을 로깅한다. SQL구문을 log로 출력하여준다.(DriverSpy 클래스) -->
+        <!-- SQL 로깅 라이브러리 -->
         <dependency>
-            <groupId>org.bgee.log4jdbc-log4j2</groupId>
-            <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
-            <version>1.16</version>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.9.1</version>
         </dependency>
 
         <!-- LOMBOK : Getter, Setter, 생성자 등을 어노테이션으로 자동 생성을 도와준다. -->
