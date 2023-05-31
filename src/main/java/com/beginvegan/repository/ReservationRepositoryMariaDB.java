@@ -31,6 +31,7 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
         try {
             sqlSession = sqlSessionFactory.openSession();
             sqlSession.insert("com.beginvegan.mybatis.ReservationMapper.insertReservation", reservationInfo);
+            reservationInfo.setReservationNo(sqlSession.selectOne("com.beginvegan.mybatis.ReservationMapper.selectNextReservationNo"));
             return reservationInfo;
         } catch (Exception e) {
             throw new AddException(e.getMessage());

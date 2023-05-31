@@ -13,6 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -256,8 +257,8 @@ public class MemberRepositoryMariaDB implements MemberRepository {
     }
 
     // Deletes a specific point for testing
-    public void deletePointTEST(String memberEmail, Date date) throws RemoveException {
-        log.info("deletePointTEST 시작 - memberEmail : " + memberEmail + ", date : " + date);
+    public void deletePointTEST(String memberEmail, LocalDateTime dateTime) throws RemoveException {
+        log.info("deletePointTEST 시작 - memberEmail : " + memberEmail + ", dateTime : " + dateTime);
 
         SqlSession sqlSession = null;
 
@@ -265,7 +266,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             sqlSession = sqlSessionFactory.openSession();
             Map<String, Object> map = new HashMap<>();
             map.put("memberEmail", memberEmail);
-            map.put("date", date);
+            map.put("date", dateTime);
             sqlSession.delete("com.beginvegan.mybatis.MemberMapper.deletePointTEST", map);
 
         } catch (Exception e) {

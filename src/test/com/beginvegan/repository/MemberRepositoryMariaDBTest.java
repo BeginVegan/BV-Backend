@@ -7,10 +7,8 @@ import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.beginvegan.util.TimeUtil;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,18 +21,39 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MemberRepositoryMariaDBTest {
 
     @Autowired
     private MemberRepositoryMariaDB memberRepository;
+
+    private final String TEST_MEMBER_EMAIL = "example@email.com";
+    private final String TEST_MEMBER_NAME = "TestMan";
+    private  final int TEST_MEMBER_POINT = 100;
+    @BeforeAll
+    void setTestData() throws AddException {
+        // Create a test MemberDTO object
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMemberEmail(TEST_MEMBER_EMAIL);
+        memberDTO.setMemberName(TEST_MEMBER_NAME);
+        memberDTO.setMemberPoint(TEST_MEMBER_POINT);
+
+        memberRepository.insertMember(memberDTO);
+    }
+
+    @AfterAll
+    void clearTestData() throws RemoveException {
+        memberRepository.deleteMember(TEST_MEMBER_EMAIL);
+    }
+
 
     @DisplayName("insertMember 메소드 테스트")
     @Test
     void insertMember_shouldAddMemberSuccessfully() {
         // Create a test MemberDTO object
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberEmail("example@email.com");
-        memberDTO.setMemberName("John Doe");
+        memberDTO.setMemberEmail("insertTest@email.com");
+        memberDTO.setMemberName("insertedMan");
         memberDTO.setMemberPoint(100);
 
         try {
@@ -58,32 +77,29 @@ class MemberRepositoryMariaDBTest {
     @DisplayName("updateMember 메소드 테스트")
     @Test
     void updateMember_shouldUpdateMemberSuccessfully() {
-        // Create a test MemberDTO object
+        // Create a update test MemberDTO info object
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberEmail("test@example.com");
-        memberDTO.setMemberName("John Doe");
-        memberDTO.setMemberPoint(100);
+        memberDTO.setMemberEmail(TEST_MEMBER_EMAIL);
+        memberDTO.setMemberName("UpdatedMan");
+        memberDTO.setMemberPoint(200);
 
         try {
-            // Insert the member into the database
-            memberRepository.insertMember(memberDTO);
-
             // Update the member's information
-            memberDTO.setMemberName("Jane Smith");
-            memberDTO.setMemberPoint(200);
             memberRepository.updateMember(memberDTO);
 
             // Retrieve the updated member from the database
-            MemberDTO updatedMember = memberRepository.selectMemberByMemberEmail(memberDTO.getMemberEmail());
+            MemberDTO updatedMember = memberRepository.selectMemberByMemberEmail(TEST_MEMBER_EMAIL);
 
             // Assert that the member's information has been successfully updated
             Assertions.assertEquals(memberDTO.getMemberEmail(), updatedMember.getMemberEmail());
             Assertions.assertEquals(memberDTO.getMemberName(), updatedMember.getMemberName());
             Assertions.assertEquals(memberDTO.getMemberPoint(), updatedMember.getMemberPoint());
 
-            // Clean up by deleting the test member
-            memberRepository.deleteMember(memberDTO.getMemberEmail());
-        } catch (AddException | FindException | ModifyException | RemoveException e) {
+            // Rollback the member's information
+            memberDTO.setMemberName(TEST_MEMBER_NAME);
+            memberDTO.setMemberPoint(TEST_MEMBER_POINT);
+            memberRepository.updateMember(memberDTO);
+        } catch (FindException | ModifyException e) {
             e.printStackTrace();
             Assertions.fail("Exception occurred: " + e.getMessage());
         }
@@ -94,8 +110,8 @@ class MemberRepositoryMariaDBTest {
     void deleteMember_shouldRemoveMemberSuccessfully() {
         // Create a test MemberDTO object
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberEmail("test@example.com");
-        memberDTO.setMemberName("John Doe");
+        memberDTO.setMemberEmail("deleteTEST@example.com");
+        memberDTO.setMemberName("deleteMan");
         memberDTO.setMemberPoint(100);
 
         try {
@@ -123,21 +139,26 @@ class MemberRepositoryMariaDBTest {
     @DisplayName("selectMemberByMemberEmail 메소드 테스트")
     @Test
     void selectMemberByMemberEmail_shouldReturnCorrectMember() {
-        // Test code for selectMemberByMemberEmail() - similar to insertMember() test
+        try {
+            // Assert that the member is added successfully by retrieving it and comparing the values
+            MemberDTO retrievedMember = memberRepository.selectMemberByMemberEmail(TEST_MEMBER_EMAIL);
+            Assertions.assertEquals(TEST_MEMBER_EMAIL, retrievedMember.getMemberEmail());
+            Assertions.assertEquals(TEST_MEMBER_NAME, retrievedMember.getMemberName());
+            Assertions.assertEquals(TEST_MEMBER_POINT, retrievedMember.getMemberPoint());
+        } catch (FindException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
     }
 
     @DisplayName("insertPoint 메소드 테스트")
     @Test
-    void insertPoint_shouldAddPointSuccessfully() throws ParseException {
-        // Set TIMESTAMP : 현재 시간에서 밀리초를 제외한 후 TIMESTAMP를 생성한다.
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Timestamp currentTime = new Timestamp(sdf.parse(sdf.format(new java.util.Date())).getTime());
-
+    void insertPoint_shouldAddPointSuccessfully() throws Exception {
         // Create a test PointDTO object
         PointDTO pointDTO = new PointDTO();
-        pointDTO.setMemberEmail("chanminTEST@email.com");
+        pointDTO.setMemberEmail(TEST_MEMBER_EMAIL);
         pointDTO.setPointDiv("Purchase");
-        pointDTO.setPointTime(currentTime);
+        pointDTO.setPointTime(TimeUtil.toDateTime(new Date()));
         pointDTO.setPointChange(50);
         pointDTO.setPointResult(150);
 
@@ -162,30 +183,26 @@ class MemberRepositoryMariaDBTest {
 
     @DisplayName("selectAllPointsByMemberEmail 메소드 테스트")
     @Test
-    void selectAllPointsByMemberEmail_shouldReturnCorrectPointList() throws ParseException {
-        // Set TIMESTAMP : 현재 시간에서 밀리초를 제외한 후 TIMESTAMP를 생성한다.
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Timestamp currentTime = new Timestamp(sdf.parse(sdf.format(new java.util.Date())).getTime());
-
+    void selectAllPointsByMemberEmail_shouldReturnCorrectPointList() throws Exception {
         // Create test PointDTO objects
         PointDTO pointDTO1 = new PointDTO();
-        pointDTO1.setMemberEmail("chanminTEST@email.com");
+        pointDTO1.setMemberEmail(TEST_MEMBER_EMAIL);
         pointDTO1.setPointDiv("Purchase");
-        pointDTO1.setPointTime(currentTime);
+        pointDTO1.setPointTime(TimeUtil.toDateTime(new Date()));
         pointDTO1.setPointChange(50);
         pointDTO1.setPointResult(150);
 
         PointDTO pointDTO2 = new PointDTO();
-        pointDTO2.setMemberEmail("chanminTEST@email.com");
+        pointDTO2.setMemberEmail(TEST_MEMBER_EMAIL);
         pointDTO2.setPointDiv("Purchase");
-        pointDTO2.setPointTime(currentTime);
+        pointDTO2.setPointTime(TimeUtil.toDateTime(new Date()));
         pointDTO2.setPointChange(50);
         pointDTO2.setPointResult(200);
 
         PointDTO pointDTO3 = new PointDTO();
-        pointDTO3.setMemberEmail("chanminTEST@email.com");
+        pointDTO3.setMemberEmail(TEST_MEMBER_EMAIL);
         pointDTO3.setPointDiv("Purchase");
-        pointDTO3.setPointTime(currentTime);
+        pointDTO3.setPointTime(TimeUtil.toDateTime(new Date()));
         pointDTO3.setPointChange(150);
         pointDTO3.setPointResult(250);
         // Set other properties of the PointDTOs
@@ -223,7 +240,7 @@ class MemberRepositoryMariaDBTest {
         // Create a test BookmarkDTO object
         BookmarkDTO bookmarkDTO = new BookmarkDTO();
         bookmarkDTO.setRestaurantNo(1);
-        bookmarkDTO.setMemberEmail("chanminTEST@email.com");
+        bookmarkDTO.setMemberEmail(TEST_MEMBER_EMAIL);
         // Set other properties of the BookmarkDTO
 
         try {
@@ -251,9 +268,7 @@ class MemberRepositoryMariaDBTest {
         // Create a test BookmarkDTO object
         BookmarkDTO bookmarkDTO = new BookmarkDTO();
         bookmarkDTO.setRestaurantNo(1);
-        bookmarkDTO.setMemberEmail("chanminTEST@email.com");
-        // Set other properties of the BookmarkDTO
-
+        bookmarkDTO.setMemberEmail(TEST_MEMBER_EMAIL);
         try {
             // Insert the bookmark into the database
             memberRepository.insertBookmark(bookmarkDTO.getRestaurantNo(), bookmarkDTO.getMemberEmail());
@@ -278,17 +293,17 @@ class MemberRepositoryMariaDBTest {
         // Create test BookmarkDTO objects
         BookmarkDTO bookmarkDTO1 = new BookmarkDTO();
         bookmarkDTO1.setRestaurantNo(1);
-        bookmarkDTO1.setMemberEmail("chanminTEST@email.com");
+        bookmarkDTO1.setMemberEmail(TEST_MEMBER_EMAIL);
         // Set other properties of bookmarkDTO1
 
         BookmarkDTO bookmarkDTO2 = new BookmarkDTO();
         bookmarkDTO2.setRestaurantNo(2);
-        bookmarkDTO2.setMemberEmail("chanminTEST@email.com");
+        bookmarkDTO2.setMemberEmail(TEST_MEMBER_EMAIL);
         // Set other properties of bookmarkDTO2
 
         BookmarkDTO bookmarkDTO3 = new BookmarkDTO();
         bookmarkDTO3.setRestaurantNo(3);
-        bookmarkDTO3.setMemberEmail("chanminTEST@email.com");
+        bookmarkDTO3.setMemberEmail(TEST_MEMBER_EMAIL);
         // Set other properties of bookmarkDTO3
 
         try {
@@ -298,7 +313,7 @@ class MemberRepositoryMariaDBTest {
             memberRepository.insertBookmark(bookmarkDTO3.getRestaurantNo(), bookmarkDTO3.getMemberEmail());
 
             // Retrieve all bookmarks for the member
-            List<BookmarkDTO> bookmarkList = memberRepository.selectAllBookmarkByMemberEmail(bookmarkDTO1.getMemberEmail());
+            List<BookmarkDTO> bookmarkList = memberRepository.selectAllBookmarkByMemberEmail(TEST_MEMBER_EMAIL);
 
             // Assert that the retrieved bookmark list is not null and contains the inserted bookmarks
             Assertions.assertNotNull(bookmarkList);

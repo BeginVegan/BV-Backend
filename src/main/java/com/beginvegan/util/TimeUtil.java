@@ -1,8 +1,10 @@
 package com.beginvegan.util;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class TimeUtil {
     // 디폴트 타임존과 시간을 기준으로 Clock 설정
@@ -35,29 +37,62 @@ public class TimeUtil {
         clock = Clock.systemDefaultZone();
     }
 
-    // 스트링을 데이트 타임으로 반환
-    public static LocalDateTime toDateTime(String sDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(sDateTime, formatter);
-        return dateTime;
-    }
-
-    // 타임스탬프를 데이트 타임으로 반환
-    public static LocalDateTime toDateTime(Timestamp timestamp) {
-        LocalDateTime dateTime = timestamp.toLocalDateTime();
-        return dateTime;
-    }
-
-    // 스트링을 타임으로 반환
+    // 스트링을 로컬 타임으로 반환
     public static LocalTime toTime(String sTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime time = LocalTime.parse(sTime, formatter);
         return time;
     }
 
-    // 타임스탬프를 타임으로 반환
+    // 스트링을 로컬 데이트 타임으로 반환
+    public static LocalDateTime toDateTime(String sDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(sDateTime, formatter);
+        return dateTime;
+    }
+
+    // 스트링을 타임 스탬프로 변환
+    public static Timestamp toTimestamp(String stime) throws ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return new Timestamp(sdf.parse(sdf.format(stime)).getTime());
+    }
+
+    // 타임스탬프를 로컬 타임으로 반환
     public static LocalTime toTime(Timestamp timestamp) {
         LocalTime time = timestamp.toLocalDateTime().toLocalTime();
         return time;
+    }
+
+    // 타임스탬프를 로컬 데이트 타임으로 반환
+    public static LocalDateTime toDateTime(Timestamp timestamp) {
+        LocalDateTime dateTime = timestamp.toLocalDateTime();
+        return dateTime;
+    }
+
+    // java.util.Date를 타임스탬프로 변환
+    public static Timestamp toTimestamp(Date date) throws ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return new Timestamp(sdf.parse(sdf.format(date)).getTime());
+    }
+
+    // java.util.Date를 로컬 타임으로 변환
+    public static LocalTime toTime(Date date) throws ParseException {
+        return toTime(toTimestamp(date));
+    }
+
+    // java.util.Date를 로컬 데이트 타임으로 변환
+    public static LocalDateTime toDateTime(Date date) throws ParseException {
+        return toDateTime(toTimestamp(date));
+    }
+
+    // 로컬 타임을 타임스탬프로 변환
+    public static Timestamp toTimestamp(LocalTime localTime) {
+        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), localTime);
+        return Timestamp.valueOf(localDateTime);
+    }
+
+    // 로컬 데이터 타임을 타임스탬프로 변환
+    public static Timestamp toTimestamp(LocalDateTime localDateTime) {
+        return Timestamp.valueOf(localDateTime);
     }
 }
