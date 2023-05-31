@@ -1,6 +1,7 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.ReservationDTO;
+import com.beginvegan.dto.ReservationMenuDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -152,4 +153,23 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
             log.info("deleteReservation 종료");
         }
     }
+
+    @Override
+    public Integer selectNextReservationNo() {
+        log.info("selectNextReservationNo 시작");
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.selectOne("com.beginvegan.mybatis.ReservationMapper.selectNextReservationNo");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectNextReservationNo 종료");
+        }
+    }
+
 }
