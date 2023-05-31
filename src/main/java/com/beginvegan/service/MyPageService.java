@@ -31,6 +31,10 @@ public class MyPageService {
         return reviewRepository.selectAllReviewByRestaurantId(id);
     }
 
+    public ReviewDTO findReviewByReviewNo(int reviewNo) throws FindException {
+        return reviewRepository.selectReviewByReviewNo(reviewNo);
+    }
+
     public void addReview(ReviewDTO reviewInfo) throws AddException {
         reviewRepository.insertReview(reviewInfo);
     }

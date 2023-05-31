@@ -15,6 +15,12 @@
         WHERE restaurant_no = #{id};
     </select>
 
+    <select id="selectReviewByReviewNo" resultType="ReviewDTO" parameterType="Int">
+        SELECT *
+        FROM Review
+        WHERE review_no = #{reviewNo};
+    </select>
+
     <insert id="insertReview" parameterType="ReviewDTO" useGeneratedKeys="true" keyProperty="reviewNo">
         INSERT INTO Review (reservation_no, restaurant_no, member_email, review_star, review_content,
                             review_time, review_photo_dir)

@@ -43,6 +43,17 @@ public class MyPageController {
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
 
+    @GetMapping("review/{reviewNo}")
+    public ResponseEntity<?> reviewList(@PathVariable int reviewNo) throws FindException {
+        log.info("GET reviewInfo By reviewNo  시작 ");
+
+        ReviewDTO reviewList = myPageService.findReviewByReviewNo(reviewNo);
+
+        log.info("GET reviewInfo By reviewNo 종료 ");
+        return new ResponseEntity<>(reviewList, HttpStatus.OK);
+    }
+
+
     @PostMapping("review")
     public ResponseEntity<?> reviewAdd(@RequestBody ReviewDTO reviewInfo) throws AddException {
         log.info("reviewAdd 시작: " + reviewInfo.getReviewNo() + "/" + reviewInfo.getReservationNo() + "/" + reviewInfo.getRestaurantNo() + "/" + reviewInfo.getMemberEmail() + "/" + reviewInfo.getReviewStar() + "/" + reviewInfo.getReviewContent() + "/" + reviewInfo.getReviewTime() + "/" + reviewInfo.getReviewPhotoDir());
