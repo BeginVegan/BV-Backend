@@ -67,6 +67,28 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
     }
 
     @Override
+    public ReviewDTO selectReviewByReviewNo(int reviewNo) throws FindException {
+        log.info("selectReviewByReviewNo 시작 - reviewNo : " + reviewNo);
+
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            ReviewDTO retrievedReview = session.selectOne("com.beginvegan.mybatis.ReviewMapper.selectReviewByReviewNo", reviewNo);
+            return retrievedReview;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException("e.getMessage");
+
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectAllReviewByRestaurantId 종료");
+        }
+    }
+
+    @Override
     public void insertReview(ReviewDTO reviewInfo) throws AddException {
         log.info("insertReview 시작 - reviewInfo : " + reviewInfo.toString());
 

@@ -26,6 +26,14 @@ public interface ReviewRepository {
      */
     public List<ReviewDTO> selectAllReviewByRestaurantId(int id) throws FindException;
 
+    /**
+     * ReviewNo를 이용해 리뷰를 조회한다
+     *
+     * @param reviewNo
+     * @return 하나의 리뷰
+     * @throws FindException Review테이블에 데이터가 없을때 발생
+     */
+    public ReviewDTO selectReviewByReviewNo(int reviewNo) throws FindException;
 
     /**
      * 리뷰를 등록한다
