@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Slf4j
 @Service("memberService")
@@ -28,7 +29,7 @@ public class MemberService {
      * @param accessToken API accessToken
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
-    public void loginKakao(HttpSession session, String accessToken) throws Exception {
+    public void loginKakao(HttpSession session, String accessToken) throws AddException, FindException, IOException {
         log.info("login 시작 - Kakao API");
 
         // Kakao API 요청 : 멤버 정보를 가져온다.
@@ -58,7 +59,7 @@ public class MemberService {
      * @param googleCredential googleCredential
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
-    public void loginGoogle(HttpSession session, String googleCredential) throws Exception {
+    public void loginGoogle(HttpSession session, String googleCredential) throws AddException, FindException, IOException {
         log.info("login 시작 - Google API");
 
         // Kakao API 요청 : 멤버 정보를 가져온다.

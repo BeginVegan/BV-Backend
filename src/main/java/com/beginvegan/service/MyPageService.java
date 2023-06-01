@@ -1,6 +1,7 @@
 package com.beginvegan.service;
 
 import com.beginvegan.dto.BookmarkDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.dto.ReviewDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
@@ -57,5 +58,15 @@ public class MyPageService {
 
     public List<BookmarkDTO> findAllBookmarkByMemberEmail(String memberEmail) throws FindException {
         return memberRepository.selectAllBookmarkByMemberEmail(memberEmail);
+    }
+
+    /**
+     * 포인트 내역을 리스트로 반환한다.
+     * @param memberEmail 조회할 회원의 이메일
+     * @return 포인트 내역 목록
+     * @throws FindException 회원 Email로 DB 조회 실패시 발생
+     */
+    public List<PointDTO> findAllPointByMemberEmail(String memberEmail) throws FindException {
+        return memberRepository.selectAllPointsByMemberEmail(memberEmail);
     }
 }
