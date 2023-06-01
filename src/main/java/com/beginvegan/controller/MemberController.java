@@ -71,8 +71,8 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<?> pointList(HttpSession session) throws FindException {
+    @GetMapping("point-histroy")
+    public ResponseEntity<?> getPointHistory(HttpSession session) throws FindException {
        List<PointDTO> pointList = myPageService.findAllPointByMemberEmail((String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(pointList, HttpStatus.OK);
     }
