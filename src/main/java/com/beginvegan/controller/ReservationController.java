@@ -51,16 +51,16 @@ public class ReservationController {
 
     @PostMapping("add")
     public ResponseEntity<?> reservationAdd(@RequestBody ReservationDTO reservationDTO) throws AddException {
-        return new ResponseEntity<ReservationDTO>(reservationService.addReservation(reservationDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationService.addReservation(reservationDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("modify")
     public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException, JsonProcessingException {
-        return new ResponseEntity<ReservationDTO>(reservationService.modifyReservation(reservationDTO), HttpStatus.OK);
+        return new ResponseEntity<>(reservationService.modifyReservation(reservationDTO), HttpStatus.OK);
     }
 
     @PostMapping("delete")
     public ResponseEntity<?> reservationRemove(@RequestBody Map<String, String> payload) throws RemoveException {
-        return new ResponseEntity<Integer>(reservationService.deleteReservation(Integer.parseInt(payload.get("reservation_no"))), HttpStatus.OK);
+        return new ResponseEntity<>(reservationService.deleteReservation(Integer.parseInt(payload.get("reservation_no"))), HttpStatus.OK);
     }
 }
