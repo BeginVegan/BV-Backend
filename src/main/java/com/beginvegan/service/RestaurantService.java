@@ -66,13 +66,16 @@ public class RestaurantService {
     }
 
     /**
-     * 예약, 평점, 리뷰 순위가 높은 식당을 반환한다.
-     * @return 예약순 10개, 평점순 10개, 리뷰순 10개를 합한 30개의 식당 데이터
+     * 평점, 리뷰, 예약 순위가 높은 식당을 반환한다.
+     * @return 식당의 list가 들어있는 Map
      * @throws FindException 조회에 실패한 경우 발생
-     * @description [0]~[9]:예약 베스트, [10]~[19]:평점 베스트, [20]~[29]:리뷰 베스트
      */
-    public List<RestaurantDTO> findBestRestaurant() throws FindException {
-        return restaurantRepository.selectBestRestaurant();
+    public Map<String, Object> findBestRestaurant() throws FindException {
+        Map<String, Object> bestMap = new HashMap<>();
+        bestMap.put("star", restaurantRepository.selectBestStarRestaurant());
+        bestMap.put("review", restaurantRepository.selectBestReviewRestaurant());
+        bestMap.put("reservation", restaurantRepository.selectBestReservationRestaurant());
+        return bestMap;
     }
 
     /**

@@ -2,10 +2,7 @@ package com.beginvegan.repository;
 
 import com.beginvegan.dto.MenuDTO;
 import com.beginvegan.dto.RestaurantDTO;
-import com.beginvegan.exception.AddException;
-import com.beginvegan.exception.FindException;
-import com.beginvegan.exception.ModifyException;
-import com.beginvegan.exception.RemoveException;
+import com.beginvegan.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -105,11 +102,6 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<MenuDTO> menuList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllMenuByRestaurantNo", restaurantNo);
-
-            for (MenuDTO menu : menuList) {
-                System.out.println(menu);
-            }
-
             return menuList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,12 +165,99 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
     }
 
     @Override
-    public List<RestaurantDTO> selectBestRestaurant() throws FindException {
+    public void createBestStarView() throws CreateException {
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.createBestStarView");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CreateException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
+
+    @Override
+    public void createBestReviewView() throws CreateException {
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.createBestReviewView");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CreateException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
+
+    @Override
+    public void createBestReservationView() throws CreateException {
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.createBestReservationView");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CreateException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
+
+    @Override
+    public List<RestaurantDTO> selectBestStarRestaurant() throws FindException {
         SqlSession session = null;
 
         try {
             session = sqlSessionFactory.openSession();
-            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestRestaurant");
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestStarRestaurant");
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public List<RestaurantDTO> selectBestReviewRestaurant() throws FindException {
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestReviewRestaurant");
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public List<RestaurantDTO> selectBestReservationRestaurant() throws FindException {
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestReservationRestaurant");
             return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();

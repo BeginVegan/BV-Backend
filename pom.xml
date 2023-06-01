@@ -90,6 +90,12 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- Quartz Scheduler : 일정 시간마다 특정 작업을 자동으로 수행한다. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
