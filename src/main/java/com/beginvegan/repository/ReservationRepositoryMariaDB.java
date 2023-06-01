@@ -31,8 +31,16 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
 
         try {
             sqlSession = sqlSessionFactory.openSession();
+
+            int nextReservationNo = sqlSession.selectOne("com.beginvegan.mybatis.ReservationMapper.selectNextReservationNo");
+
             sqlSession.insert("com.beginvegan.mybatis.ReservationMapper.insertReservation", reservationInfo);
-            reservationInfo.setReservationNo(sqlSession.selectOne("com.beginvegan.mybatis.ReservationMapper.selectNextReservationNo"));
+
+            for(ReservationMenuDTO item : reservationInfo.getReservationMenuList()) {
+                item.setReservationNo(nextReservationNo);
+            }
+
+            sqlSession.insert("com.beginvegan.mybatis.ReservationMapper.insertReservationMenu", reservationInfo.getReservationMenuList());
             return reservationInfo;
         } catch (Exception e) {
             throw new AddException(e.getMessage());
@@ -54,6 +62,9 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
         try {
             sqlSession = sqlSessionFactory.openSession();
             sqlSession.update("com.beginvegan.mybatis.ReservationMapper.updateReservation", reservationInfo);
+            sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", reservationInfo.getReservationNo());
+            sqlSession.insert("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", reservationInfo.getReservationNo());
+
             return reservationInfo;
         } catch (Exception e) {
             throw new ModifyException(e.getMessage());
@@ -140,8 +151,9 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
 
         try {
             sqlSession = sqlSessionFactory.openSession();
+            sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", ReservationNo);
             sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservation", ReservationNo);
-            return ReservationNo;
+           return ReservationNo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoveException(e.getMessage());
