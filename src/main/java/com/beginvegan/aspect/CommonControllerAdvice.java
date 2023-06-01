@@ -1,8 +1,4 @@
-package com.beginvegan.advice;
-
-/**
- * Controller의 예외를 처리 담당
- */
+package com.beginvegan.aspect;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 public class CommonControllerAdvice {
@@ -29,19 +24,5 @@ public class CommonControllerAdvice {
         resHeaders.add("Access-Control-Allow-Origin", "*");
         resHeaders.add("Access-Control-Allow-Credentials", "true");
         return new ResponseEntity<>(e.getMessage(), resHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    /**
-     * 예외 처리 Advice : 파일 업로드 예외
-     * 업로드 파일의 사이즈에 따른 예외 발생 처리
-     */
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseBody
-    public ResponseEntity<?> exceptMaxUploadSize(MaxUploadSizeExceededException e){
-        HttpHeaders resHeaders = new HttpHeaders();
-        resHeaders.add("Content-Type", "application/json;charset=UTF-8");
-        resHeaders.add("Access-Control-Allow-Origin", "*");
-        resHeaders.add("Access-Control-Allow-Credentials", "true");
-        return new ResponseEntity<>("파일 IO에 실패했습니다.", resHeaders, HttpStatus.BAD_REQUEST);
     }
 }
