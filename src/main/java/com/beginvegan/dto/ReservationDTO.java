@@ -1,8 +1,10 @@
 package com.beginvegan.dto;
 
-import com.beginvegan.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
