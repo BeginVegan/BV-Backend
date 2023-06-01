@@ -25,9 +25,9 @@ public class MemberController {
     private MemberService memberService;
 
     /**
-     * 카카오 로그인 후 MemberDB의 해당 유저의 AcessToken을 Session에 저장
-     * @param param
-     * @param session
+     * 프론트의 로그인 요청 처리(카카오) MemberDB 확인 후 해당 유저의 email 정보 Session에 저장
+     * @param param AccessToken 내용을 포함하는 Jason을 Map으로 받는다.
+     * @param session 로그인 요청 유저의 session 정보
      * @return
      * @throws AddException
      * @throws FindException
@@ -73,5 +73,11 @@ public class MemberController {
     public ResponseEntity<?> memberDetails(HttpSession session) throws FindException {
         memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //세션 확인용 TEST 메소드입니다.
+    @GetMapping("session")
+    public ResponseEntity<?> getSessionInfoTEST(HttpSession session) {
+        return new ResponseEntity<>(session.getId(), HttpStatus.OK);
     }
 }
