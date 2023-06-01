@@ -68,14 +68,17 @@
         WHERE restaurant_no = #{restaurantNo};
     </delete>
 
-    <select id="selectBestRestaurant" resultType="RestaurantDTO">
-        SELECT * FROM Best_Restaurant_View;
+    <select id="selectBestStarRestaurant" resultType="RestaurantDTO">
+        SELECT * FROM Best_Star_View;
     </select>
 
-<!--    <select id="selectAllRestaurantByKeyword(String)" parameterType="" resultType="RestaurantDTO">-->
-<!--        SELECT * FROM Restaurant-->
-<!--        WHERE -->
-<!--    </select>-->
+    <select id="selectBestReviewRestaurant" resultType="RestaurantDTO">
+        SELECT * FROM Best_Review_View;
+    </select>
+
+    <select id="selectBestReservationRestaurant" resultType="RestaurantDTO">
+        SELECT * FROM Best_Reservation_View;
+    </select>
 
     <!-- 아래는 View 생성 쿼리문입니다. -->
     <select id="createBestStarView">

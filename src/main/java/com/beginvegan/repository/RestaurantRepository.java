@@ -12,7 +12,7 @@ public interface RestaurantRepository {
      * @return 조회한 식당 리스트
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    public List<RestaurantDTO> selectAllRestaurant() throws FindException;
+    List<RestaurantDTO> selectAllRestaurant() throws FindException;
 
     /**
      * restaurantNo와 일치하는 식당의 정보를 반환한다.
@@ -20,7 +20,7 @@ public interface RestaurantRepository {
      * @return 식당 정보
      * @throws FindException 식당 정보 조회에 실패할 경우 발생
      */
-    public RestaurantDTO selectRestaurantByRestaurantNo(int restaurantNo) throws FindException;
+    RestaurantDTO selectRestaurantByRestaurantNo(int restaurantNo) throws FindException;
 
     /**
      * DB에 새로운 식당을 추가한다.
@@ -28,7 +28,7 @@ public interface RestaurantRepository {
      * @return insert한 식당의 restaurant_no
      * @throws AddException 데이터 추가에 실패할 경우 발생
      */
-    public int insertRestaurant(RestaurantDTO restaurantInfo) throws AddException;
+    int insertRestaurant(RestaurantDTO restaurantInfo) throws AddException;
 
     /**
      * DB에 새로운 메뉴를 추가한다.
@@ -36,7 +36,7 @@ public interface RestaurantRepository {
      * @param menuList 추가할 메뉴들
      * @throws AddException 데이터 추가에 실패할 경우 발생
      */
-    public void insertRestaurantMenu(int restaurantNo, List<MenuDTO> menuList) throws AddException;
+    void insertRestaurantMenu(int restaurantNo, List<MenuDTO> menuList) throws AddException;
 
     /**
      * 특정 식당의 메뉴 전체를 조회한다.
@@ -44,35 +44,28 @@ public interface RestaurantRepository {
      * @return 메뉴 리스트
      * @throws FindException 데이터 조회에 실패할 경우 발생
      */
-    public List<MenuDTO> selectAllMenuByRestaurantNo(int restaurantNo) throws FindException;
+    List<MenuDTO> selectAllMenuByRestaurantNo(int restaurantNo) throws FindException;
 
     /**
      * 식당 하나를 삭제한다.
      * @param restaurantNo 삭제할 식당 번호
      * @throws RemoveException 데이터 삭제에 실패할 경우 발생
      */
-    public void deleteRestaurant(int restaurantNo) throws RemoveException;
+    void deleteRestaurant(int restaurantNo) throws RemoveException;
 
     /**
      * 식당 정보를 변경한다.
      * @param restaurantInfo 변경할 식당 정보
      * @throws ModifyException 데이터 변경에 실패할 경우 발생
      */
-    public void updateRestaurant(RestaurantDTO restaurantInfo) throws ModifyException;
+    void updateRestaurant(RestaurantDTO restaurantInfo) throws ModifyException;
 
     /**
      * 특정 식당의 메뉴를 모두 삭제한다.
      * @param restaurantNo 메뉴를 삭제할 식당 번호
      * @throws RemoveException 데이터 삭제에 실패할 경우 발생
      */
-    public void deleteRestaurantMenu(int restaurantNo) throws RemoveException;
-
-    /**
-     * 예약순, 평점순, 리뷰순 정렬시 가장 높은 식당을 반환한다.
-     * @return 예약순 10개, 평점순 10개, 리뷰순 10개를 합한 30개의 식당 데이터
-     * @throws FindException 데이터 조회에 실패한 경우 발생
-     */
-    public List<RestaurantDTO> selectBestRestaurant() throws FindException;  //TODO: 삭제하기!!!
+    void deleteRestaurantMenu(int restaurantNo) throws RemoveException;
 
     /**
      * 평점이 높은 식당 10곳에 대한 뷰를 만든다.
@@ -94,4 +87,25 @@ public interface RestaurantRepository {
      * @description Quartz Scheduler를 사용하여 특정 시각에 자동으로 실행되도록 한다.
      */
     void createBestReservationView() throws CreateException;
+
+    /**
+     * 평점이 높은 식당에 대한 뷰를 조회한다.
+     * @return 평점이 높은 식당 10개
+     * @throws FindException 조회에 실패할 경우 발생
+     */
+    List<RestaurantDTO> selectBestStarRestaurant() throws FindException;
+
+    /**
+     * 리뷰가 많은 식당에 대한 뷰를 조회한다.
+     * @return 리뷰가 많은 식당 10개
+     * @throws FindException 조회에 실패할 경우 발생
+     */
+    List<RestaurantDTO> selectBestReviewRestaurant() throws FindException;
+
+    /**
+     * 예약이 많은 식당에 대한 뷰를 조회한다.
+     * @return 예약이 많은 식당 10개
+     * @throws FindException 조회에 실패할 경우 발생
+     */
+    List<RestaurantDTO> selectBestReservationRestaurant() throws FindException;
 }
