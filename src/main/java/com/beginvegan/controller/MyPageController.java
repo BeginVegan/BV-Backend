@@ -1,6 +1,7 @@
 package com.beginvegan.controller;
 
 import com.beginvegan.dto.BookmarkDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.dto.ReviewDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
@@ -110,6 +111,10 @@ public class MyPageController {
         log.info("GET reviewList By userEmail 종료 ");
         return new ResponseEntity<>(bookmarkList, HttpStatus.OK);
     }
-}
 
-//session.getAttribute("memberEmail")
+    @GetMapping("point-histroy")
+    public ResponseEntity<?> getPointHistory(HttpSession session) throws FindException {
+        List<PointDTO> pointList = myPageService.findAllPointByMemberEmail((String) session.getAttribute("memberEmail"));
+        return new ResponseEntity<>(pointList, HttpStatus.OK);
+    }
+}

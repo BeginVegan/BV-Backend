@@ -1,13 +1,11 @@
 package com.beginvegan.controller;
 
 import com.beginvegan.dto.MemberDTO;
-import com.beginvegan.dto.PointDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.MemberService;
-import com.beginvegan.service.MyPageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,8 +24,15 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @Autowired
-    private MyPageService myPageService;
+    /**
+     * 카카오 로그인 후 MemberDB의 해당 유저의 AcessToken을 Session에 저장
+     * @param param
+     * @param session
+     * @return
+     * @throws AddException
+     * @throws FindException
+     * @throws IOException
+     */
     @PostMapping("login/kakao")
     public ResponseEntity<?> loginKakao(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
         memberService.loginKakao(session, (String) param.get("accessToken"));
@@ -69,11 +73,5 @@ public class MemberController {
     public ResponseEntity<?> memberDetails(HttpSession session) throws FindException {
         memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("point-histroy")
-    public ResponseEntity<?> getPointHistory(HttpSession session) throws FindException {
-       List<PointDTO> pointList = myPageService.findAllPointByMemberEmail((String) session.getAttribute("memberEmail"));
-        return new ResponseEntity<>(pointList, HttpStatus.OK);
     }
 }
