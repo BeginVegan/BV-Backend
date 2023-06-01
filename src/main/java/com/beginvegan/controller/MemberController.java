@@ -75,9 +75,4 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //세션 확인용 TEST 메소드입니다.
-    @GetMapping("session")
-    public ResponseEntity<?> getSessionInfoTEST(HttpSession session) {
-        return new ResponseEntity<>(session.getId(), HttpStatus.OK);
-    }
 }
