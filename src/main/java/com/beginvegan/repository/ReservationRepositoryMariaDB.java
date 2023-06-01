@@ -63,7 +63,12 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
             sqlSession = sqlSessionFactory.openSession();
             sqlSession.update("com.beginvegan.mybatis.ReservationMapper.updateReservation", reservationInfo);
             sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", reservationInfo.getReservationNo());
-            sqlSession.insert("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", reservationInfo.getReservationNo());
+
+            for(ReservationMenuDTO item : reservationInfo.getReservationMenuList()) {
+                item.setReservationNo(reservationInfo.getReservationNo());
+            }
+
+            sqlSession.insert("com.beginvegan.mybatis.ReservationMapper.insertReservationMenu", reservationInfo.getReservationMenuList());
 
             return reservationInfo;
         } catch (Exception e) {
