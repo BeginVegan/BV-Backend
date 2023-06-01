@@ -2,10 +2,7 @@ package com.beginvegan.repository;
 
 import com.beginvegan.dto.MenuDTO;
 import com.beginvegan.dto.RestaurantDTO;
-import com.beginvegan.exception.AddException;
-import com.beginvegan.exception.FindException;
-import com.beginvegan.exception.ModifyException;
-import com.beginvegan.exception.RemoveException;
+import com.beginvegan.exception.*;
 
 import java.util.List;
 
@@ -75,5 +72,26 @@ public interface RestaurantRepository {
      * @return 예약순 10개, 평점순 10개, 리뷰순 10개를 합한 30개의 식당 데이터
      * @throws FindException 데이터 조회에 실패한 경우 발생
      */
-    public List<RestaurantDTO> selectBestRestaurant() throws FindException;
+    public List<RestaurantDTO> selectBestRestaurant() throws FindException;  //TODO: 삭제하기!!!
+
+    /**
+     * 평점이 높은 식당 10곳에 대한 뷰를 만든다.
+     * @throws CreateException 뷰 생성에 실패할 경우 발생
+     * @description Quartz Scheduler를 사용하여 특정 시각에 자동으로 실행되도록 한다.
+     */
+    void createBestStarView() throws CreateException;
+
+    /**
+     * 리뷰가 많은 식당 10곳에 대한 뷰를 만든다.
+     * @throws CreateException 뷰 생성에 실패할 경우 발생
+     * @description Quartz Scheduler를 사용하여 특정 시각에 자동으로 실행되도록 한다.
+     */
+    void createBestReviewView() throws CreateException;
+
+    /**
+     * 예약이 많은 식당 10곳에 대한 뷰를 만든다.
+     * @throws CreateException 뷰 생성에 실패할 경우 발생
+     * @description Quartz Scheduler를 사용하여 특정 시각에 자동으로 실행되도록 한다.
+     */
+    void createBestReservationView() throws CreateException;
 }

@@ -77,6 +77,37 @@
 <!--        WHERE -->
 <!--    </select>-->
 
+    <!-- 아래는 View 생성 쿼리문입니다. -->
+    <select id="createBestStarView">
+        DROP VIEW IF EXISTS Best_Star_View;
+        CREATE VIEW Best_Star_View AS
+        (
+            SELECT * FROM Restaurant ORDER BY restaurant_star DESC LIMIT 10
+        );
+    </select>
+
+    <select id="createBestReviewView">
+        DROP VIEW IF EXISTS Best_Review_View;
+        CREATE VIEW Best_Review_View AS
+        (
+            SELECT *
+            FROM Restaurant rest
+            ORDER BY (SELECT COUNT(*) FROM Review rev WHERE rest.restaurant_no = rev.restaurant_no) DESC, restaurant_no ASC
+            LIMIT 10
+        );
+    </select>
+
+    <select id="createBestReservationView">
+        DROP VIEW IF EXISTS Best_Reservation_View;
+        CREATE VIEW Best_Reservation_View AS
+        (
+            SELECT *
+            FROM Restaurant rest
+            ORDER BY (SELECT COUNT(*) FROM Reservation reserv WHERE rest.restaurant_no = reserv.restaurant_no) DESC, restaurant_no ASC
+            LIMIT 10
+        );
+    </select>
+
     <!-- 아래는 테스트를 위한 쿼리문입니다. -->
     <select id="selectMaxRestaurantNoTest" resultType="int">
         SELECT MAX(restaurant_no) FROM Restaurant;

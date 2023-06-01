@@ -8,8 +8,10 @@ import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -21,6 +23,16 @@ public class RestaurantRepositoryMariaDBTest {
 
     @Autowired
     private RestaurantRepositoryMariaDB restaurantRepository;
+
+    @Autowired
+    SchedulerFactoryBean schedulerFactoryBean;
+
+    @Test
+    public void quartzTest() throws Exception {
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        scheduler.start();
+        Thread.sleep(1000000);
+    }
 
     @Test
     public void testInsertRestaurant() throws ParseException {
