@@ -25,49 +25,49 @@ import java.util.List;
 public class MemberController {
 
     @Autowired
-    private MemberService memberServiceervice;
+    private MemberService memberService;
 
     @Autowired
     private MyPageService myPageService;
     @PostMapping("login/kakao")
     public ResponseEntity<?> loginKakao(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        memberServiceervice.loginKakao(session, (String) param.get("accessToken"));
+        memberService.loginKakao(session, (String) param.get("accessToken"));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("login/google")
     public ResponseEntity<?> loginGoogle(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        memberServiceervice.loginGoogle(session, (String) param.get("googleCredential"));
+        memberService.loginGoogle(session, (String) param.get("googleCredential"));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("logout")
     public ResponseEntity<?> logout(HttpSession session) {
-        memberServiceervice.logout(session);
+        memberService.logout(session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> memberAdd(@RequestBody MemberDTO memberDTO) throws AddException {
-        memberServiceervice.addMember(memberDTO);
+        memberService.addMember(memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping
     public ResponseEntity<?> memberRemove(HttpSession session) throws RemoveException {
-        memberServiceervice.removeMember(session, (String) session.getAttribute("memberEmail"));
+        memberService.removeMember(session, (String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<?> memberModify(@RequestBody MemberDTO memberDTO) throws ModifyException {
-        memberServiceervice.modifyMember(memberDTO);
+        memberService.modifyMember(memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> memberDetails(HttpSession session) throws FindException {
-        memberServiceervice.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
+        memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
