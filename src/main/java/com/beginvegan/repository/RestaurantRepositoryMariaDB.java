@@ -22,6 +22,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
 
     @Override
     public List<RestaurantDTO> selectAllRestaurant() throws FindException {
+        log.info("selectAllRestaurant 시작");
         SqlSession session = null;
 
         try {
@@ -35,11 +36,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("selectAllRestaurant 종료");
         }
     }
 
     @Override
     public RestaurantDTO selectRestaurantByRestaurantNo(int restaurantNo) throws FindException {
+        log.info("selectRestaurantByRestaurantNo 시작 - restaurantNo : " + restaurantNo);
         SqlSession session = null;
 
         try {
@@ -53,11 +56,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("selectRestaurantByRestaurantNo 종료");
         }
     }
 
     @Override
     public int insertRestaurant(RestaurantDTO restaurantInfo) throws AddException {
+        log.info("insertRestaurant 시작 - restaurantInfo : " + restaurantInfo.toString());
         SqlSession session = null;
 
         try {
@@ -71,11 +76,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("insertRestaurant 종료");
         }
     }
 
     @Override
     public void insertRestaurantMenu(int restaurantNo, List<MenuDTO> menuList) throws AddException {
+        log.info("insertRestaurantMenu 시작 - restaurantNo : " + restaurantNo + ", menuList : " + menuList.toString());
         SqlSession session = null;
 
         Map<String, Object> map = new HashMap<>();
@@ -92,11 +99,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("insertRestaurantMenu 종료");
         }
     }
 
     @Override
     public List<MenuDTO> selectAllMenuByRestaurantNo(int restaurantNo) throws FindException {
+        log.info("selectAllMenuByRestaurantNo 시작 - restaurantNo : " + restaurantNo);
         SqlSession session = null;
 
         try {
@@ -110,11 +119,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("selectAllMenuByRestaurantNo 종료");
         }
     }
 
     @Override
     public void deleteRestaurant(int restaurantNo) throws RemoveException {
+        log.info("deleteRestaurant 시작 - restaurantNo : " + restaurantNo);
         SqlSession session = null;
 
         try {
@@ -127,11 +138,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("deleteRestaurant 종료");
         }
     }
 
     @Override
     public void deleteRestaurantMenu(int restaurantNo) throws RemoveException {
+        log.info("deleteRestaurantMenu 시작 - restaurantNo : " + restaurantNo);
         SqlSession session = null;
 
         try {
@@ -144,11 +157,33 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("deleteRestaurantMenu 종료");
+        }
+    }
+
+    @Override
+    public RestaurantDTO selectRestaurantMenuByRestaurantNo(int restaurantNo) throws FindException {
+        log.info("selectRestaurantMenuByRestaurantNo 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            RestaurantDTO restaurantList = session.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectRestaurantMenuByRestaurantNo", restaurantNo);
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectRestaurantMenuByRestaurantNo 종료");
         }
     }
 
     @Override
     public void updateRestaurant(RestaurantDTO restaurantInfo) throws ModifyException {
+        log.info("updateRestaurant 시작 - RestaurantDTO : " + restaurantInfo.toString());
         SqlSession session = null;
 
         try {
@@ -161,11 +196,14 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("updateRestaurant 종료");
         }
     }
 
     @Override
     public void createBestStarView() throws CreateException {
+        log.info("createBestStarView 시작");
+
         SqlSession sqlSession = null;
 
         try {
@@ -178,11 +216,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (sqlSession != null) {
                 sqlSession.close();
             }
+            log.info("createBestStarView 종료");
         }
     }
 
     @Override
     public void createBestReviewView() throws CreateException {
+        log.info("createBestReviewView 시작");
         SqlSession sqlSession = null;
 
         try {
@@ -195,11 +235,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (sqlSession != null) {
                 sqlSession.close();
             }
+            log.info("createBestReviewView 종료");
         }
     }
 
     @Override
     public void createBestReservationView() throws CreateException {
+        log.info("createBestReservationView 시작");
         SqlSession sqlSession = null;
 
         try {
@@ -212,11 +254,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (sqlSession != null) {
                 sqlSession.close();
             }
+            log.info("createBestReservationView 종료");
         }
     }
 
     @Override
     public List<RestaurantDTO> selectBestStarRestaurant() throws FindException {
+        log.info("selectBestStarRestaurant 시작");
         SqlSession session = null;
 
         try {
@@ -230,11 +274,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("selectBestStarRestaurant 종료");
         }
     }
 
     @Override
     public List<RestaurantDTO> selectBestReviewRestaurant() throws FindException {
+        log.info("selectBestReviewRestaurant 시작");
         SqlSession session = null;
 
         try {
@@ -248,11 +294,13 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("selectBestReviewRestaurant 종료");
         }
     }
 
     @Override
     public List<RestaurantDTO> selectBestReservationRestaurant() throws FindException {
+        log.info("selectBestReservationRestaurant 시작");
         SqlSession session = null;
 
         try {
@@ -266,23 +314,82 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
             if (session != null) {
                 session.close();
             }
+            log.info("selectBestReservationRestaurant 종료");
         }
     }
 
     //아래 메소드는 단위 테스트를 위한 CRUD 메소드입니다.
-    public int selectMaxRestaurantNoTest() throws FindException {
-        SqlSession sqlSession = null;
+    public List<RestaurantDTO> selectBestStarRestaurantTest() throws FindException {
+        log.info("selectBestStarRestaurantTest 시작");
+        SqlSession session = null;
 
         try {
-            sqlSession = sqlSessionFactory.openSession();
-            return sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectMaxRestaurantNoTest");
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestStarRestaurantTest");
+            return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();
             throw new FindException(e.getMessage());
         } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectBestStarRestaurantTest 종료");
+        }
+    }
+
+    public List<RestaurantDTO> selectBestReviewRestaurantTest() throws FindException {
+        log.info("selectBestReviewRestaurantTest 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestReviewRestaurantTest");
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectBestReviewRestaurantTest 종료");
+        }
+    }
+
+    public List<RestaurantDTO> selectBestReservationRestaurantTest() throws FindException {
+        log.info("selectBestReservationRestaurantTest 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestReservationRestaurantTest");
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectBestReservationRestaurantTest 종료");
+        }
+    }
+
+    public Integer selectNextMenuNo() {
+        log.info("selectNextMenuNo 시작");
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectNextMenuNo");
+        } finally {
             if (sqlSession != null) {
                 sqlSession.close();
             }
+
+            log.info("selectNextMenuNo 종료");
         }
     }
 }

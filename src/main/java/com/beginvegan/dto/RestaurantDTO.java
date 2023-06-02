@@ -1,12 +1,19 @@
 package com.beginvegan.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class RestaurantDTO {
     private int restaurantNo; // restaurant_no
     private String restaurantName; // restaurant_name
@@ -14,8 +21,10 @@ public class RestaurantDTO {
     private String restaurantAddressGu; // restaurant_address_gu
     private double restaurantX; // restaurant_x
     private double restaurantY; // restaurant_y
-    private Timestamp restaurantOpen; // restaurant_open
-    private Timestamp restaurantClose; // restaurant_close
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalTime restaurantOpen; // restaurant_open
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalTime restaurantClose; // restaurant_close
     private String restaurantDetail; // restaurant_detail
     private int restaurantAvgPrice; // restaurant_avg_price
     private int restaurantTable; // restaurant_table

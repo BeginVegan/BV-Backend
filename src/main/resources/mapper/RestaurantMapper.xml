@@ -15,21 +15,36 @@
 
     <insert id="insertRestaurant" parameterType="restaurantDTO" useGeneratedKeys="true" keyProperty="restaurantNo">
         INSERT INTO Restaurant (restaurant_name, restaurant_address, restaurant_address_gu, restaurant_x, restaurant_y, restaurant_open, restaurant_close, restaurant_detail, restaurant_avg_price, restaurant_table, restaurant_table_member, restaurant_vegan_level, restaurant_photo_dir, restaurant_star)
-        VALUES (#{restaurantName}, #{restaurantAddress}, #{restaurantAddressGu}, #{restaurantX}, #{restaurantY}, #{restaurantOpen, typeHandler=org.apache.ibatis.type.TimeOnlyTypeHandler}, #{restaurantClose, typeHandler=org.apache.ibatis.type.TimeOnlyTypeHandler}, #{restaurantDetail}, #{restaurantAvgPrice}, #{restaurantTable}, #{restaurantTableMember}, #{restaurantVeganLevel}, #{restaurantPhotoDir}, #{restaurantStar})
+        VALUES (#{restaurantName}, #{restaurantAddress}, #{restaurantAddressGu}, #{restaurantX}, #{restaurantY}, #{restaurantOpen}, #{restaurantClose}, #{restaurantDetail}, #{restaurantAvgPrice}, #{restaurantTable}, #{restaurantTableMember}, #{restaurantVeganLevel}, #{restaurantPhotoDir}, #{restaurantStar})
     </insert>
+
+<!--    <insert id="insertRestaurantMenu" parameterType="java.util.Map">-->
+<!--        INSERT INTO Menu (restaurant_no, menu_name, menu_price, menu_category, menu_detail, menu_photo_dir)-->
+<!--        VALUES-->
+<!--        <foreach collection="menuList" item="menu" separator=",">-->
+<!--        (-->
+<!--            #{restaurantNo},-->
+<!--            #{menu.menuName},-->
+<!--            #{menu.menuPrice},-->
+<!--            #{menu.menuCategory},-->
+<!--            #{menu.menuDetail},-->
+<!--            #{menu.menuPhotoDir}-->
+<!--        )-->
+<!--        </foreach>-->
+<!--    </insert>-->
 
     <insert id="insertRestaurantMenu" parameterType="java.util.Map">
         INSERT INTO Menu (restaurant_no, menu_name, menu_price, menu_category, menu_detail, menu_photo_dir)
         VALUES
         <foreach collection="menuList" item="menu" separator=",">
-        (
+            (
             #{restaurantNo},
             #{menu.menuName},
             #{menu.menuPrice},
             #{menu.menuCategory},
             #{menu.menuDetail},
             #{menu.menuPhotoDir}
-        )
+            )
         </foreach>
     </insert>
 
@@ -80,6 +95,40 @@
         SELECT * FROM Best_Reservation_View;
     </select>
 
+    <resultMap id="restaurantResultMap" type="RestaurantDTO">
+        <id property="restaurantNo"                 column="restaurant_no" />
+        <result property="restaurantName"           column="restaurant_name" />
+        <result property="restaurantAddress"        column="restaurant_address"/>
+        <result property="restaurantAddressGu"      column="restaurant_address_gu"/>
+        <result property="restaurantX"              column="restaurant_x"/>
+        <result property="restaurantY"              column="restaurant_y"/>
+        <result property="restaurantOpen"           column="restaurant_open"/>
+        <result property="restaurantClose"          column="restaurant_close"/>
+        <result property="restaurantDetail"         column="restaurant_detail"/>
+        <result property="restaurantAvgPrice"       column="restaurant_avg_price"/>
+        <result property="restaurantTable"          column="restaurant_table"/>
+        <result property="restaurantTableMember"    column="restaurant_table_member"/>
+        <result property="restaurantVeganLevel"     column="restaurant_vegan_level"/>
+        <result property="restaurantPhotoDir"       column="restaurant_photo_dir"/>
+        <result property="restaurantStar"           column="restaurant_star"/>
+
+        <collection property="menuList" javaType="List" ofType="MenuDTO">
+            <result property="menuNo"               column="menu_no" />
+            <result property="restaurantNo"         column="restaurant_no" />
+            <result property="menuName"             column="menu_name" />
+            <result property="menuPrice"            column="menu_price" />
+            <result property="menuCategory"         column="menu_category" />
+            <result property="menuDetail"           column="menu_detail" />
+            <result property="menuPhotoDir"         column="menu_photo_dir" />
+        </collection>
+    </resultMap>
+
+    <select id="selectRestaurantMenuByRestaurantNo" parameterType="int" resultMap="restaurantResultMap">
+        SELECT Restaurant.*, Menu.*
+        FROM Restaurant, Menu
+        WHERE Restaurant.restaurant_no = Menu.restaurant_no AND Restaurant.restaurant_no = #{restaurantNo};
+    </select>
+
     <!-- 아래는 View 생성 쿼리문입니다. -->
     <select id="createBestStarView">
         DROP VIEW IF EXISTS Best_Star_View;
@@ -112,11 +161,29 @@
     </select>
 
     <!-- 아래는 테스트를 위한 쿼리문입니다. -->
-    <select id="selectMaxRestaurantNoTest" resultType="int">
-        SELECT MAX(restaurant_no) FROM Restaurant;
+    <select id="selectBestStarRestaurantTest" resultType="RestaurantDTO">
+        SELECT * FROM Restaurant
+        ORDER BY restaurant_star DESC
+        LIMIT 10;
     </select>
 
-    <select id="selectRestaurantCntTest" resultType="int">
-        SELECT COUNT(*) FROM Restaurant;
+    <select id="selectBestReviewRestaurantTest" resultType="RestaurantDTO">
+        SELECT *
+        FROM Restaurant rest
+        ORDER BY (SELECT COUNT(*) FROM Review rev WHERE rest.restaurant_no = rev.restaurant_no) DESC, restaurant_no ASC
+        LIMIT 10;
+    </select>
+
+    <select id="selectBestReservationRestaurantTest" resultType="RestaurantDTO">
+        SELECT *
+        FROM Restaurant rest
+        ORDER BY (SELECT COUNT(*) FROM Reservation reserv WHERE rest.restaurant_no = reserv.restaurant_no) DESC, restaurant_no ASC
+        LIMIT 10;
+    </select>
+
+    <select id="selectNextMenuNo" resultType="int">
+        SELECT AUTO_INCREMENT
+        FROM information_schema.tables
+        WHERE table_name = 'Menu' AND table_schema = DATABASE()
     </select>
 </mapper>
