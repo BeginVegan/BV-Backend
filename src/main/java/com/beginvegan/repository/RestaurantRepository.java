@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface RestaurantRepository {
     /**
-     * 전체 식당을 조회한다.
+     * 전체 식당을 조회한다.(메뉴 제외)
      * @return 조회한 식당 리스트
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
     List<RestaurantDTO> selectAllRestaurant() throws FindException;
 
     /**
-     * restaurantNo와 일치하는 식당의 정보를 반환한다.
+     * restaurantNo와 일치하는 식당의 정보를 반환한다.(메뉴 제외)
      * @param restaurantNo 조회할 식당 번호
      * @return 식당 정보
      * @throws FindException 식당 정보 조회에 실패할 경우 발생
@@ -66,6 +66,14 @@ public interface RestaurantRepository {
      * @throws RemoveException 데이터 삭제에 실패할 경우 발생
      */
     void deleteRestaurantMenu(int restaurantNo) throws RemoveException;
+
+    /**
+     * restaurantNo와 일치하는 식당의 정보를 반환한다.(메뉴 포함)
+     * @param restaurantNo 조회할 식당 번호
+     * @return 메뉴를 포함한 식당 정보
+     * @throws FindException 데이터 조회에 실패할 경우 발생
+     */
+    RestaurantDTO selectRestaurantMenuByRestaurantNo(int restaurantNo) throws FindException;
 
     /**
      * 평점이 높은 식당 10곳에 대한 뷰를 만든다.
