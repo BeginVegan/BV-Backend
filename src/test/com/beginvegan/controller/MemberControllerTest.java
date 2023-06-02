@@ -1,7 +1,6 @@
 package com.beginvegan.controller;
 
 import com.beginvegan.dto.MemberDTO;
-import com.beginvegan.dto.PointDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -20,10 +19,9 @@ import org.springframework.mock.web.MockHttpSession;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class MemberControllerTest {
     // 아래 두개의 토큰은 테스트 마다 발급받은 실제 토큰 값으로 대체 필요
@@ -32,9 +30,6 @@ class MemberControllerTest {
 
     @Mock
     private MemberService memberService;
-
-    @Mock
-    private MyPageService myPageService;
 
     @MockBean
     private MockHttpSession mockSession;
