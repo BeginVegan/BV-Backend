@@ -7,6 +7,7 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.RestaurantRepository;
+import com.beginvegan.repository.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,9 @@ public class RestaurantService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     /**
      * 전체 식당을 조회한다.
      * @return 전체 식당 리스트
@@ -38,7 +42,6 @@ public class RestaurantService {
      * @param restaurantInfo 식당 정보
      * @throws AddException 추가에 실패한 경우 발생
      */
-    @Transactional
     public void addRestaurant(RestaurantDTO restaurantInfo) throws AddException {
         restaurantRepository.insertRestaurant(restaurantInfo);
         restaurantRepository.insertRestaurantMenu(restaurantInfo.getRestaurantNo(), restaurantInfo.getMenuList());
@@ -86,10 +89,9 @@ public class RestaurantService {
      */
     public Map<String, Object> findRestaurantByRestaurantNo(int restaurantNo) throws FindException {
         Map<String, Object> restaurantReviewMap = new HashMap<>();
-        RestaurantDTO restaurant = restaurantRepository.selectRestaurantByRestaurantNo(restaurantNo);
-        restaurant.setMenuList((ArrayList<MenuDTO>)restaurantRepository.selectAllMenuByRestaurantNo(restaurantNo));
+        RestaurantDTO restaurant = restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurantNo);
         restaurantReviewMap.put("restaurant", restaurant);
-        //restaurantReviewMap.put("review", reviewRepository.selectAllReviewByRestaurantNo(restaurant.getRestaurantNo());
+        restaurantReviewMap.put("review", reviewRepository.selectAllReviewByRestaurantId(restaurant.getRestaurantNo()));
         return restaurantReviewMap;
     }
 
