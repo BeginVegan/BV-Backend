@@ -19,12 +19,12 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("mypage/*")
+@RequestMapping("mypage")
 public class MyPageController {
     @Autowired
     MyPageService myPageService;
 
-    @GetMapping("review/userEmail/")
+    @GetMapping("review/userEmail")
     public ResponseEntity<?> reviewList(HttpSession session) throws FindException {
         String userEmail = session.getAttribute("memberEmail").toString();
         log.info("GET reviewList By userEmail 시작 ");
