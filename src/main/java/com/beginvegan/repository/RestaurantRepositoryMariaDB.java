@@ -202,6 +202,26 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
     }
 
     @Override
+    public List<RestaurantDTO> selectAllRestaurantByKeyword2(String keyword) throws FindException {
+        log.info("selectAllRestaurantByKeyword2 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllRestaurantByKeyword2", keyword);
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectAllRestaurantByKeyword2 종료");
+        }
+    }
+
+    @Override
     public void updateRestaurant(RestaurantDTO restaurantInfo) throws ModifyException {
         log.info("updateRestaurant 시작 - RestaurantDTO : " + restaurantInfo.toString());
         SqlSession session = null;

@@ -100,9 +100,17 @@ public class RestaurantService {
      * @throws FindException 조회에 실패할 경우 발생
      */
     public List<RestaurantDTO> findRestaurantByKeyword(String keyword) throws FindException {
-        //SQL의 REGEXP 구문에 사용할 수 있도록 공백을 '|'로 치환함
-        String dbKeyword = keyword.strip().replaceAll("\\s+","|");
-        return restaurantRepository.selectAllRestaurantByKeyword(dbKeyword);
+        String dbKeyword = keyword.strip().replaceAll("\\s+"," ");
+        int spaceCnt = dbKeyword.length() - dbKeyword.replace(" ", "").length();
+        System.out.println("@@@@@@@@@@@@@@DBkeyword" + dbKeyword);
+
+        if (spaceCnt == 1) {
+            System.out.println("2222222222222222");
+            return restaurantRepository.selectAllRestaurantByKeyword2(dbKeyword);
+        } else {
+            System.out.println("111111111111111111111");
+            return restaurantRepository.selectAllRestaurantByKeyword(dbKeyword.replaceAll(" ","|"));
+        }
     }
 
 }

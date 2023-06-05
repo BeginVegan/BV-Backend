@@ -27,6 +27,9 @@ public class DatabaseConfig {
         config.setUsername(setUsername);
         config.setPassword(setPassword);
         config.setMinimumIdle(3);
+//        config.addDataSourceProperty("useUnicode", "true");
+//        config.addDataSourceProperty("characterEncoding", "UTF-8");
+        config.addDataSourceProperty("allowMultiQueries", "true");
         return config;
     }
 
