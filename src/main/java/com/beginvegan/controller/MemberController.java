@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -75,4 +78,18 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // TEST Controller : Session 확인용
+    @GetMapping("session")
+    public ResponseEntity<?> getSession(HttpSession session) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("JESSIONID 값", session.getId());
+        map.put("세션 유효 시간", session.getMaxInactiveInterval()/60 + "분");
+        map.put("세션 생성 일시", sdf.format(session.getCreationTime()));
+        map.put("최근 접근 시간", sdf.format(session.getLastAccessedTime()));
+        map.put("생성 여부 판별", session.isNew());
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 }
