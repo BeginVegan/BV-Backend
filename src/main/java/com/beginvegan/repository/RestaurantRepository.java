@@ -75,6 +75,8 @@ public interface RestaurantRepository {
      */
     RestaurantDTO selectRestaurantMenuByRestaurantNo(int restaurantNo) throws FindException;
 
+    List<RestaurantDTO> selectAllRestaurantByKeyword(String keyword) throws FindException;
+
     /**
      * 평점이 높은 식당 10곳에 대한 뷰를 만든다.
      * @throws CreateException 뷰 생성에 실패할 경우 발생

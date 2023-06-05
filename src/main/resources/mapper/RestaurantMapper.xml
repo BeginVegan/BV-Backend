@@ -129,6 +129,17 @@
         WHERE Restaurant.restaurant_no = Menu.restaurant_no AND Restaurant.restaurant_no = #{restaurantNo};
     </select>
 
+    <select id="selectAllRestaurantByKeyword" parameterType="String" resultType="RestaurantDTO">
+        SELECT DISTINCT r.*
+        FROM Restaurant r
+            LEFT OUTER JOIN Menu m
+            ON r.restaurant_no = m.restaurant_no
+        WHERE
+            r.Restaurant_name REGEXP #{keyword} OR
+            r.Restaurant_address_gu REGEXP #{keyword} OR
+            m.menu_name REGEXP #{keyword};
+    </select>
+
     <!-- 아래는 View 생성 쿼리문입니다. -->
     <select id="createBestStarView">
         DROP VIEW IF EXISTS Best_Star_View;

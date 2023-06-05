@@ -12,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -252,7 +250,7 @@ public class RestaurantRepositoryMariaDBTest {
 
     @Test
     @Transactional
-    public void testSelectRestaurantMenu() {
+    public void testselectRestaurantMenuByRestaurantNo() {
         RestaurantDTO restaurant = new RestaurantDTO();
         restaurant.setRestaurantName("레스토랑1");
         restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
@@ -302,6 +300,81 @@ public class RestaurantRepositoryMariaDBTest {
 
             Assertions.assertNotNull(selectedRestaurantMenu);
             Assertions.assertEquals(restaurant, selectedRestaurantMenu);
+        } catch (AddException | FindException e) {
+            Assertions.fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    @Transactional
+    public void selectAllRestaurantByKeyword() { //TODO: 미완성코드임
+        RestaurantDTO restaurant = new RestaurantDTO();
+        restaurant.setRestaurantName("박복자 볶음밥");
+        restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
+        restaurant.setRestaurantAddressGu("종로구");
+        restaurant.setRestaurantX(37.570034);
+        restaurant.setRestaurantY(126.976785);
+        restaurant.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
+        restaurant.setRestaurantClose(TimeUtil.toTime("21:30:00"));
+        restaurant.setRestaurantDetail("상세정보1");
+        restaurant.setRestaurantAvgPrice(10000);
+        restaurant.setRestaurantTable(10);
+        restaurant.setRestaurantTableMember(4);
+        restaurant.setRestaurantVeganLevel(2);
+        restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
+        restaurant.setRestaurantStar(4.5);
+
+        MenuDTO menu1 = new MenuDTO();
+        menu1.setMenuName("김치볶음밥");
+        menu1.setMenuPrice(10000);
+        menu1.setMenuCategory("식사");
+        menu1.setMenuDetail("메뉴1 설명");
+        menu1.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+
+        MenuDTO menu2 = new MenuDTO();
+        menu2.setMenuName("오므라이스");
+        menu2.setMenuPrice(3000);
+        menu2.setMenuCategory("음료");
+        menu2.setMenuDetail("메뉴2 설명");
+        menu2.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+
+        RestaurantDTO restaurant2 = new RestaurantDTO();
+        restaurant2.setRestaurantName("식당2");
+        restaurant2.setRestaurantAddress("서울특별시 강남구 강남대로 1");
+        restaurant2.setRestaurantAddressGu("강남구");
+        restaurant2.setRestaurantX(37.495985);
+        restaurant2.setRestaurantY(127.027546);
+        restaurant2.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
+        restaurant2.setRestaurantClose(TimeUtil.toTime("21:30:00"));
+        restaurant2.setRestaurantDetail("상세정보2");
+        restaurant2.setRestaurantAvgPrice(15000);
+        restaurant2.setRestaurantTable(8);
+        restaurant2.setRestaurantTableMember(2);
+        restaurant2.setRestaurantVeganLevel(3);
+        restaurant2.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
+        restaurant2.setRestaurantStar(4.2);
+
+        try {
+            List<MenuDTO> menuList = new ArrayList<>();
+            restaurantRepository.insertRestaurant(restaurant);
+            restaurantRepository.insertRestaurant(restaurant2);
+
+            // restaurantNo와 menuNo를 설정해줌
+            menu1.setRestaurantNo(restaurant.getRestaurantNo());
+            menu1.setMenuNo(restaurantRepository.selectNextMenuNo());
+            menu2.setRestaurantNo(restaurant.getRestaurantNo());
+            menu2.setMenuNo(restaurantRepository.selectNextMenuNo() + 1);
+            menuList.add(menu1);
+            menuList.add(menu2);
+            restaurant.setMenuList((ArrayList)menuList);
+
+            restaurantRepository.insertRestaurantMenu(restaurant.getRestaurantNo(), menuList);
+            List<RestaurantDTO> selectedRestaurantList = restaurantRepository.selectAllRestaurantByKeyword("강남|볶음밥");
+            Assertions.assertNotNull(selectedRestaurantList);
+            for (RestaurantDTO rest : selectedRestaurantList) {
+                System.out.println("###검색결과: " + rest.getRestaurantName());
+            }
+            System.out.println(restaurantRepository.selectRestaurantByRestaurantNo(restaurant2.getRestaurantNo()));
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }

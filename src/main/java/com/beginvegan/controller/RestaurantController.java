@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -70,5 +68,11 @@ public class RestaurantController {
     public ResponseEntity<?> restaurantRemove(@PathVariable Integer restaurantNo) throws RemoveException {
         restaurantService.removeRestaurant(restaurantNo);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("search") //TODO: Notion 변경
+    public ResponseEntity restaurantSearchList(@RequestParam String keyword) throws FindException {
+        List<RestaurantDTO> restaurantList = restaurantService.findRestaurantByKeyword(keyword);
+        return new ResponseEntity(restaurantList, HttpStatus.OK);
     }
 }
