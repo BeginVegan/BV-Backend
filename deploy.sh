@@ -22,4 +22,4 @@ echo "> Build Docker image"
 docker build -t "$APP_NAME" "$REPOSITORY"
 
 echo "> Run the Docker container"
-docker run -d -p 3000:3000 -v /home/ubuntu/keystore.p12:/container/path/to/ --name "$APP_NAME" "$APP_NAME"
+docker run -d -p 3000:3000 -v /home/ubuntu/keystore.p12:/container/path/to/keystore.p12 --name "$APP_NAME" "$APP_NAME"
