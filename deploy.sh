@@ -3,9 +3,6 @@
 APP_NAME=begin_vegan
 REPOSITORY=/home/ubuntu/app
 
-echo "> Add SSL certificate file - keystore.p12"
-cp /home/ubuntu/keystore.p12 REPOSITORY
-
 echo "> Check the currently running container"
 CONTAINER_ID=$(docker ps -aqf "name=$APP_NAME")
 
