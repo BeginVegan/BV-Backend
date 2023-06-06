@@ -1,6 +1,7 @@
 package com.beginvegan.aspect;
 
 import com.beginvegan.util.LogFileAppender;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Aspect
+@Generated
 @Component
 public class RepositoryLoggingAspect {
 
@@ -40,11 +42,11 @@ public class RepositoryLoggingAspect {
 
         String logMessage = String.format(
                 "\n" +
-                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n" +
+                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" +
                 "      <<Repository Log>>\n" +
                 "      ▶ Repository: %s\t\t▶ Method: %s\n" +
                 "      ▶ Params: %s\t\t▶ Log Time: %s\n" +
-                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
                 params.get("class"),
                 params.get("method"),
                 params.get("params"),

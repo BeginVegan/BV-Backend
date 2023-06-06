@@ -1,10 +1,12 @@
 package com.beginvegan.dto;
 
 import lombok.Data;
+import lombok.Generated;
 
 import java.sql.Timestamp;
 
 @Data
+@Generated
 public class ReviewDTO {
     private int reviewNo; // review_no
     private int reservationNo; // reservation_no

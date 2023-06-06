@@ -1,6 +1,7 @@
 package com.beginvegan.aspect;
 
 import com.beginvegan.util.LogFileAppender;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @Slf4j
 @Aspect
+@Generated
 @Component
 public class ControllerLoggingAspect {
     @Pointcut("execution(* com.beginvegan.controller.*.*(..))")
@@ -48,12 +50,12 @@ public class ControllerLoggingAspect {
 
         String logMessage = String.format(
                 "\n" +
-                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n" +
-                "      <<Controller Log>>\n" +
-                "      ▶ Controller: %s\t\t▶ Method: %s\n" +
-                "      ▶ Params: %s\t\t▶ Log Time: %s\t\t\n" +
-                "      ▶ Request URI: %s\t\t▶ HTTP Method: %s\n" +
-                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+                        "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" +
+                        "      <<Controller Log>>\n" +
+                        "      ▶ Controller: %s\t\t▶ Method: %s\n" +
+                        "      ▶ Params: %s\t\t▶ Log Time: %s\t\t\n" +
+                        "      ▶ Request URI: %s\t\t▶ HTTP Method: %s\n" +
+                        "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
                 params.get("controller"),
                 params.get("method"),
                 params.get("params"),

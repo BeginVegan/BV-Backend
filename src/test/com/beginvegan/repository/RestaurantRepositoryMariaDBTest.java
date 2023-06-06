@@ -23,15 +23,15 @@ public class RestaurantRepositoryMariaDBTest {
     @Autowired
     private RestaurantRepositoryMariaDB restaurantRepository;
 
-    @Autowired
-    SchedulerFactoryBean schedulerFactoryBean;
+//    @Autowired
+//    SchedulerFactoryBean schedulerFactoryBean;
 
-    @Test
-    public void quartzTest() throws Exception {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        scheduler.start();
-        Thread.sleep(1000000);
-    }
+//    @Test
+//    public void quartzTest() throws Exception {
+//        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+//        scheduler.start();
+//        Thread.sleep(1000000);
+//    }
 
     @Test
     @Transactional

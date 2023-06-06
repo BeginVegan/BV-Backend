@@ -4,6 +4,7 @@ import com.beginvegan.dto.MemberDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Generated;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.Map;
-
+@Generated
 public class GetKakaoAccount {
     private static final String KAKAO_API = "https://kapi.kakao.com/v2/user/me";
 

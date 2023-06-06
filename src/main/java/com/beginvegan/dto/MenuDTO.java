@@ -2,11 +2,13 @@ package com.beginvegan.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Generated
 public class MenuDTO {
     private int menuNo; // menu_no
     private int restaurantNo; // restaurant_no

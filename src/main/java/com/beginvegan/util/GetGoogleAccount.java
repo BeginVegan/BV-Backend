@@ -3,13 +3,14 @@ package com.beginvegan.util;
 import com.beginvegan.dto.MemberDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
-@Slf4j
+@Generated
 public class GetGoogleAccount {
     public static MemberDTO getMemberInfo(String googleCredential) throws IOException {
         String credential = base64Decoder(googleCredential);

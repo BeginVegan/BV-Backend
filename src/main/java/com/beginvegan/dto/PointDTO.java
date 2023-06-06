@@ -7,7 +7,13 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Getter @Setter @ToString @EqualsAndHashCode @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Generated
 public class PointDTO {
     private String memberEmail; // member_email
     private String pointDiv; // point_div

@@ -1,6 +1,7 @@
 package com.beginvegan.config;
 
 import com.beginvegan.job.BestViewJob;
+import lombok.Generated;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
-
+@Generated
 @Configuration
 public class QuartzConfig {
     @Autowired
@@ -38,6 +39,7 @@ public class QuartzConfig {
                 .withIdentity("BestViewJob", Scheduler.DEFAULT_GROUP)
                 .withSchedule(cronSchedule("0 0 0 * * ?"))
                 .forJob("BestViewJob")
+                .startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.YEAR))
                 .build();
     }
 }

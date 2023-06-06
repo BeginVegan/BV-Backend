@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Generated
 public class ReservationDTO {
     private int reservationNo; // reservation_no
     private String memberEmail; // member_email

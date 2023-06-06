@@ -1,5 +1,6 @@
 package com.beginvegan.filter;
 
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 
+@Generated
 @Slf4j
 public class CookieAttributeFilter implements Filter {
 
@@ -18,7 +20,7 @@ public class CookieAttributeFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
         log.info("CookieAttributeFilter");
-        addSameSite(httpServletResponse , "");
+        addSameSite(httpServletResponse , "None");
 
     }
 

@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Generated
 public class RestaurantDTO {
     private int restaurantNo; // restaurant_no
     private String restaurantName; // restaurant_name
