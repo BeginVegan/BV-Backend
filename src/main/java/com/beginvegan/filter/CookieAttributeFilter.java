@@ -41,13 +41,14 @@ public class CookieAttributeFilter implements Filter {
             // Cookie with the same name already exists, modify its attributes instead of adding a new one
             String updatedSetCookieHeader = existingSetCookieHeader.replaceFirst(
                     name + "=.*?;",
-                    name + "=" + value + "; SameSite=None; HttpOnly=false; Secure=true; Max-Age=" + maxAge + ";"
+                    name + "=" + value + "; Domain=kro.kr; SameSite=None; HttpOnly=false; Secure=true; Max-Age=" + maxAge + ";"
             );
             response.setHeader("Set-Cookie", updatedSetCookieHeader);
         } else {
             // Cookie doesn't exist, add a new one
             ResponseCookie cookie = ResponseCookie.from(name, value)
                     .path("/")
+                    .domain("kro.kr")
                     .sameSite("None")
                     .httpOnly(false)
                     .secure(true)
