@@ -32,15 +32,10 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    @GetMapping(value = "list")
+    @GetMapping("list")
+    @ResponseBody
     public ResponseEntity<?> restaurantList() throws FindException {
-//        private int menuNo; // menu_no
-//        private int restaurantNo; // restaurant_no
-//        private String menuName; // menu_name
-//        private int menuPrice; // menu_price
-//        private String menuCategory; // menu_category
-//        private String menuDetail; // menu_detail
-//        private String menuPhotoDir; // menu_photo_dir
+
         MenuDTO menu = new MenuDTO();
         menu.setRestaurantNo(1234);
         menu.setMenuCategory("category");
@@ -62,7 +57,10 @@ public class RestaurantController {
         restaurantList.get(1).setMenuList(list);
         restaurantList.get(2).setMenuList(list);
 
-        return new ResponseEntity<>(restaurantList, HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        map.put("test", restaurantList)
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     /**
