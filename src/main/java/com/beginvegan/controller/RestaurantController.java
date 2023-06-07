@@ -6,6 +6,7 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.RestaurantService;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
+    @JsonBackReference
     @GetMapping("list")
     public ResponseEntity<?> restaurantList() throws FindException {
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
