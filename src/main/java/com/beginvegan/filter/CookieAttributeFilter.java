@@ -36,16 +36,28 @@ public class CookieAttributeFilter implements Filter {
     }
 
     private static void setSamesite(HttpServletResponse response, String name, String value, int maxAge) {
-        ResponseCookie cookie = ResponseCookie.from(name, value)
-                .path("/")
-                .domain(".kro.kr") // Add the domain setting
-                .sameSite("None")
-                .httpOnly(false)
-                .secure(true)
-                .maxAge(maxAge)
-                .build();
+        String existingSetCookieHeader = response.getHeader("Set-Cookie");
+        if (existingSetCookieHeader != null && existingSetCookieHeader.contains(name)) {
+            // Cookie with the same name already exists, modify its attributes instead of adding a new one
+            String updatedSetCookieHeader = existingSetCookieHeader.replaceFirst(
+                    name + "=.*?;",
+                    name + "=" + value + "; Domain=.kro.kr; SameSite=None; HttpOnly=false; Secure=true; Max-Age=" + maxAge + ";"
+            );
+            response.setHeader("Set-Cookie", updatedSetCookieHeader);
+        } else {
+            // Cookie doesn't exist, add a new one
+            ResponseCookie cookie = ResponseCookie.from(name, value)
+                    .path("/")
+                    .domain(".kro.kr")
+                    .sameSite("None")
+                    .httpOnly(false)
+                    .secure(true)
+                    .maxAge(maxAge)
+                    .build();
 
-        response.addHeader("Set-Cookie", cookie.toString());
+            response.addHeader("Set-Cookie", cookie.toString());
+        }
     }
+
 
 }
