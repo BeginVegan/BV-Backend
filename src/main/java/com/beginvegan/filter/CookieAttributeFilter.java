@@ -38,6 +38,7 @@ public class CookieAttributeFilter implements Filter {
     private static void setSamesite(HttpServletResponse response, String name, String value, int maxAge) {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path("/")
+                .domain(".kro.kr") // Add the domain setting
                 .sameSite("None")
                 .httpOnly(false)
                 .secure(true)
@@ -46,4 +47,5 @@ public class CookieAttributeFilter implements Filter {
 
         response.addHeader("Set-Cookie", cookie.toString());
     }
+
 }
