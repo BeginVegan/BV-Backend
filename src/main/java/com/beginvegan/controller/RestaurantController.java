@@ -58,7 +58,7 @@ public class RestaurantController {
         restaurantList.get(2).setMenuList(list);
 
         Map<String, Object> map = new HashMap<>();
-        map.put("test", restaurantList)
+        map.put("test", restaurantList);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
