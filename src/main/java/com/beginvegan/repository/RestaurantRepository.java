@@ -5,6 +5,7 @@ import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RestaurantRepository {
     /**
@@ -78,6 +79,8 @@ public interface RestaurantRepository {
     List<RestaurantDTO> selectAllRestaurantByKeyword(String keyword) throws FindException;
 
     List<RestaurantDTO> selectAllRestaurantByKeyword2(String keyword) throws FindException;
+
+    List<RestaurantDTO> selectAllRestaurantByKeyword3(Map searchMap) throws FindException;
 
     /**
      * 평점이 높은 식당 10곳에 대한 뷰를 만든다.

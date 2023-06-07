@@ -101,16 +101,21 @@ public class RestaurantService {
      */
     public List<RestaurantDTO> findRestaurantByKeyword(String keyword) throws FindException {
         String dbKeyword = keyword.strip().replaceAll("\\s+"," ");
-        int spaceCnt = dbKeyword.length() - dbKeyword.replace(" ", "").length();
-        System.out.println("@@@@@@@@@@@@@@DBkeyword" + dbKeyword);
-
-        if (spaceCnt == 1) {
-            System.out.println("2222222222222222");
-            return restaurantRepository.selectAllRestaurantByKeyword2(dbKeyword);
-        } else {
-            System.out.println("111111111111111111111");
-            return restaurantRepository.selectAllRestaurantByKeyword(dbKeyword.replaceAll(" ","|"));
-        }
+//        int spaceCnt = dbKeyword.length() - dbKeyword.replace(" ", "").length();
+//        System.out.println("@@@@@@@@@@@@@@DBkeyword" + dbKeyword);
+//
+//        if (spaceCnt == 1) {
+//            System.out.println("2222222222222222");
+//            return restaurantRepository.selectAllRestaurantByKeyword2(dbKeyword);
+//        } else {
+//            System.out.println("111111111111111111111");
+//            return restaurantRepository.selectAllRestaurantByKeyword(dbKeyword.replaceAll(" ","|"));
+//        }
+        Map<String, Object> searchMap = new HashMap<>();
+        searchMap.put("entireKeyword", dbKeyword);
+        String[] keywords = keyword.split(" ");
+        searchMap.put("keywords", keywords);
+        return restaurantRepository.selectAllRestaurantByKeyword3(searchMap);
     }
 
 }
