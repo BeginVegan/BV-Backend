@@ -19,7 +19,7 @@ public class CookieAttributeFilter implements Filter {
 
         if (response instanceof HttpServletResponse) {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            setSamesite(httpServletResponse, "JESSIONID", cookieValue, 3600);
+            setSamesite(httpServletResponse, "JSESSIONID", cookieValue, 3600);
         }
 
         chain.doFilter(request, response);
