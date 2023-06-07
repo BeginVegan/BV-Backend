@@ -168,8 +168,8 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
 
         try {
             session = sqlSessionFactory.openSession();
-            RestaurantDTO restaurantList = session.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectRestaurantMenuByRestaurantNo", restaurantNo);
-            return restaurantList;
+            RestaurantDTO restaurantInfo = session.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectRestaurantMenuByRestaurantNo", restaurantNo);
+            return restaurantInfo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new FindException(e.getMessage());
@@ -178,6 +178,26 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
                 session.close();
             }
             log.info("selectRestaurantMenuByRestaurantNo 종료");
+        }
+    }
+
+    @Override
+    public List<RestaurantDTO> selectAllRestaurantByKeyword(Map searchMap) throws FindException {
+        log.info("selectAllRestaurantByKeyword 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllRestaurantByKeyword", searchMap);
+            return restaurantList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectAllRestaurantByKeyword 종료");
         }
     }
 

@@ -1,6 +1,5 @@
 package com.beginvegan.service;
 
-import com.beginvegan.dto.MenuDTO;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +91,21 @@ public class RestaurantService {
         restaurantReviewMap.put("restaurant", restaurant);
         restaurantReviewMap.put("review", reviewRepository.selectAllReviewByRestaurantId(restaurant.getRestaurantNo()));
         return restaurantReviewMap;
+    }
+
+    /**
+     * 이름/지역/메뉴가 검색어와 일치하는 식당을 반환한다.
+     * @param keyword 검색할 문자열
+     * @return 이름 or 지역 or 메뉴가 검색어와 일치하는 식당의 리스트
+     * @throws FindException 조회에 실패할 경우 발생
+     */
+    public List<RestaurantDTO> findRestaurantByKeyword(String keyword) throws FindException {
+        String dbKeyword = keyword.strip().replaceAll("\\s+"," ");
+        Map<String, Object> searchMap = new HashMap<>();
+        searchMap.put("entireKeyword", dbKeyword);
+        String[] keywords = keyword.split(" ");
+        searchMap.put("keywords", keywords);
+        return restaurantRepository.selectAllRestaurantByKeyword(searchMap);
     }
 
 }
