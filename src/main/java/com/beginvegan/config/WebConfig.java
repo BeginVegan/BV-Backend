@@ -15,12 +15,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*") // Allow all origins
+                .allowedOriginPatterns("http://localhost:*", "http://beginvegan.kro.kr", "https://beginvegan.kro.kr")
                 .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD")
                 .allowedHeaders("*")
                 .exposedHeaders("Set-Cookie")
                 .allowCredentials(true);
     }
+
 
     @Bean
     public javax.servlet.Filter cookieAttributeFilter() {
