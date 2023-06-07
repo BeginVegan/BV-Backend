@@ -37,7 +37,7 @@ public class RestaurantController {
     public ResponseEntity<?> restaurantList() throws FindException {
         Map<String, Object> map = new HashMap<>();
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
-        map.put("restaurantList", restaurantList);
+        map.put("restaurantList", restaurantList.subList(0, 3));
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
