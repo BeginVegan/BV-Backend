@@ -27,14 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                .setConnectTimeout(Duration.ofSeconds(999))
-                .setReadTimeout(Duration.ofSeconds(999))
-                .build();
-    }
-
-    @Bean
     public javax.servlet.Filter cookieAttributeFilter() {
         return new CookieAttributeFilter();
     }
