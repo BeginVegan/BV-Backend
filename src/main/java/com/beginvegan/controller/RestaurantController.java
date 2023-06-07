@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,8 +34,11 @@ public class RestaurantController {
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
     @GetMapping(value = "list")
-    public ResponseEntity<?> restaurantList() throws FindException {
+    public ResponseEntity<?> restaurantList(HttpSession session) throws FindException {
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
+        //session TEST
+        session.setAttribute("TEST", "세션 저장소 값 저장 테스트 입니다.");
+
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 

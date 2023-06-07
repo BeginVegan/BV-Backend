@@ -89,6 +89,8 @@ public class MemberController {
         map.put("세션 생성 일시", sdf.format(session.getCreationTime()));
         map.put("최근 접근 시간", sdf.format(session.getLastAccessedTime()));
         map.put("생성 여부 판별", session.isNew());
+        String sessionValue = (String) session.getAttribute("TEST");
+        map.put("세션에 저장된 값 불러오기", sessionValue);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
