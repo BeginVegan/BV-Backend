@@ -1,21 +1,20 @@
 package com.beginvegan.controller;
 
+import com.beginvegan.dto.MenuDTO;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.RestaurantService;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import javax.xml.ws.Response;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +34,35 @@ public class RestaurantController {
      */
     @GetMapping(value = "list")
     public ResponseEntity<?> restaurantList() throws FindException {
-        Map<String, Object> map = new HashMap<>();
-        List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
-        map.put("restaurantList", restaurantList.subList(0, 3));
+//        private int menuNo; // menu_no
+//        private int restaurantNo; // restaurant_no
+//        private String menuName; // menu_name
+//        private int menuPrice; // menu_price
+//        private String menuCategory; // menu_category
+//        private String menuDetail; // menu_detail
+//        private String menuPhotoDir; // menu_photo_dir
+        MenuDTO menu = new MenuDTO();
+        menu.setRestaurantNo(1234);
+        menu.setMenuCategory("category");
+        menu.setMenuName("name");
+        menu.setMenuNo(123);
+        menu.setMenuPrice(500);
+        menu.setMenuPhotoDir("dir");
+        menu.setMenuDetail("detail");
 
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        ArrayList<MenuDTO> list = new ArrayList<>();
+        list.add(menu);
+        list.add(menu);
+        list.add(menu);
+
+        List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
+        restaurantList = restaurantList.subList(0, 3);
+
+        restaurantList.get(0).setMenuList(list);
+        restaurantList.get(1).setMenuList(list);
+        restaurantList.get(2).setMenuList(list);
+
+        return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 
     /**
