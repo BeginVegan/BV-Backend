@@ -19,7 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns("http://localhost:*", "http://beginvegan.kro.kr", "https://beginvegan.kro.kr")
                 .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD")
                 .allowedHeaders("*")
-                .exposedHeaders("Set-Cookie")
                 .allowCredentials(true);
     }
     @Bean
