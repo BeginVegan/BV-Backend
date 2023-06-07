@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,7 +20,38 @@ public class CookieAttributeFilter implements Filter {
 
         if (response instanceof HttpServletResponse) {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            setSamesite(httpServletResponse, "JSESSIONID", cookieValue, 3600);
+
+            // Check if JSESSIONID cookie is already present in the request
+            boolean jSessionIdExists = false;
+            Cookie[] cookies = httpRequest.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                    log.info(cookie.getName());
+                    log.info(cookie.getValue());
+                    if (cookie.getName().equals("JSESSIONID")) {
+                        jSessionIdExists = true;
+
+                        break;
+                    }
+                }
+            }
+
+            if (jSessionIdExists) {
+                // Modify existing JSESSIONID cookie attributes
+                setSamesite(httpServletResponse, "JSESSIONID", cookieValue, 3600);
+            } else {
+                // Add a new JSESSIONID cookie
+                ResponseCookie cookie = ResponseCookie.from("JSESSIONID", cookieValue)
+                        .path("/")
+                        .sameSite("None")
+                        .httpOnly(false)
+                        .secure(true)
+                        .maxAge(3600)
+                        .build();
+
+                httpServletResponse.addHeader("Set-Cookie", cookie.toString());
+            }
         }
 
         chain.doFilter(request, response);
@@ -57,6 +89,5 @@ public class CookieAttributeFilter implements Filter {
             response.addHeader("Set-Cookie", cookie.toString());
         }
     }
-
 
 }
