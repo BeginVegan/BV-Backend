@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.Response;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,10 +33,13 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "list")
     public ResponseEntity<?> restaurantList() throws FindException {
+        Map<String, Object> map = new HashMap<>();
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
-        return new ResponseEntity<>(restaurantList, HttpStatus.OK);
+        map.put("restaurantList", restaurantList);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     /**
