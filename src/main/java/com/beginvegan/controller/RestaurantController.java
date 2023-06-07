@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,43 +32,10 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    @GetMapping("list")
+    @GetMapping(value = "list")
     public ResponseEntity<?> restaurantList() throws FindException {
-//
-//        MenuDTO menu = new MenuDTO();
-//        menu.setRestaurantNo(1234);
-//        menu.setMenuCategory("category");
-//        menu.setMenuName("name");
-//        menu.setMenuNo(123);
-//        menu.setMenuPrice(500);
-//        menu.setMenuPhotoDir("dir");
-//        menu.setMenuDetail("detail");
-//
-//        ArrayList<MenuDTO> list = new ArrayList<>();
-//        list.add(menu);
-//        list.add(menu);
-//        list.add(menu);
-//
-//        List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
-//        restaurantList = restaurantList.subList(0, 3);
-//
-//        restaurantList.get(0).setMenuList(list);
-//        restaurantList.get(1).setMenuList(list);
-//        restaurantList.get(2).setMenuList(list);
-
-        ArrayList<String> list = new ArrayList<>();
-        list.add("this");
-        list.add("is");
-        list.add("a");
-        list.add("test");
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("test", "TEST");
-        map.put("test2", "TEST");
-        map.put("test3", "TEST");
-        map.put("test4", "TEST");
-
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
+        return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 
     /**
