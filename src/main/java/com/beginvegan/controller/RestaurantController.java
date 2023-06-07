@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +32,7 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    @JsonBackReference
-    @GetMapping("list")
+    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> restaurantList() throws FindException {
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
