@@ -128,48 +128,7 @@
         WHERE Restaurant.restaurant_no = Menu.restaurant_no AND Restaurant.restaurant_no = #{restaurantNo};
     </select>
 
-    <select id="selectAllRestaurantByKeyword" parameterType="String" resultType="RestaurantDTO">
-        SELECT DISTINCT r.*
-        FROM Restaurant r
-             LEFT OUTER JOIN Menu m
-             ON r.restaurant_no = m.restaurant_no
-        WHERE
-            r.Restaurant_name REGEXP #{keyword} OR
-            r.Restaurant_address_gu REGEXP #{keyword} OR
-            m.menu_name REGEXP #{keyword};
-    </select>
-
-    <select id="selectAllRestaurantByKeyword2" parameterType="String" resultType="RestaurantDTO">
-        SET @keyword = #{keyword};
-        SET @keyword1 = SUBSTRING_INDEX(@keyword, ' ', 1);
-        SET @keyword2 = SUBSTRING_INDEX(@keyword, ' ', -1);
-
-        SET @keyword_like = CONCAT('%', @keyword, '%') COLLATE utf8mb4_general_ci;
-        SET @keyword_like1 = CONCAT('%', @keyword1, '%') COLLATE utf8mb4_general_ci;
-        SET @keyword_like2 = CONCAT('%', @keyword2, '%') COLLATE utf8mb4_general_ci;
-
-        SELECT r.*
-        FROM Restaurant r
-             LEFT OUTER JOIN Menu m
-             ON r.restaurant_no = m.restaurant_no
-        WHERE
-            r.restaurant_name REGEXP CONCAT(@keyword1, '|', @keyword2)  COLLATE utf8mb4_general_ci OR
-            r.restaurant_address_gu REGEXP CONCAT(@keyword1, '|', @keyword2) COLLATE utf8mb4_general_ci OR
-            m.menu_name REGEXP CONCAT(@keyword1, '|', @keyword2)  COLLATE utf8mb4_general_ci
-        ORDER BY
-            CASE
-                WHEN r.restaurant_name LIKE @keyword_like THEN 1
-                WHEN r.restaurant_name LIKE @keyword_like1 AND r.restaurant_address_gu LIKE @keyword_like2 THEN 2
-                WHEN r.restaurant_address_gu LIKE @keyword_like1 AND r.Restaurant_name LIKE @keyword_like2 THEN 2
-                WHEN r.restaurant_name LIKE @keyword_like1 AND m.menu_name LIKE @keyword_like2 THEN 2
-                WHEN m.menu_name LIKE @keyword_like1 AND r.restaurant_name LIKE @keyword_like2 THEN 2
-                WHEN r.restaurant_address_gu LIKE @keyword_like1 AND m.menu_name LIKE @keyword_like2 THEN 2
-                WHEN m.menu_name LIKE @keyword_like1 AND r.restaurant_address_gu LIKE @keyword_like2 THEN 2
-                ELSE 3
-            END;
-    </select>
-
-    <select id="selectAllRestaurantByKeyword3" parameterType="java.util.Map" resultType="RestaurantDTO">
+    <select id="selectAllRestaurantByKeyword" parameterType="java.util.Map" resultType="RestaurantDTO">
         SELECT r.*
         FROM Restaurant r
              LEFT OUTER JOIN Menu m

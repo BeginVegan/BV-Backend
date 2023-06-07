@@ -70,7 +70,7 @@ public class RestaurantController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("search") //TODO: Notion 변경
+    @GetMapping("search")
     public ResponseEntity restaurantSearchList(@RequestParam String keyword) throws FindException {
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurantByKeyword(keyword);
         return new ResponseEntity(restaurantList, HttpStatus.OK);

@@ -13,7 +13,9 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 public class RestaurantRepositoryMariaDBTest {
@@ -368,8 +370,14 @@ public class RestaurantRepositoryMariaDBTest {
             menuList.add(menu2);
             restaurant.setMenuList((ArrayList)menuList);
 
+            String keyword = "강남 레스토랑";
+            Map<String, Object> keywordMap = new HashMap<>();
+            keywordMap.put("entireKeyword", keyword);
+            String[] keywords = keyword.split(" ");
+            keywordMap.put("keywords", keywords);
+
             restaurantRepository.insertRestaurantMenu(restaurant.getRestaurantNo(), menuList);
-            List<RestaurantDTO> selectedRestaurantList = restaurantRepository.selectAllRestaurantByKeyword("강남|볶음밥");
+            List<RestaurantDTO> selectedRestaurantList = restaurantRepository.selectAllRestaurantByKeyword(keywordMap);
             Assertions.assertNotNull(selectedRestaurantList);
             for (RestaurantDTO rest : selectedRestaurantList) {
                 System.out.println("###검색결과: " + rest.getRestaurantName());
