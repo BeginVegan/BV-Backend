@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,9 @@ public class RestaurantService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private S3Service S3Service;
+
     /**
      * 전체 식당을 조회한다.
      * @return 전체 식당 리스트
@@ -42,9 +47,13 @@ public class RestaurantService {
      * @param restaurantInfo 식당 정보
      * @throws AddException 추가에 실패한 경우 발생
      */
-    public void addRestaurant(RestaurantDTO restaurantInfo) throws AddException {
+    public void addRestaurant(RestaurantDTO restaurantInfo, List<MultipartFile> restaurantImages) throws AddException, IOException {
+        if(!restaurantImages.isEmpty()) {
+            S3Service.uploadMulti(restaurantImages,"restaurant/" + restaurantRepository.selectNextRestaurantNo());
+            restaurantInfo.setRestaurantPhotoDir("restaurant/" + restaurantRepository.selectNextRestaurantNo());
+        }
+
         restaurantRepository.insertRestaurant(restaurantInfo);
-        restaurantRepository.insertRestaurantMenu(restaurantInfo.getRestaurantNo(), restaurantInfo.getMenuList());
     }
 
     /**

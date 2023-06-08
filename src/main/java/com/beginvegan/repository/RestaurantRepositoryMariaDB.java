@@ -318,6 +318,20 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         }
     }
 
+    @Override
+    public Integer selectNextRestaurantNo() {
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.selectOne("com.beginvegan.mybatis.RestaurantMapper.selectNextRestaurantNo");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
+
     //아래 메소드는 단위 테스트를 위한 CRUD 메소드입니다.
     public List<RestaurantDTO> selectBestStarRestaurantTest() throws FindException {
         log.info("selectBestStarRestaurantTest 시작");

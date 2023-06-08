@@ -117,6 +117,13 @@
             <version>4.1.68.Final</version>
             <classifier>osx-aarch_64</classifier>
         </dependency>
+
+        <!-- spring-cloud-starter-aws : Java 코드를 통해 aws를 이용할 수 있도록 제공하는 도구. -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-aws</artifactId>
+            <version>2.2.6.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
