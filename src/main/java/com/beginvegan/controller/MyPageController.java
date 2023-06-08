@@ -112,7 +112,7 @@ public class MyPageController {
         return new ResponseEntity<>(bookmarkList, HttpStatus.OK);
     }
 
-    @GetMapping("point-histroy")
+    @GetMapping("point-history")
     public ResponseEntity<?> getPointHistory(HttpSession session) throws FindException {
         List<PointDTO> pointList = myPageService.findAllPointByMemberEmail((String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(pointList, HttpStatus.OK);

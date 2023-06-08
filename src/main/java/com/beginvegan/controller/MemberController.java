@@ -90,12 +90,18 @@ public class MemberController {
     public ResponseEntity<?> getSession(HttpSession session) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        String memberEmail = (String)session.getAttribute("memberEmail");
+        String accessToken = (String)session.getAttribute("accessToken");
+
         Map<String, Object> map = new HashMap<>();
         map.put("JSESSIONID 값", session.getId());
         map.put("세션 유효 시간", session.getMaxInactiveInterval()/60 + "분");
         map.put("세션 생성 일시", sdf.format(session.getCreationTime()));
         map.put("최근 접근 시간", sdf.format(session.getLastAccessedTime()));
         map.put("생성 여부 판별", session.isNew());
+        map.put("현재 memberEmail", memberEmail);
+        map.put("현재 accessToken", accessToken);
+
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
