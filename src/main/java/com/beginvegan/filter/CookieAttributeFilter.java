@@ -14,17 +14,18 @@ public class CookieAttributeFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        chain.doFilter(request, response);
-        log.info("CookieAttributeFilter");
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String cookieValue = httpRequest.getSession().getId(); // Retrieve the session ID or any other desired value
 
         if (response instanceof HttpServletResponse) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String cookieValue = httpRequest.getSession().getId(); // Retrieve the session ID or any other desired value
-
-            setSamesite(httpServletResponse, "JESSIONID", cookieValue, 3600);
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            setSamesite(httpServletResponse, "JSESSIONID", cookieValue, 3600);
         }
+
+        chain.doFilter(request, response);
+        log.info("CookieAttributeFilter");
     }
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -35,14 +36,28 @@ public class CookieAttributeFilter implements Filter {
     }
 
     private static void setSamesite(HttpServletResponse response, String name, String value, int maxAge) {
-        ResponseCookie cookie = ResponseCookie.from(name, value)
-                .path("/")
-                .sameSite("None")
-                .httpOnly(false)
-                .secure(true)
-                .maxAge(maxAge)
-                .build();
+        String existingSetCookieHeader = response.getHeader("Set-Cookie");
+        if (existingSetCookieHeader != null && existingSetCookieHeader.contains(name)) {
+            // Cookie with the same name already exists, modify its attributes instead of adding a new one
+            String updatedSetCookieHeader = existingSetCookieHeader.replaceFirst(
+                    name + "=.*?;",
+                    name + "=" + value + "; Domain=kro.kr; SameSite=None; HttpOnly=false; Secure=true; Max-Age=" + maxAge + ";"
+            );
+            response.setHeader("Set-Cookie", updatedSetCookieHeader);
+        } else {
+            // Cookie doesn't exist, add a new one
+            ResponseCookie cookie = ResponseCookie.from(name, value)
+                    .path("/")
+                    .domain("kro.kr")
+                    .sameSite("None")
+                    .httpOnly(false)
+                    .secure(true)
+                    .maxAge(maxAge)
+                    .build();
 
-        response.addHeader("Set-Cookie", cookie.toString());
+            response.addHeader("Set-Cookie", cookie.toString());
+        }
     }
+
+
 }

@@ -125,8 +125,27 @@
 
     <select id="selectRestaurantMenuByRestaurantNo" parameterType="int" resultMap="restaurantResultMap">
         SELECT Restaurant.*, Menu.*
-        FROM Restaurant, Menu
         WHERE Restaurant.restaurant_no = Menu.restaurant_no AND Restaurant.restaurant_no = #{restaurantNo};
+    </select>
+
+    <select id="selectAllRestaurantByKeyword" parameterType="java.util.Map" resultType="RestaurantDTO">
+        SELECT r.*
+        FROM Restaurant r
+             LEFT OUTER JOIN Menu m
+             ON r.restaurant_no = m.restaurant_no
+        WHERE
+            <foreach collection="keywords" item="keyword" separator="AND">
+                (
+                    r.restaurant_name LIKE CONCAT('%', #{keyword}, '%') COLLATE utf8mb4_general_ci
+                    OR r.restaurant_address_gu LIKE CONCAT('%', #{keyword}, '%') COLLATE utf8mb4_general_ci
+                    OR m.menu_name LIKE CONCAT('%', #{keyword}, '%') COLLATE utf8mb4_general_ci
+                )
+            </foreach>
+        ORDER BY
+            CASE
+                WHEN r.restaurant_name LIKE CONCAT('%', #{entireKeyword}, '%') COLLATE utf8mb4_general_ci THEN 1
+                ELSE 2
+            END;
     </select>
 
     <!-- 아래는 View 생성 쿼리문입니다. -->

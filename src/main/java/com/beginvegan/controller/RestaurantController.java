@@ -1,17 +1,14 @@
 package com.beginvegan.controller;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.RestaurantService;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,11 +33,10 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    @GetMapping(value = "list")
+    @GetMapping("list")
     public ResponseEntity<?> restaurantList() throws FindException {
-        Map<String, Object> map = new HashMap<>();
+
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
-        map.put("restaurantList", restaurantList.subList(0, 3));
 
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
@@ -79,5 +75,11 @@ public class RestaurantController {
     public ResponseEntity<?> restaurantRemove(@PathVariable Integer restaurantNo) throws RemoveException {
         restaurantService.removeRestaurant(restaurantNo);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("search")
+    public ResponseEntity restaurantSearchList(@RequestParam String keyword) throws FindException {
+        List<RestaurantDTO> restaurantList = restaurantService.findRestaurantByKeyword(keyword);
+        return new ResponseEntity(restaurantList, HttpStatus.OK);
     }
 }

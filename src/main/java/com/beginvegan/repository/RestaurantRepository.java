@@ -5,6 +5,7 @@ import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RestaurantRepository {
     /**
@@ -74,6 +75,14 @@ public interface RestaurantRepository {
      * @throws FindException 데이터 조회에 실패할 경우 발생
      */
     RestaurantDTO selectRestaurantMenuByRestaurantNo(int restaurantNo) throws FindException;
+
+    /**
+     * 검색어와 일치하는 식당의 정보를 반환한다.(메뉴 제외)
+     * @param searchMap 전체 키워드, 공백을 기준으로 split한 키워드들로 구성된 Map
+     * @return 검색어와 일치하는 식당 리스트
+     * @throws FindException 데이터 조회에 실패할 경우 발생
+     */
+    List<RestaurantDTO> selectAllRestaurantByKeyword(Map searchMap) throws FindException;
 
     /**
      * 평점이 높은 식당 10곳에 대한 뷰를 만든다.

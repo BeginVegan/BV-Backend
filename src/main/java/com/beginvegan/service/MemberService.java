@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 
 @Slf4j
 @Service("memberService")
@@ -23,6 +24,12 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
+    // 테스트 로그인용
+    public void loginTest(HttpSession session, HashMap<String, Object> param) {
+        //세션에 이메일과 토큰 값 저장
+        session.setAttribute("memberEmail", (String) param.get("email"));
+        session.setAttribute("accessToken", (String) param.get("accessToken"));
+    }
     /**
      * 로그인 한다. KAKAO API
      * @param session 클라이언트의 세션

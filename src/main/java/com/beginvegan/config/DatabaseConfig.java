@@ -2,7 +2,6 @@ package com.beginvegan.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.Generated;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +12,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
-@Generated
 @Configuration
 public class DatabaseConfig {
     @Value("${datasource.driver-class-name}") private String setDriverClassName;
@@ -29,6 +27,8 @@ public class DatabaseConfig {
         config.setUsername(setUsername);
         config.setPassword(setPassword);
         config.setMinimumIdle(3);
+//        config.addDataSourceProperty("useUnicode", "true");
+//        config.addDataSourceProperty("characterEncoding", "UTF-8");
         config.addDataSourceProperty("allowMultiQueries", "true");
         return config;
     }

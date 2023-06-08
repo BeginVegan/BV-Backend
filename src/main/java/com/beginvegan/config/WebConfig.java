@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 @Generated
 @Configuration
 @EnableWebMvc
@@ -18,11 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns("http://localhost:*", "http://beginvegan.kro.kr", "https://beginvegan.kro.kr")
                 .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD")
                 .allowedHeaders("*")
-                .exposedHeaders("Set-Cookie")
                 .allowCredentials(true);
     }
-
-
     @Bean
     public javax.servlet.Filter cookieAttributeFilter() {
         return new CookieAttributeFilter();
