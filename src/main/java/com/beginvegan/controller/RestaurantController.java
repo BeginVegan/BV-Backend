@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import javax.servlet.http.HttpSession;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +33,11 @@ public class RestaurantController {
      */
     @GetMapping("list")
     public ResponseEntity<?> restaurantList() throws FindException {
+
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
+        //session TEST
+        session.setAttribute("TEST", "세션 저장소 값 저장 테스트 입니다.");
+
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 
