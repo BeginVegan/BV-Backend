@@ -27,6 +27,13 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @PostMapping("login/test")
+    public ResponseEntity<?> loginTEST(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
+        memberService.loginTest(session, param);
+        log.info(param.toString());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     /**
      * 프론트의 로그인 요청 처리(카카오) MemberDB 확인 후 해당 유저의 email 정보 Session에 저장
      * @param param AccessToken 내용을 포함하는 Jason을 Map으로 받는다.
@@ -89,8 +96,6 @@ public class MemberController {
         map.put("세션 생성 일시", sdf.format(session.getCreationTime()));
         map.put("최근 접근 시간", sdf.format(session.getLastAccessedTime()));
         map.put("생성 여부 판별", session.isNew());
-        String sessionValue = (String) session.getAttribute("TEST");
-        map.put("세션에 저장된 값 불러오기", sessionValue);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
