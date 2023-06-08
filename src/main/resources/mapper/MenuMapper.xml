@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.beginvegan.mybatis.MenuMapper">
+
+    <insert id="insertMenu" parameterType="MenuDTO" useGeneratedKeys="true" keyProperty="restaurantNo">
+        INSERT INTO Menu (restaurant_no, menu_name, menu_price, menu_category, menu_detail, menu_photo_dir)
+        VALUES (#{restaurantNo}, #{menuName}, #{menuPrice}, #{menuCategory}, #{menuDetail}, #{menuPhotoDir})
+    </insert>
+
+    <insert id="insertAllMenu" parameterType="java.util.List">
+        INSERT INTO Menu (restaurant_no, menu_name, menu_price, menu_category, menu_detail, menu_photo_dir)
+        VALUES
+        <foreach collection="list" item="menu" separator=",">
+            (
+                #{menu.restaurantNo},
+                #{menu.menuName},
+                #{menu.menuPrice},
+                #{menu.menuCategory},
+                #{menu.menuDetail},
+                #{menu.menuPhotoDir}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectMenuByMenuNo" parameterType="int" resultType="MenuDTO">
+        SELECT * FROM Menu
+        WHERE menu_no = #{menuNo}
+    </select>
+
+    <select id="selectAllMenuByRestaurantNo" parameterType="int" resultType="MenuDTO">
+        SELECT * FROM Menu
+        WHERE restaurant_no = #{restaurantNo}
+    </select>
+
+    <delete id="deleteMenuByMenuNo" parameterType="int">
+        DELETE FROM Menu
+        WHERE menu_no = #{menuNo}
+    </delete>
+
+    <delete id="deleteAllMenuByRestaurantNo" parameterType="int">
+        DELETE FROM Menu
+        WHERE restaurant_no = #{restaurantNo}
+    </delete>
+
+</mapper>
