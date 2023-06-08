@@ -11,7 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.Response;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +60,8 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<?> restaurantAdd(@RequestBody RestaurantDTO restaurantInfo) throws AddException {
-        restaurantService.addRestaurant(restaurantInfo);
+    public ResponseEntity<?> restaurantAdd(@RequestPart(value = "restaurantDTO") RestaurantDTO restaurantInfo, @RequestPart(value = "restaurantImages", required = false) List<MultipartFile> restaurantImages) throws AddException, IOException {
+        restaurantService.addRestaurant(restaurantInfo, restaurantImages);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

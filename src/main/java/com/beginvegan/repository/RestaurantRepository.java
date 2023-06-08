@@ -125,4 +125,10 @@ public interface RestaurantRepository {
      * @throws FindException 조회에 실패할 경우 발생
      */
     List<RestaurantDTO> selectBestReservationRestaurant() throws FindException;
+
+    /**
+     * 다음 생성될 식당 번호를 가져온다
+     * @return 다음 생성될 식당 번호
+     */
+    public Integer selectNextRestaurantNo();
 }

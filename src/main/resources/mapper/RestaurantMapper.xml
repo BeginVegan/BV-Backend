@@ -205,4 +205,10 @@
         FROM information_schema.tables
         WHERE table_name = 'Menu' AND table_schema = DATABASE()
     </select>
+
+    <select id="selectNextRestaurantNo" resultType="int">
+        SELECT AUTO_INCREMENT
+        FROM information_schema.tables
+        WHERE table_name = 'Restaurant' AND table_schema = DATABASE()
+    </select>
 </mapper>
