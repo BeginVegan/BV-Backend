@@ -90,6 +90,7 @@ public class MemberController {
 
         String memberEmail = (String)session.getAttribute("memberEmail");
         String memberName = (String)session.getAttribute("memberName");
+        String memberRole = (String)session.getAttribute("memberRole");
         String accessToken = (String)session.getAttribute("accessToken");
 
         Map<String, Object> map = new HashMap<>();
@@ -101,6 +102,7 @@ public class MemberController {
         map.put("현재 memberEmail", memberEmail);
         map.put("현재 memberName", memberName);
         map.put("현재 accessToken", accessToken);
+        map.put("현재 memberRole", memberRole);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

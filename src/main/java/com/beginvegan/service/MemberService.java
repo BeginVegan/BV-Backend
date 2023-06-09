@@ -26,15 +26,17 @@ public class MemberService {
 
     // 테스트 로그인용
     public MemberDTO loginTest(HttpSession session, HashMap<String, Object> param) {
-        //세션에 이메일과 토큰 값 저장
-        session.setAttribute("memberEmail", (String) param.get("email"));
-        session.setAttribute("memberName", "TEST유저");
-        session.setAttribute("accessToken", (String) param.get("accessToken"));
-
         MemberDTO memberInfo = new MemberDTO();
         memberInfo.setMemberEmail((String) param.get("email"));
         memberInfo.setMemberEmail("TEST유저");
         memberInfo.setMemberPoint(99999999);
+        memberInfo.setMemberRole("테스터");
+
+        //세션에 이메일과 토큰 값 저장
+        session.setAttribute("memberEmail", memberInfo.getMemberEmail());
+        session.setAttribute("memberName", memberInfo.getMemberName());
+        session.setAttribute("memberRole", memberInfo.getMemberRole());
+        session.setAttribute("accessToken", "test123");
 
         return memberInfo;
     }
@@ -61,14 +63,17 @@ public class MemberService {
         } catch (Exception e) {
             memberRepository.insertMember(memberInfo);
         }
+
+        MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
         //세션에 이메일과 토큰 값 저장
-        session.setAttribute("memberEmail", memberInfo.getMemberEmail());
-        session.setAttribute("memberName", memberInfo.getMemberName());
+        session.setAttribute("memberEmail", memberExistInfo.getMemberEmail());
+        session.setAttribute("memberName", memberExistInfo.getMemberName());
+        session.setAttribute("memberRole", memberExistInfo.getMemberRole());
         session.setAttribute("accessToken", accessToken);
 
         log.info("login 완료 - Kakao API");
 
-        return memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
+        return memberExistInfo;
     }
 
     /**
@@ -94,14 +99,17 @@ public class MemberService {
         } catch (Exception e) {
             memberRepository.insertMember(memberInfo);
         }
+
+        MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
         //세션에 이메일과 토큰 값 저장
-        session.setAttribute("memberEmail", memberInfo.getMemberEmail());
-        session.setAttribute("memberName", memberInfo.getMemberName());
+        session.setAttribute("memberEmail", memberExistInfo.getMemberEmail());
+        session.setAttribute("memberName", memberExistInfo.getMemberName());
+        session.setAttribute("memberRole", memberExistInfo.getMemberRole());
         session.setAttribute("accessToken", accessToken);
 
         log.info("login 완료 - Google API");
 
-        return memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
+        return memberExistInfo;
     }
 
     /**
