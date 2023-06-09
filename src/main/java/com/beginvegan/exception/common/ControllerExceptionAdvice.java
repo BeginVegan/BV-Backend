@@ -1,27 +1,29 @@
 package com.beginvegan.exception.common;
 
 import lombok.Generated;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.nio.charset.StandardCharsets;
 
 @Generated
-@ControllerAdvice
+@RestControllerAdvice
 public class ControllerExceptionAdvice {
     /**
-     * controller의 Exception을 최종적으로 받아서 처리
-     * 프론트 서버에 응답으로 오류 메시지와 서버 오류 코드(HTTP 상태 코드 500)를 전달한다.
+     * Finally receive and process the controller's exception
+     * Sends an error message and server error code (HTTP status code 500) in response to the front server.
      */
     @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public ResponseEntity<?> except(Exception e) {
-        HttpHeaders resHeaders = new HttpHeaders();
-        resHeaders.add("Content-Type", "application/json;charset=UTF-8");
-        resHeaders.add("Access-Control-Allow-Origin", "*");
-        resHeaders.add("Access-Control-Allow-Credentials", "true");
-        return new ResponseEntity<>(e.getMessage(), resHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> handleException(Exception e) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
+        return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

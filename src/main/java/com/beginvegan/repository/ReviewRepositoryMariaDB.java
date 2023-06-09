@@ -31,6 +31,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<ReviewDTO> reviewList = sqlSession.selectList("com.beginvegan.mybatis.ReviewMapper.selectAllReviewByMemberEmail", userEmail);
+            if(reviewList == null) throw new FindException("해당 멤버의 리뷰 정보가 없습니다.");
             return reviewList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,6 +54,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
         try {
             session = sqlSessionFactory.openSession();
             List<ReviewDTO> reviewList = session.selectList("com.beginvegan.mybatis.ReviewMapper.selectAllReviewByRestaurantId", id);
+            if(reviewList == null) throw new FindException("해당 식당의 리뷰 정보가 없습니다.");
             return reviewList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,6 +77,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
         try {
             session = sqlSessionFactory.openSession();
             ReviewDTO retrievedReview = session.selectOne("com.beginvegan.mybatis.ReviewMapper.selectReviewByReviewNo", reviewNo);
+            if(retrievedReview == null) throw new FindException("해당 리뷰 정보가 없습니다.");
             return retrievedReview;
         } catch (Exception e) {
             e.printStackTrace();

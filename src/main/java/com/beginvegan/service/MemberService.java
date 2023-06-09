@@ -28,7 +28,7 @@ public class MemberService {
     public MemberDTO loginTest(HttpSession session, HashMap<String, Object> param) {
         MemberDTO memberInfo = new MemberDTO();
         memberInfo.setMemberEmail((String) param.get("email"));
-        memberInfo.setMemberEmail("TEST유저");
+        memberInfo.setMemberName("TEST유저");
         memberInfo.setMemberPoint(99999999);
         memberInfo.setMemberRole("테스터");
 

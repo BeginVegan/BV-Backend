@@ -91,6 +91,7 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<ReservationDTO> reservationList = sqlSession.selectList("com.beginvegan.mybatis.ReservationMapper.selectAllReservation");
+            if(reservationList == null) throw new FindException("예약 정보가 없습니다.");
             return reservationList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,6 +114,7 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<ReservationDTO> reservationList = sqlSession.selectList("com.beginvegan.mybatis.ReservationMapper.selectALLReservationByMemberEmail", memberEmail);
+            if(reservationList == null) throw new FindException("해당 멤버의 예약 정보가 없습니다.");
             return reservationList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,6 +137,7 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
         try {
             sqlSession = sqlSessionFactory.openSession();
             ReservationDTO reservation = sqlSession.selectOne("com.beginvegan.mybatis.ReservationMapper.selectReservationByReservationNo", reservationNo);
+            if(reservation == null) throw new FindException("해당 예약 정보가 없습니다.");
             return reservation;
         } catch (Exception e) {
             e.printStackTrace();

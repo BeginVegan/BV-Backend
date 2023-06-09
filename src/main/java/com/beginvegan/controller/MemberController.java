@@ -59,6 +59,11 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("{memberEmail}")
+    public ResponseEntity<?> memberInfoByMemberEmail(@PathVariable String memberEmail) throws FindException{
+        return new ResponseEntity<>(memberService.findMemberByMemberEmail(memberEmail), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<?> memberAdd(@RequestBody MemberDTO memberDTO) throws AddException {
         memberService.addMember(memberDTO);
