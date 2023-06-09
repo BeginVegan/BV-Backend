@@ -125,6 +125,7 @@
 
     <select id="selectRestaurantMenuByRestaurantNo" parameterType="int" resultMap="restaurantResultMap">
         SELECT Restaurant.*, Menu.*
+        FROM Restaurant, Menu
         WHERE Restaurant.restaurant_no = Menu.restaurant_no AND Restaurant.restaurant_no = #{restaurantNo};
     </select>
 
@@ -146,6 +147,13 @@
                 WHEN r.restaurant_name LIKE CONCAT('%', #{entireKeyword}, '%') COLLATE utf8mb4_general_ci THEN 1
                 ELSE 2
             END;
+    </select>
+
+    <select id="selectAllReservationByRestaurantNo" parameterType="int" resultType="ReservationDTO">
+        SELECT Reservation.*
+        FROM Reservation, Restaurant
+        WHERE Reservation.restaurant_no = Restaurant.restaurant_no
+        AND Reservation.restaurant_no = #{restaurantNo};
     </select>
 
     <!-- 아래는 View 생성 쿼리문입니다. -->

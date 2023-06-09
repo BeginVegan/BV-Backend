@@ -1,7 +1,9 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.MenuDTO;
+import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.dto.RestaurantDTO;
+import com.beginvegan.dto.ReviewDTO;
 import com.beginvegan.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
@@ -198,6 +200,26 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
                 session.close();
             }
             log.info("selectAllRestaurantByKeyword 종료");
+        }
+    }
+
+    @Override
+    public List<ReservationDTO> selectAllReservationByRestaurantNo(int restaurantNo) throws FindException {
+        log.info("selectAllReservationByRestaurantNo 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            List<ReservationDTO> reservationList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllReservationByRestaurantNo", restaurantNo);
+            return reservationList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("selectAllReservationByRestaurantNo 종료");
         }
     }
 
