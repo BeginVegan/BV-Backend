@@ -25,11 +25,18 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     // 테스트 로그인용
-    public void loginTest(HttpSession session, HashMap<String, Object> param) {
+    public MemberDTO loginTest(HttpSession session, HashMap<String, Object> param) {
         //세션에 이메일과 토큰 값 저장
         session.setAttribute("memberEmail", (String) param.get("email"));
         session.setAttribute("memberName", "TEST유저");
         session.setAttribute("accessToken", (String) param.get("accessToken"));
+
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail((String) param.get("email"));
+        memberInfo.setMemberEmail("TEST유저");
+        memberInfo.setMemberPoint(99999999);
+
+        return memberInfo;
     }
     /**
      * 로그인 한다. KAKAO API
@@ -37,7 +44,7 @@ public class MemberService {
      * @param accessToken API accessToken
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
-    public void loginKakao(HttpSession session, String accessToken) throws AddException, FindException, IOException {
+    public MemberDTO loginKakao(HttpSession session, String accessToken) throws AddException, FindException, IOException {
         log.info("login 시작 - Kakao API");
 
         // Kakao API 요청 : 멤버 정보를 가져온다.
@@ -60,6 +67,8 @@ public class MemberService {
         session.setAttribute("accessToken", accessToken);
 
         log.info("login 완료 - Kakao API");
+
+        return memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
     }
 
     /**
@@ -68,7 +77,7 @@ public class MemberService {
      * @param googleCredential googleCredential
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
-    public void loginGoogle(HttpSession session, String googleCredential) throws AddException, FindException, IOException {
+    public MemberDTO loginGoogle(HttpSession session, String googleCredential) throws AddException, FindException, IOException {
         log.info("login 시작 - Google API");
 
         // Kakao API 요청 : 멤버 정보를 가져온다.
@@ -91,6 +100,8 @@ public class MemberService {
         session.setAttribute("googleCredential", googleCredential);
 
         log.info("login 완료 - Google API");
+
+        return memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
     }
 
     /**

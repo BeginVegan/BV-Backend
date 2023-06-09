@@ -29,9 +29,8 @@ public class MemberController {
 
     @PostMapping("login/test")
     public ResponseEntity<?> loginTEST(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        memberService.loginTest(session, param);
-        log.info(param.toString());
-        return new ResponseEntity<>(HttpStatus.OK);
+        MemberDTO memberInfo = memberService.loginTest(session, param);
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
     }
 
     /**
@@ -45,14 +44,14 @@ public class MemberController {
      */
     @PostMapping("login/kakao")
     public ResponseEntity<?> loginKakao(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        memberService.loginKakao(session, (String) param.get("accessToken"));
-        return new ResponseEntity<>(HttpStatus.OK);
+        MemberDTO memberInfo = memberService.loginKakao(session, (String) param.get("accessToken"));
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
     }
 
     @PostMapping("login/google")
     public ResponseEntity<?> loginGoogle(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        memberService.loginGoogle(session, (String) param.get("googleCredential"));
-        return new ResponseEntity<>(HttpStatus.OK);
+        MemberDTO memberInfo = memberService.loginGoogle(session, (String) param.get("googleCredential"));
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
     }
 
     @GetMapping("logout")
