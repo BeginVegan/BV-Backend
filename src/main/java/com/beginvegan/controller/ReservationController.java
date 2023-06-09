@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,24 +44,24 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
-    @GetMapping("list/{memberEmail}")
-    public ResponseEntity<?> reservationList(@PathVariable String memberEmail) throws FindException {
-        List<ReservationDTO> reservations = reservationService.findAllReservationByMemberEmail(memberEmail);
+    @GetMapping("list/memberEmail")
+    public ResponseEntity<?> reservationList(HttpSession session) throws FindException {
+        List<ReservationDTO> reservations = reservationService.findAllReservationByMemberEmail((String) session.getAttribute("memberEmail"));
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
-    @PostMapping("add")
+    @PostMapping
     public ResponseEntity<?> reservationAdd(@RequestBody ReservationDTO reservationDTO) throws AddException {
         return new ResponseEntity<>(reservationService.addReservation(reservationDTO), HttpStatus.CREATED);
     }
 
-    @PostMapping("modify")
-    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException, JsonProcessingException {
+    @PutMapping
+    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException {
         return new ResponseEntity<>(reservationService.modifyReservation(reservationDTO), HttpStatus.OK);
     }
 
-    @PostMapping("delete")
-    public ResponseEntity<?> reservationRemove(@RequestBody Map<String, String> payload) throws RemoveException {
-        return new ResponseEntity<>(reservationService.deleteReservation(Integer.parseInt(payload.get("reservation_no"))), HttpStatus.OK);
+    @DeleteMapping("{reservationNo}")
+    public ResponseEntity<?> reservationRemove(@PathVariable Integer reservationNo) throws RemoveException {
+        return new ResponseEntity<>(reservationService.deleteReservation(reservationNo), HttpStatus.OK);
     }
 }
