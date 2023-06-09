@@ -97,4 +97,14 @@ public class TimeUtil {
     public static Timestamp toTimestamp(LocalDateTime localDateTime) {
         return Timestamp.valueOf(localDateTime);
     }
+
+    // 로컬 데이트 타임을 스트링으로 변환
+    public static String localDateTimetoString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    // 로컬 타임을 스트링으로 변환
+    public static String localTimetoString(LocalTime localeTime) {
+        return localeTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
 }

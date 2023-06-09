@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.Response;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,5 +82,11 @@ public class RestaurantController {
     public ResponseEntity restaurantSearchList(@RequestParam String keyword) throws FindException {
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurantByKeyword(keyword);
         return new ResponseEntity(restaurantList, HttpStatus.OK);
+    }
+
+    @GetMapping("/reservation/{restaurantNo}")
+    public ResponseEntity reservationList(@PathVariable int restaurantNo) throws FindException {
+        List<String> availableTimeList = restaurantService.findAllAvailableReservationByRestaurantNo(restaurantNo);
+        return new ResponseEntity(availableTimeList, HttpStatus.OK);
     }
 }

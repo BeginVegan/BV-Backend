@@ -1,7 +1,10 @@
 package com.beginvegan.repository;
 
+import com.amazonaws.services.ec2.model.Reservation;
 import com.beginvegan.dto.MenuDTO;
+import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.dto.RestaurantDTO;
+import com.beginvegan.dto.ReviewDTO;
 import com.beginvegan.exception.*;
 
 import java.util.List;
@@ -83,6 +86,14 @@ public interface RestaurantRepository {
      * @throws FindException 데이터 조회에 실패할 경우 발생
      */
     List<RestaurantDTO> selectAllRestaurantByKeyword(Map searchMap) throws FindException;
+
+    /**
+     * 레스토랑의 예약정보를 반환한다.
+     * @param restaurantNo 예약 정보를 조회할 식당의 번호
+     * @return 예약정보 리스트
+     * @throws FindException 데이터 조회에 실패할 경우 발생
+     */
+    List<ReservationDTO> selectAllReservationByRestaurantNo(int restaurantNo) throws FindException;
 
     /**
      * 평점이 높은 식당 10곳에 대한 뷰를 만든다.
