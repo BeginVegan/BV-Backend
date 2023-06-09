@@ -28,6 +28,7 @@ public class MemberService {
     public void loginTest(HttpSession session, HashMap<String, Object> param) {
         //세션에 이메일과 토큰 값 저장
         session.setAttribute("memberEmail", (String) param.get("email"));
+        session.setAttribute("memberName", "TEST유저");
         session.setAttribute("accessToken", (String) param.get("accessToken"));
     }
     /**
@@ -55,6 +56,7 @@ public class MemberService {
         }
         //세션에 이메일과 토큰 값 저장
         session.setAttribute("memberEmail", memberInfo.getMemberEmail());
+        session.setAttribute("memberName", memberInfo.getMemberName());
         session.setAttribute("accessToken", accessToken);
 
         log.info("login 완료 - Kakao API");
@@ -85,6 +87,7 @@ public class MemberService {
         }
         //세션에 이메일과 토큰 값 저장
         session.setAttribute("memberEmail", memberInfo.getMemberEmail());
+        session.setAttribute("memberName", memberInfo.getMemberName());
         session.setAttribute("googleCredential", googleCredential);
 
         log.info("login 완료 - Google API");

@@ -91,6 +91,7 @@ public class MemberController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String memberEmail = (String)session.getAttribute("memberEmail");
+        String memberName = (String)session.getAttribute("memberName");
         String accessToken = (String)session.getAttribute("accessToken");
 
         Map<String, Object> map = new HashMap<>();
@@ -100,9 +101,8 @@ public class MemberController {
         map.put("최근 접근 시간", sdf.format(session.getLastAccessedTime()));
         map.put("생성 여부 판별", session.isNew());
         map.put("현재 memberEmail", memberEmail);
+        map.put("현재 memberName", memberName);
         map.put("현재 accessToken", accessToken);
-
-
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
