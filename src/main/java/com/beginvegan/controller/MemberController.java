@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class MemberController {
 
     @PostMapping("login/google")
     public ResponseEntity<?> loginGoogle(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        MemberDTO memberInfo = memberService.loginGoogle(session, (String) param.get("googleCredential"));
+        MemberDTO memberInfo = memberService.loginGoogle(session, (String) param.get("accessToken"));
         return new ResponseEntity<>(memberInfo, HttpStatus.OK);
     }
 

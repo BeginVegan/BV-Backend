@@ -77,11 +77,11 @@ public class MemberService {
      * @param googleCredential googleCredential
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
-    public MemberDTO loginGoogle(HttpSession session, String googleCredential) throws AddException, FindException, IOException {
+    public MemberDTO loginGoogle(HttpSession session, String accessToken) throws AddException, FindException, IOException {
         log.info("login 시작 - Google API");
 
         // Kakao API 요청 : 멤버 정보를 가져온다.
-        MemberDTO memberInfo = GetGoogleAccount.getMemberInfo(googleCredential);
+        MemberDTO memberInfo = GetGoogleAccount.getMemberInfo(accessToken);
 
         // DB에 저장된 회원 정보 조회
         try {
@@ -97,7 +97,7 @@ public class MemberService {
         //세션에 이메일과 토큰 값 저장
         session.setAttribute("memberEmail", memberInfo.getMemberEmail());
         session.setAttribute("memberName", memberInfo.getMemberName());
-        session.setAttribute("googleCredential", googleCredential);
+        session.setAttribute("accessToken", accessToken);
 
         log.info("login 완료 - Google API");
 
