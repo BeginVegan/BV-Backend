@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -24,9 +27,13 @@ public class MenuController {
     MenuService menuService;
 
     @PostMapping
-    public ResponseEntity<?> MenuAdd(@RequestBody MenuDTO menuDTO) throws AddException {
-        menuService.addMenu(menuDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> MenuAdd(@RequestPart(value = "menuDTO") MenuDTO menuInfo, @RequestPart(value = "menuImage", required = false) Optional<MultipartFile> menuImage) throws AddException, IOException {
+        if (menuImage.isPresent()) {
+            MultipartFile present = menuImage.get();
+            return new ResponseEntity<>(menuService.addMenu(menuInfo, present), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(menuService.addMenu(menuInfo), HttpStatus.OK);
+        }
     }
 
     @PostMapping("list")
