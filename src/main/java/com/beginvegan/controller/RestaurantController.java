@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +31,9 @@ public class RestaurantController {
      * @return 레스토랑의 리스트와 상태정보
      * @throws FindException Restaurant 테이블에 데이터가 없을 때 발생하는 Exception
      */
-    @GetMapping("list")
+    @GetMapping(value = "list")
     public ResponseEntity<?> restaurantList() throws FindException {
-
         List<RestaurantDTO> restaurantList = restaurantService.findRestaurant();
-
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 
@@ -58,8 +57,7 @@ public class RestaurantController {
 
     @PostMapping
     public ResponseEntity<?> restaurantAdd(@RequestPart(value = "restaurantDTO") RestaurantDTO restaurantInfo, @RequestPart(value = "restaurantImages", required = false) List<MultipartFile> restaurantImages) throws AddException, IOException {
-        restaurantService.addRestaurant(restaurantInfo, restaurantImages);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(restaurantService.addRestaurant(restaurantInfo, restaurantImages), HttpStatus.OK);
     }
 
     @PutMapping
