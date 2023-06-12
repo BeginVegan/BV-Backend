@@ -8,7 +8,9 @@ import com.beginvegan.repository.MenuRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -18,8 +20,16 @@ public class MenuService {
     @Autowired
     private MenuRepository menuRepository;
 
-    public void addMenu(MenuDTO menuInfo) throws AddException {
-        menuRepository.insertMenu(menuInfo);
+    @Autowired
+    private S3Service S3Service;
+
+    public int addMenu(MenuDTO menuInfo) throws AddException {
+        return menuRepository.insertMenu(menuInfo);
+    }
+    public int addMenu(MenuDTO menuInfo, MultipartFile menuImage) throws AddException, IOException {
+        String uploadUrl = S3Service.upload(menuImage,"menu/" + menuInfo.getRestaurantNo());
+        menuInfo.setMenuPhotoDir(uploadUrl);
+        return menuRepository.insertMenu(menuInfo);
     }
 
     public void addAllMenu(List<MenuDTO> menuList) throws AddException {

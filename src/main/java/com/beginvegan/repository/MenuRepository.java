@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface MenuRepository {
 
-    void insertMenu(MenuDTO menuInfo) throws AddException;
+    int insertMenu(MenuDTO menuInfo) throws AddException;
 
     void insertAllMenu(List<MenuDTO> menuList) throws AddException;
 

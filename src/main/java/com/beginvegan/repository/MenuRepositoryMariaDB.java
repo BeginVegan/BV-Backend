@@ -21,13 +21,13 @@ public class MenuRepositoryMariaDB implements MenuRepository {
 
 
     @Override
-    public void insertMenu(MenuDTO menuInfo) throws AddException {
+    public int insertMenu(MenuDTO menuInfo) throws AddException {
         log.info("insertMenu 시작");
         SqlSession session = null;
 
         try {
             session = sqlSessionFactory.openSession();
-            session.insert("com.beginvegan.mybatis.MenuMapper.insertMenu", menuInfo);
+            return session.insert("com.beginvegan.mybatis.MenuMapper.insertMenu", menuInfo);
         } catch (Exception e) {
             e.printStackTrace();
             throw new AddException(e.getMessage());
