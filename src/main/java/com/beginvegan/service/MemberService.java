@@ -26,17 +26,22 @@ public class MemberService {
 
     // 테스트 로그인용
     public MemberDTO loginTest(HttpSession session, HashMap<String, Object> param) {
-        MemberDTO memberInfo = new MemberDTO();
-        memberInfo.setMemberEmail((String) param.get("email"));
-        memberInfo.setMemberName("TEST유저");
-        memberInfo.setMemberPoint(99999999);
-        memberInfo.setMemberRole("테스터");
+        MemberDTO memberInfo;
+        try {
+            memberInfo = memberRepository.selectMemberByMemberEmail((String) param.get("email"));
+        } catch (FindException e) {
+            memberInfo = new MemberDTO();
+            memberInfo.setMemberEmail((String) param.get("email"));
+            memberInfo.setMemberName("테스트 멤버");
+            memberInfo.setMemberPoint(100);
+            memberInfo.setMemberRole("테스터 : DB와 연동되지 않는 유저입니다.");
+        }
 
         //세션에 이메일과 토큰 값 저장
         session.setAttribute("memberEmail", memberInfo.getMemberEmail());
         session.setAttribute("memberName", memberInfo.getMemberName());
         session.setAttribute("memberRole", memberInfo.getMemberRole());
-        session.setAttribute("accessToken", "test123");
+        session.setAttribute("accessToken", "no accessToken");
 
         return memberInfo;
     }
