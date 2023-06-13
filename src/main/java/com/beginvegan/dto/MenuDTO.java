@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
+@ToString
 public class MenuDTO {
     private int menuNo; // menu_no
     private int restaurantNo; // restaurant_no

@@ -14,8 +14,8 @@
     </select>
 
     <insert id="insertRestaurant" parameterType="restaurantDTO" useGeneratedKeys="true" keyProperty="restaurantNo">
-        INSERT INTO Restaurant (restaurant_name, restaurant_address, restaurant_address_gu, restaurant_x, restaurant_y, restaurant_open, restaurant_close, restaurant_detail, restaurant_avg_price, restaurant_table, restaurant_table_member, restaurant_vegan_level, restaurant_photo_dir, restaurant_star)
-        VALUES (#{restaurantName}, #{restaurantAddress}, #{restaurantAddressGu}, #{restaurantX}, #{restaurantY}, #{restaurantOpen}, #{restaurantClose}, #{restaurantDetail}, #{restaurantAvgPrice}, #{restaurantTable}, #{restaurantTableMember}, #{restaurantVeganLevel}, #{restaurantPhotoDir}, #{restaurantStar})
+        INSERT INTO Restaurant (restaurant_name, restaurant_address, restaurant_address_gu, restaurant_x, restaurant_y, restaurant_open, restaurant_close, restaurant_phone, restaurant_detail, restaurant_avg_price, restaurant_table, restaurant_table_member, restaurant_vegan_level, restaurant_photo_dir, restaurant_star)
+        VALUES (#{restaurantName}, #{restaurantAddress}, #{restaurantAddressGu}, #{restaurantX}, #{restaurantY}, #{restaurantOpen}, #{restaurantClose}, #{restaurantPhone}, #{restaurantDetail}, #{restaurantAvgPrice}, #{restaurantTable}, #{restaurantTableMember}, #{restaurantVeganLevel}, #{restaurantPhotoDir}, #{restaurantStar})
     </insert>
 
 <!--    <insert id="insertRestaurantMenu" parameterType="java.util.Map">-->
@@ -60,7 +60,7 @@
 
     <update id="updateRestaurant" parameterType="RestaurantDTO">
         UPDATE Restaurant
-        SET restaurant_name = #{restaurantName}, restaurant_address = #{restaurantAddress}, restaurant_address_gu = #{restaurantAddressGu}, restaurant_x = #{restaurantX}, restaurant_y = #{restaurantY}, restaurant_open = #{restaurantOpen}, restaurant_close = #{restaurantClose}, restaurant_detail = #{restaurantDetail}, restaurant_avg_price = #{restaurantAvgPrice}, restaurant_table = #{restaurantTable}, restaurant_table_member = #{restaurantTableMember}, restaurant_vegan_level = #{restaurantVeganLevel}, restaurant_photo_dir = #{restaurantPhotoDir}, restaurant_star = #{restaurantStar}
+        SET restaurant_name = #{restaurantName}, restaurant_address = #{restaurantAddress}, restaurant_address_gu = #{restaurantAddressGu}, restaurant_x = #{restaurantX}, restaurant_y = #{restaurantY}, restaurant_open = #{restaurantOpen}, restaurant_close = #{restaurantClose}, restaurant_phone = #{restaurantPhone}, restaurant_detail = #{restaurantDetail}, restaurant_avg_price = #{restaurantAvgPrice}, restaurant_table = #{restaurantTable}, restaurant_table_member = #{restaurantTableMember}, restaurant_vegan_level = #{restaurantVeganLevel}, restaurant_photo_dir = #{restaurantPhotoDir}, restaurant_star = #{restaurantStar}
         WHERE restaurant_no = #{restaurantNo}
     </update>
 
@@ -104,6 +104,7 @@
         <result property="restaurantY"              column="restaurant_y"/>
         <result property="restaurantOpen"           column="restaurant_open"/>
         <result property="restaurantClose"          column="restaurant_close"/>
+        <result property="restaurantPhone"          column="restaurant_phone"/>
         <result property="restaurantDetail"         column="restaurant_detail"/>
         <result property="restaurantAvgPrice"       column="restaurant_avg_price"/>
         <result property="restaurantTable"          column="restaurant_table"/>
