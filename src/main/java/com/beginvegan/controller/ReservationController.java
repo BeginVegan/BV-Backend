@@ -1,25 +1,18 @@
 package com.beginvegan.controller;
 
-import com.beginvegan.dto.MenuDTO;
 import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.ReservationService;
-import com.beginvegan.util.TimeUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -47,6 +40,7 @@ public class ReservationController {
     @GetMapping("list/memberEmail")
     public ResponseEntity<?> reservationList(HttpSession session) throws FindException {
         List<ReservationDTO> reservations = reservationService.findAllReservationByMemberEmail((String) session.getAttribute("memberEmail"));
+        log.info(reservations.toString());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 

@@ -1,9 +1,10 @@
 package com.beginvegan.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Generated;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Generated
@@ -14,6 +15,7 @@ public class ReviewDTO {
     private String memberEmail; // member_email
     private int reviewStar; // review_star
     private String reviewContent; // review_content
-    private Timestamp reviewTime; // review_time
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime reviewTime; // review_time
     private String reviewPhotoDir; // review_photo_dir
 }

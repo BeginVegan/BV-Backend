@@ -12,7 +12,9 @@ import com.beginvegan.repository.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +25,10 @@ public class MyPageService {
     private MemberRepository memberRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private S3Service S3Service;
+
 
     public List<ReviewDTO> findAllReviewByMemberEmail(String userEmail) throws FindException {
         return reviewRepository.selectAllReviewByMemberEmail(userEmail);
@@ -37,6 +43,12 @@ public class MyPageService {
     }
 
     public void addReview(ReviewDTO reviewInfo) throws AddException {
+        reviewRepository.insertReview(reviewInfo);
+    }
+
+    public void addReview(ReviewDTO reviewInfo, MultipartFile reviewImage) throws AddException, IOException {
+        String uploadUrl = S3Service.upload(reviewImage, "review/" + reviewInfo.getReservationNo());
+        reviewInfo.setReviewPhotoDir(uploadUrl);
         reviewRepository.insertReview(reviewInfo);
     }
 
@@ -62,6 +74,7 @@ public class MyPageService {
 
     /**
      * 포인트 내역을 리스트로 반환한다.
+     *
      * @param memberEmail 조회할 회원의 이메일
      * @return 포인트 내역 목록
      * @throws FindException 회원 Email로 DB 조회 실패시 발생

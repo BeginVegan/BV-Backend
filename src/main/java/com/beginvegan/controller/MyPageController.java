@@ -8,14 +8,20 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.MyPageService;
+import com.beginvegan.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -56,13 +62,28 @@ public class MyPageController {
 
 
     @PostMapping("review")
-    public ResponseEntity<?> reviewAdd(@RequestBody ReviewDTO reviewInfo) throws AddException {
+    public ResponseEntity<?> reviewAdd(HttpSession session, @RequestPart(value = "reviewDTO") ReviewDTO reviewInfo, @RequestPart(value = "reviewImage", required = false) Optional<MultipartFile> reviewImage) throws AddException, IOException, ParseException {
         log.info("reviewAdd 시작: " + reviewInfo.getReviewNo() + "/" + reviewInfo.getReservationNo() + "/" + reviewInfo.getRestaurantNo() + "/" + reviewInfo.getMemberEmail() + "/" + reviewInfo.getReviewStar() + "/" + reviewInfo.getReviewContent() + "/" + reviewInfo.getReviewTime() + "/" + reviewInfo.getReviewPhotoDir());
 
-        myPageService.addReview(reviewInfo);
+        String userEmail = session.getAttribute("memberEmail").toString();
+        reviewInfo.setMemberEmail(userEmail);
 
-        log.info("reviewAdd 종료");
-        return new ResponseEntity<>(HttpStatus.OK);
+        reviewInfo.setReviewTime(TimeUtil.toDateTime(new Date()));
+
+        if (reviewImage.isPresent()) {
+            MultipartFile present = reviewImage.get();
+            myPageService.addReview(reviewInfo, present);
+            log.info("reviewAdd 종료");
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } else {
+            myPageService.addReview(reviewInfo);
+            log.info("reviewAdd 종료");
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
     }
 
     @DeleteMapping("review/{reviewNo}")
