@@ -9,13 +9,17 @@ import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.MemberRepository;
 import com.beginvegan.repository.ReviewRepository;
+import com.beginvegan.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service("myPageService")
@@ -42,13 +46,14 @@ public class MyPageService {
         return reviewRepository.selectReviewByReviewNo(reviewNo);
     }
 
-    public void addReview(ReviewDTO reviewInfo) throws AddException {
-        reviewRepository.insertReview(reviewInfo);
-    }
 
-    public void addReview(ReviewDTO reviewInfo, MultipartFile reviewImage) throws AddException, IOException {
-        String uploadUrl = S3Service.upload(reviewImage, "review/" + reviewInfo.getReservationNo());
-        reviewInfo.setReviewPhotoDir(uploadUrl);
+    public void addReview(ReviewDTO reviewInfo, String userEmail, Optional<MultipartFile> reviewImage) throws AddException, IOException, ParseException {
+        reviewInfo.setMemberEmail(userEmail);
+        reviewInfo.setReviewTime(TimeUtil.toDateTime(new Date()));
+        if (reviewImage.isPresent()) {
+            String uploadUrl = S3Service.upload(reviewImage.get(), "review/" + reviewInfo.getReservationNo());
+            reviewInfo.setReviewPhotoDir(uploadUrl);
+        }
         reviewRepository.insertReview(reviewInfo);
     }
 

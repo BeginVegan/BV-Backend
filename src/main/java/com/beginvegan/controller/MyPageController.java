@@ -8,7 +8,6 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.MyPageService;
-import com.beginvegan.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,23 +64,12 @@ public class MyPageController {
         log.info("reviewAdd 시작: " + reviewInfo.getReviewNo() + "/" + reviewInfo.getReservationNo() + "/" + reviewInfo.getRestaurantNo() + "/" + reviewInfo.getMemberEmail() + "/" + reviewInfo.getReviewStar() + "/" + reviewInfo.getReviewContent() + "/" + reviewInfo.getReviewTime() + "/" + reviewInfo.getReviewPhotoDir());
 
         String userEmail = session.getAttribute("memberEmail").toString();
-        reviewInfo.setMemberEmail(userEmail);
 
-        reviewInfo.setReviewTime(TimeUtil.toDateTime(new Date()));
+        myPageService.addReview(reviewInfo, userEmail, reviewImage);
+        log.info("reviewAdd 종료");
 
-        if (reviewImage.isPresent()) {
-            MultipartFile present = reviewImage.get();
-            myPageService.addReview(reviewInfo, present);
-            log.info("reviewAdd 종료");
+        return new ResponseEntity<>(HttpStatus.OK);
 
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } else {
-            myPageService.addReview(reviewInfo);
-            log.info("reviewAdd 종료");
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
 
     }
 
