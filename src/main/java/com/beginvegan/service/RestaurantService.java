@@ -35,7 +35,7 @@ public class RestaurantService {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private S3Service S3Service;
+    private S3Service s3Service;
 
     /**
      * 전체 식당을 조회한다.
@@ -53,7 +53,7 @@ public class RestaurantService {
      */
     public int addRestaurant(RestaurantDTO restaurantInfo, List<MultipartFile> restaurantImages) throws AddException, IOException {
         if(!restaurantImages.isEmpty()) {
-            S3Service.uploadMulti(restaurantImages,"restaurant/" + restaurantRepository.selectNextRestaurantNo());
+            s3Service.uploadMulti(restaurantImages,"restaurant/" + restaurantRepository.selectNextRestaurantNo());
             restaurantInfo.setRestaurantPhotoDir("restaurant/" + restaurantRepository.selectNextRestaurantNo());
         }
 
@@ -88,9 +88,28 @@ public class RestaurantService {
      */
     public Map<String, Object> findBestRestaurant() throws FindException {
         Map<String, Object> bestMap = new HashMap<>();
-        bestMap.put("star", restaurantRepository.selectBestStarRestaurant());
-        bestMap.put("review", restaurantRepository.selectBestReviewRestaurant());
-        bestMap.put("reservation", restaurantRepository.selectBestReservationRestaurant());
+
+        List<RestaurantDTO> bestStarList = restaurantRepository.selectBestStarRestaurant();
+        for (RestaurantDTO rest : bestStarList) {
+            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
+        }
+        bestMap.put("star", bestStarList);
+
+        List<RestaurantDTO> bestReviewRestaurant = restaurantRepository.selectBestReviewRestaurant();
+        for (RestaurantDTO rest : bestReviewRestaurant) {
+            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
+        }
+        bestMap.put("review", bestReviewRestaurant);
+
+        List<RestaurantDTO> bestReservationList = restaurantRepository.selectBestReservationRestaurant();
+        for (RestaurantDTO rest : bestReservationList) {
+            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
+        }
+        bestMap.put("reservation", bestReservationList);
+
         return bestMap;
     }
 
