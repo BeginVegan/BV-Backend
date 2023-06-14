@@ -17,6 +17,12 @@
         <java.version>11</java.version>
         <spring-framework.version>5.3.27</spring-framework.version>
     </properties>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- Spring : 웹 애플리케이션(RESTful)을 개발하는 데 필요한 구성 요소를 제공한다. -->
         <dependency>
@@ -123,6 +129,13 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-aws</artifactId>
             <version>2.2.6.RELEASE</version>
+        </dependency>
+
+        <!-- 아이엠포트 -->
+        <dependency>
+            <groupId>com.github.iamport</groupId>
+            <artifactId>iamport-rest-client-java</artifactId>
+            <version>0.2.21</version>
         </dependency>
     </dependencies>
 
