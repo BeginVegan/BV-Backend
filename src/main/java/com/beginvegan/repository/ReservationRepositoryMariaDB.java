@@ -152,16 +152,33 @@ public class ReservationRepositoryMariaDB implements ReservationRepository{
     }
 
     @Override
-    public Integer deleteReservation(Integer ReservationNo) throws RemoveException {
+    public Integer cancelReservation(Integer reservationNo) throws ModifyException {
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.update("com.beginvegan.mybatis.ReservationMapper.cancelReservation", reservationNo);
+            return reservationNo;
+        } catch (Exception e) {
+            throw new ModifyException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
+
+    @Override
+    public Integer deleteReservation(Integer reservationNo) throws RemoveException {
         log.info("deleteReservation 시작");
 
         SqlSession sqlSession = null;
 
         try {
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", ReservationNo);
-            sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservation", ReservationNo);
-           return ReservationNo;
+            sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservationMenu", reservationNo);
+            sqlSession.delete("com.beginvegan.mybatis.ReservationMapper.deleteReservation", reservationNo);
+           return reservationNo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoveException(e.getMessage());

@@ -87,7 +87,7 @@ public class TossService {
                 .memberEmail(memberEmail)
                 .paymentTime(TimeUtil.toDateTime(new Date()))
                 .paymentPrice(lookUp.getResponse().getAmount().intValue())
-                .paymentStatus("결제완료")
+                .paymentStatus("결제")
                 .build();
 
         return paymentRepository.insertPayment(paymentInfo);
