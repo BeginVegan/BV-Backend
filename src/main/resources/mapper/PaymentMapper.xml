@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.beginvegan.mybatis.PaymentMapper">
+    <select id="selectAllPayment" resultType="PaymentDTO">
+        Select *
+        from Payment
+    </select>
+
+    <select id="selectPaymentByImpUid" parameterType="String" resultType="PaymentDTO">
+        Select *
+        FROM Payment
+        WHERE Payment.imp_uid = #{impUid}
+    </select>
+
+    <select id="selectPaymentByReservationNo" parameterType="Integer" resultType="PaymentDTO">
+        Select *
+        FROM Payment
+        WHERE Payment.reservation_no = #{reservationNo}
+    </select>
+
+    <select id="selectALLPaymentByMemberEmail" parameterType="String" resultType="PaymentDTO">
+        Select *
+        FROM Payment
+        WHERE Payment.member_email = #{memeberEmail}
+    </select>
+
+    <insert id="insertPayment" parameterType="ReviewDTO">
+        INSERT INTO Payment (imp_uid, reservation_no, member_email, payment_time, payment_price, payment_status)
+        VALUES (#{impUid}, #{reservationNo}, #{memberEmail}, #{paymentTime}, #{paymentPrice}, #{paymentStatus});
+    </insert>
+
+    <update id="updatePayment" parameterType="ReviewDTO">
+        UPDATE Payment
+        SET reservation_no = #{reservationNo},
+            payment_time   = #{paymentTime},
+            payment_price  = #{paymentPrice},
+            payment_status = #{paymentStatus}
+        WHERE imp_uid = #{impUid};
+    </update>
+
+    <update id="cancelPayment" parameterType="int">
+        UPDATE Payment
+        SET payment_status = "취소"
+        WHERE reservation_no = #{reservationNo};
+    </update>
+
+    <delete id="deletePayment" parameterType="String">
+        DELETE
+        FROM Payment
+        WHERE Payment.imp_uid = #{impUid}
+    </delete>
+</mapper>

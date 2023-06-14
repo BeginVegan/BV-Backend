@@ -17,6 +17,7 @@
         <typeAlias type="com.beginvegan.dto.ReservationMenuDTO" alias="ReservationMenuDTO"/>
         <typeAlias type="com.beginvegan.dto.RestaurantDTO" alias="RestaurantDTO"/>
         <typeAlias type="com.beginvegan.dto.ReviewDTO" alias="ReviewDTO"/>
+        <typeAlias type="com.beginvegan.dto.PaymentDTO" alias="PaymentDTO"/>
     </typeAliases>
     <mappers>
         <!--
