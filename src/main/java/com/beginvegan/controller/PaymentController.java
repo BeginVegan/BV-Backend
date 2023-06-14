@@ -66,9 +66,9 @@ public class PaymentController {
     @PostMapping
     public ResponseEntity<?> paymentAdd(@RequestBody PaymentDTO paymentDTO, HttpSession session) throws Exception {
         String impUid = paymentDTO.getImpUid(); // 실제 결제금액 조회위한 아임포트 서버쪽에서 id
-        int amount = paymentDTO.getPaymentPrice(); // 실제로 유저가 결제한 금액
         //String memberEmail = (String) session.getAttribute("memberEmail");
         String memberEmail = paymentDTO.getMemberEmail();
+        int amount = paymentDTO.getPaymentPrice(); // 실제로 유저가 결제한 금액
 
         //아임포트 서버쪽에 결제된 정보 조회.
         IamportResponse<Payment> lookUp = tossService.paymentLookup(impUid);

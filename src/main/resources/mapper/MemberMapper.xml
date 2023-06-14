@@ -30,6 +30,12 @@
         VALUES (#{memberEmail}, #{pointDiv}, #{pointTime}, #{pointChange}, #{pointResult});
     </insert>
 
+    <update id="updateMemberPoint" parameterType="MemberDTO">
+        UPDATE Member
+        SET member_point = #{memberPoint}
+        WHERE member_email = #{memberEmail};
+    </update>
+
     <select id="selectAllPointsByMemberEmail" parameterType="String" resultType="PointDTO">
         SELECT * FROM Point
         WHERE member_email = #{memberEmail};

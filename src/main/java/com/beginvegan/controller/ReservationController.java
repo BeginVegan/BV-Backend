@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -52,17 +54,17 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<?> reservationAdd(@RequestBody ReservationDTO reservationDTO) throws AddException {
-        return new ResponseEntity<>(reservationService.addReservation(reservationDTO), HttpStatus.CREATED);
+    public ResponseEntity<?> reservationAdd(@RequestBody ReservationDTO reservationDTO, @RequestParam Optional<String> impUid) throws Exception {
+        return new ResponseEntity<>(reservationService.addReservation(reservationDTO, impUid), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException, IamportResponseException, FindException, IOException, AddException {
+    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws Exception {
         return new ResponseEntity<>(reservationService.modifyReservation(reservationDTO), HttpStatus.OK);
     }
 
     @PutMapping("cancel")
-    public ResponseEntity<?> reservationCancel(@RequestParam int reservationNo) throws ModifyException, IamportResponseException, IOException, FindException {
+    public ResponseEntity<?> reservationCancel(@RequestParam int reservationNo) throws ModifyException, IamportResponseException, IOException, FindException, ParseException, AddException {
         return new ResponseEntity<>(reservationService.cancelReservation(reservationNo), HttpStatus.OK);
     }
 
