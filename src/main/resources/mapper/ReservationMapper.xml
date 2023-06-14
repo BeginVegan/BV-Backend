@@ -39,6 +39,12 @@
         WHERE reservation_no = #{reservationNo};
     </update>
 
+    <update id="cancelReservation" parameterType="int">
+        UPDATE Reservation
+        SET reservation_status = "취소"
+        WHERE reservation_no = #{reservationNo};
+    </update>
+
     <delete id="deleteReservation" parameterType="int">
         DELETE FROM Reservation
         WHERE reservation_no = #{reservationNo}

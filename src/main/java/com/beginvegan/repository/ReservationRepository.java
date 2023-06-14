@@ -50,12 +50,19 @@ public interface ReservationRepository {
     public ReservationDTO selectReservationByReservationNo(Integer reservationNo) throws FindException;
 
     /**
+     * 예약 번호에 해당하는 예약을 취소한다.
+     * @throws NullPointerException 예약테이블이 비어있을 경우
+     * @return 취소된 예약의 번호
+     */
+    public Integer cancelReservation(Integer reservationNo) throws ModifyException;
+
+    /**
      * 예약 번호에 해당하는 예약을 삭제한다.
-     * @param ReservationNo 예약 번호
+     * @param reservationNo 예약 번호
      * @throws RemoveException DB에 예약 삭제 실패할 경우 발생
      * @return 삭제된 예약의 번호
      */
-    public Integer deleteReservation(Integer ReservationNo) throws RemoveException;
+    public Integer deleteReservation(Integer reservationNo) throws RemoveException;
 
     /**
      * 다음 생성될 예약 번호를 가져온다

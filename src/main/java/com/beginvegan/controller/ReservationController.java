@@ -6,19 +6,26 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.ReservationService;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("reservation")
 public class ReservationController {
-
     private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
@@ -50,12 +57,17 @@ public class ReservationController {
     }
 
     @PutMapping
-    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException {
+    public ResponseEntity<?> reservationModify(@RequestBody ReservationDTO reservationDTO) throws ModifyException, IamportResponseException, FindException, IOException, AddException {
         return new ResponseEntity<>(reservationService.modifyReservation(reservationDTO), HttpStatus.OK);
     }
 
+    @PutMapping("cancel")
+    public ResponseEntity<?> reservationCancel(@RequestParam int reservationNo) throws ModifyException, IamportResponseException, IOException, FindException {
+        return new ResponseEntity<>(reservationService.cancelReservation(reservationNo), HttpStatus.OK);
+    }
+
     @DeleteMapping("{reservationNo}")
-    public ResponseEntity<?> reservationRemove(@PathVariable Integer reservationNo) throws RemoveException {
+    public ResponseEntity<?> reservationRemove(@PathVariable int reservationNo) throws RemoveException {
         return new ResponseEntity<>(reservationService.deleteReservation(reservationNo), HttpStatus.OK);
     }
 }
