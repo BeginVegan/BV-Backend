@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Generated
+@Builder
 public class PointDTO {
     private String memberEmail; // member_email
     private String pointDiv; // point_div

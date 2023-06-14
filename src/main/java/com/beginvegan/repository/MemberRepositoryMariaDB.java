@@ -114,6 +114,27 @@ public class MemberRepositoryMariaDB implements MemberRepository {
     }
 
     @Override
+    public void updateMemberPoint(MemberDTO memberInfo) throws ModifyException {
+        log.info("updateMemberPoint 시작 - memberInfo : " + memberInfo.toString());
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMemberPoint", memberInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModifyException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("updateMemberPoint 종료");
+        }
+    }
+
+    @Override
     public void insertPoint(PointDTO pointInfo) throws AddException {
         log.info("insertPoint 시작 - pointInfo : " + pointInfo.toString());
 

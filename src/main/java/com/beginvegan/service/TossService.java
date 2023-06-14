@@ -1,6 +1,7 @@
 package com.beginvegan.service;
 
 import com.beginvegan.dto.PaymentDTO;
+import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.dto.ReservationMenuDTO;
 import com.beginvegan.repository.PaymentRepository;
 import com.beginvegan.repository.ReservationRepository;
@@ -64,8 +65,9 @@ public class TossService {
      */
     @Transactional
     public PaymentDTO verifyIamportService(IamportResponse<Payment> lookUp, String memberEmail, int amount, int reservationNo) throws Exception {
-        List<ReservationMenuDTO> menus = reservationRepository.selectReservationByReservationNo(reservationNo).getReservationMenuList();
-        int totalMenuPrice = 0;
+        ReservationDTO reservationDTO = reservationRepository.selectReservationByReservationNo(reservationNo);
+        List<ReservationMenuDTO> menus = reservationDTO.getReservationMenuList();
+        int totalMenuPrice = -reservationDTO.getReservationDiscount();
 
         for(ReservationMenuDTO menu : menus) {
             totalMenuPrice += menu.getMenuPrice() * menu.getReservationMenuCount();
