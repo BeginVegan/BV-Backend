@@ -26,6 +26,7 @@ public class RestaurantDTO {
     private LocalTime restaurantOpen; // restaurant_open
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     private LocalTime restaurantClose; // restaurant_close
+    private String restaurantPhone; //restaurant_phone
     private String restaurantDetail; // restaurant_detail
     private int restaurantAvgPrice; // restaurant_avg_price
     private int restaurantTable; // restaurant_table
