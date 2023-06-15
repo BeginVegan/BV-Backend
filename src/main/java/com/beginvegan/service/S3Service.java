@@ -125,4 +125,24 @@ public class S3Service {
         return Optional.empty();
     }
 
+    public List<String> getRestaurnatImages(String prefix) {
+        List<String> fileNames = new ArrayList<>();
+        ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
+        listObjectsRequest.setBucketName(bucket);
+        if (!prefix.equals("")) {
+            listObjectsRequest.setPrefix(prefix);
+        }
+
+        ObjectListing s3Objects;
+        do {
+            s3Objects = amazonS3Client.listObjects(listObjectsRequest);
+            for (S3ObjectSummary s3ObjectSummary : s3Objects.getObjectSummaries()) {
+                fileNames.add("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + s3ObjectSummary.getKey());
+            }
+            listObjectsRequest.setMarker(s3Objects.getNextMarker());
+        } while (s3Objects.isTruncated());
+
+        return fileNames;
+    }
+
 }

@@ -6,6 +6,7 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.RestaurantService;
+import com.beginvegan.service.S3Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +25,9 @@ public class RestaurantController {
 
     @Autowired
     RestaurantService restaurantService;
+
+    @Autowired
+    private S3Service s3Service;
 
     /**
      * 모든 레스토랑 리스트를 가져온다.
@@ -82,5 +85,11 @@ public class RestaurantController {
     public ResponseEntity reservationList(@PathVariable int restaurantNo) throws FindException {
         List<String> availableTimeList = restaurantService.findAllAvailableReservationByRestaurantNo(restaurantNo);
         return new ResponseEntity(availableTimeList, HttpStatus.OK);
+    }
+
+    @GetMapping("/img/restaurant/{dirName}")
+    public ResponseEntity<?> imageList(@PathVariable String dirName) {
+        List<String> imageList = s3Service.getRestaurnatImages("restaurant/" + dirName);
+        return new ResponseEntity<>(imageList, HttpStatus.OK);
     }
 }
