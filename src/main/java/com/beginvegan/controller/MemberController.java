@@ -26,68 +26,6 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @PostMapping("login/test")
-    public ResponseEntity<?> loginTEST(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        MemberDTO memberInfo = memberService.loginTest(session, param);
-        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
-    }
-
-    /**
-     * 프론트의 로그인 요청 처리(카카오) MemberDB 확인 후 해당 유저의 email 정보 Session에 저장
-     * @param param AccessToken 내용을 포함하는 Jason을 Map으로 받는다.
-     * @param session 로그인 요청 유저의 session 정보
-     * @return
-     * @throws AddException
-     * @throws FindException
-     * @throws IOException
-     */
-    @PostMapping("login/kakao")
-    public ResponseEntity<?> loginKakao(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        MemberDTO memberInfo = memberService.loginKakao(session, (String) param.get("accessToken"));
-        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
-    }
-
-    @PostMapping("login/google")
-    public ResponseEntity<?> loginGoogle(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
-        MemberDTO memberInfo = memberService.loginGoogle(session, (String) param.get("accessToken"));
-        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
-    }
-
-    @GetMapping("logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        memberService.logout(session);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("{memberEmail}")
-    public ResponseEntity<?> memberInfoByMemberEmail(@PathVariable String memberEmail) throws FindException{
-        return new ResponseEntity<>(memberService.findMemberByMemberEmail(memberEmail), HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<?> memberAdd(@RequestBody MemberDTO memberDTO) throws AddException {
-        memberService.addMember(memberDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<?> memberRemove(HttpSession session) throws RemoveException {
-        memberService.removeMember(session, (String) session.getAttribute("memberEmail"));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PutMapping
-    public ResponseEntity<?> memberModify(@RequestBody MemberDTO memberDTO) throws ModifyException {
-        memberService.modifyMember(memberDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping
-    public ResponseEntity<?> memberDetails(HttpSession session) throws FindException {
-        memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     // TEST Controller : Session 확인용
     @GetMapping("session")
     public ResponseEntity<?> getSession(HttpSession session) {
@@ -109,5 +47,131 @@ public class MemberController {
         map.put("현재 accessToken", accessToken);
         map.put("현재 memberRole", memberRole);
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    /**
+     * 테스트용 로그인 컨트롤러 입니다.
+     * 테스트로 전달 받은 이메일이 DB에 존재하면 실제 유저의 정보를 반환하고,
+     * 그렇지 않으면 더미 데이터를 임시로 반환합니다.
+     * @param param 이메일 정보
+     * @param session 로그인 요청 유저의 session 정보
+     * @return 멤버 DTO 반환
+     */
+    @PostMapping("login/test")
+    public ResponseEntity<?> loginTEST(@RequestBody HashMap<String, Object> param, HttpSession session) {
+        MemberDTO memberInfo = memberService.loginTest(session, param);
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
+    }
+
+    /**
+     * 로그인 요청 처리(카카오) 컨트롤러
+     * @param param AccessToken 정보
+     * @param session 로그인 요청 유저의 session 정보
+     * @return 로그인 요청 유저의 멤버 정보
+     * @throws AddException 멤버를 추가하는데 실패할 경우 발생
+     * @throws FindException 멤버 정보를 찾는데 실패할 경우 발생
+     * @throws IOException API 요청 실패시 발생
+     */
+    @PostMapping("login/kakao")
+    public ResponseEntity<?> loginKakao(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
+        MemberDTO memberInfo = memberService.loginKakao(session, (String) param.get("accessToken"));
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
+    }
+
+    /**
+     * 로그인 요청 처리(구글) 컨트롤러
+     * @param param AccessToken 정보
+     * @param session 로그인 요청 유저의 session 정보
+     * @return 로그인 요청 유저의 멤버 정보
+     * @throws AddException 멤버를 추가하는데 실패할 경우 발생
+     * @throws FindException 멤버 정보를 찾는데 실패할 경우 발생
+     * @throws IOException API 요청 실패시 발생
+     */
+    @PostMapping("login/google")
+    public ResponseEntity<?> loginGoogle(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
+        MemberDTO memberInfo = memberService.loginGoogle(session, (String) param.get("accessToken"));
+        return new ResponseEntity<>(memberInfo, HttpStatus.OK);
+    }
+
+    /**
+     * 로그아웃 요청 처리 컨트롤러
+     * @param session 요청 유저의 session 정보
+     * @return session 을 무효화 시킨다.
+     */
+    @GetMapping("logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        memberService.logout(session);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버의 정보 요청 담당 컨트롤러
+     * @param session 요청 유저의 세션 정보
+     * @return 요청 유저의 멤버 정보
+     * @throws FindException 멤버를 찾는데 실패할 경우 발생
+     */
+    @GetMapping
+    public ResponseEntity<?> memberDetails(HttpSession session) throws FindException {
+        memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 이메일 정보로 멤버의 정보를 반환한다.
+     * @param memberEmail 조회할 멤버의 이메일
+     * @return 요청 유저의 멤버 정보
+     * @throws FindException 해당 멤버를 찾는데 실패할 경우 발생
+     */
+    @GetMapping("{memberEmail}")
+    public ResponseEntity<?> memberInfoByMemberEmail(@PathVariable String memberEmail) throws FindException{
+        return new ResponseEntity<>(memberService.findMemberByMemberEmail(memberEmail), HttpStatus.OK);
+    }
+
+    /**
+     * 멤버를 가입 요청 담당 컨트롤러
+     * @param memberDTO 추가할 멤버의 정보
+     * @return 상태 200 응답
+     * @throws AddException 멤버 추가에 실패할 경우 발생
+     */
+    @PostMapping
+    public ResponseEntity<?> memberAdd(@RequestBody MemberDTO memberDTO) throws AddException {
+        memberService.addMember(memberDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버 탈퇴 요청 담당 컨트롤러
+     * @param session 요청 유저의 세션 정보
+     * @return 상태 200 응답
+     * @throws RemoveException 멤버 삭제에 실패할 경우 발생
+     */
+    @DeleteMapping
+    public ResponseEntity<?> memberRemove(HttpSession session) throws RemoveException {
+        memberService.removeMember(session, (String) session.getAttribute("memberEmail"));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버 정보 수정 요청 담당 컨트롤러
+     * @param memberDTO 수정 내용
+     * @return 상태 200 응답
+     * @throws ModifyException 멤버 수정에 실패할 경우 발생
+     */
+    @PutMapping
+    public ResponseEntity<?> memberModify(@RequestBody MemberDTO memberDTO) throws ModifyException {
+        memberService.modifyMember(memberDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버의 식당 즐겨찾기 여부를 반환한다.
+     * @param restaurantNo 조회할 식당 번호
+     * @param session 요청 유저의 session 정보
+     * @return 즐겨찾기 여부
+     */
+    @GetMapping("bookmark/{restaurantNo}")
+    public ResponseEntity<?> isBookmark(@PathVariable String restaurantNo, HttpSession session) {
+        boolean isBookmark = memberService.isMemberBookmarkedRestaurant((String) session.getAttribute("memberEmail"), restaurantNo);
+        return new ResponseEntity<>(isBookmark, HttpStatus.OK);
     }
 }

@@ -56,6 +56,11 @@
         WHERE member_email = #{memberEmail};
     </select>
 
+    <select id="selectBookmarkByMemberEmailAndRestaurntNo" parameterType="java.util.Map" resultType="BookmarkDTO">
+        SELECT * FROM Bookmark
+        WHERE restaurant_no = #{restaurantNo} AND member_email = #{memberEmail};
+    </select>
+
     <select id="selectPointTEST" parameterType="PointDTO" resultType="PointDTO">
         SELECT * FROM Point
         WHERE member_email = #{memberEmail} AND point_time = #{pointTime};
@@ -70,5 +75,4 @@
         SELECT * FROM Bookmark
         WHERE restaurant_no = #{restaurantNo} AND member_email = #{memberEmail};
     </select>
-
 </mapper>

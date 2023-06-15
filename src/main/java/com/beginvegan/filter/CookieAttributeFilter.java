@@ -59,5 +59,4 @@ public class CookieAttributeFilter implements Filter {
         }
     }
 
-
 }

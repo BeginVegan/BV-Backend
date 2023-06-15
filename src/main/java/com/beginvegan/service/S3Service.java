@@ -1,6 +1,6 @@
 package com.beginvegan.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class S3Service {
 
     @Autowired
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -38,17 +38,26 @@ public class S3Service {
 
     public List<String> uploadMulti(List<MultipartFile> multipartFiles, String dirName) throws IOException {
         List<String> fileNames = new ArrayList<>();
-        for(MultipartFile multipartFile : multipartFiles) {
+        for (int index = 0; index < multipartFiles.size(); index++) {
+            MultipartFile multipartFile = multipartFiles.get(index);
             File uploadFile = convert(multipartFile)
-                    .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
-            fileNames.add(upload(uploadFile, dirName));
+                    .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File conversion failed"));
+            fileNames.add(upload(uploadFile, dirName, index));
         }
-
         return fileNames;
     }
 
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + uploadFile.getName();
+        String uploadImageUrl = putS3(uploadFile, fileName);
+
+        removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
+
+        return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
+    }
+
+    private String upload(File uploadFile, String dirName, int index) {
+        String fileName = dirName + "/" + index;
         String uploadImageUrl = putS3(uploadFile, fileName);
 
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)

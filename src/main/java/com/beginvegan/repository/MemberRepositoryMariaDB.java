@@ -255,6 +255,34 @@ public class MemberRepositoryMariaDB implements MemberRepository {
         }
     }
 
+    @Override
+    public boolean selectBookmarkByMemberEmailAndRestaurntNo(String memberEmail, String restaurantNo) {
+        log.info("selectBookmarkByMemberEmailAndRestaurntNo 시작 - memberEmail : " + memberEmail + ", restaurantNo :" + restaurantNo);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("memberEmail", memberEmail);
+        map.put("restaurantNo", restaurantNo);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            BookmarkDTO bookmark = sqlSession.selectOne("com.beginvegan.mybatis.MemberMapper.selectBookmarkByMemberEmailAndRestaurntNo", map);
+            if(bookmark == null) throw new FindException();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  false;
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectBookmarkByMemberEmailAndRestaurntNo 종료");
+        }
+    }
+
     //아래 메소드는 단위 테스트를 위한 CRUD 메소드입니다.
     // Selects a specific point for testing
     public PointDTO selectPointTEST(PointDTO pointDTO) throws FindException {

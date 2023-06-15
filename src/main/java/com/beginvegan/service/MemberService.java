@@ -57,7 +57,7 @@ public class MemberService {
         // Kakao API 요청 : 멤버 정보를 가져온다.
         MemberDTO memberInfo = GetKakaoAccount.getMemberInfo(accessToken);
 
-        // DB에 저장된 회원 정보 조회
+        // DB에 저장된 멤버 정보 조회
         try {
             MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
             // 멤버의 닉네임 정보 업데이트
@@ -84,7 +84,7 @@ public class MemberService {
     /**
      * 로그인 한다. Google API
      * @param session 클라이언트의 세션
-     * @param googleCredential googleCredential
+     * @param accessToken accessToken
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
     public MemberDTO loginGoogle(HttpSession session, String accessToken) throws AddException, FindException, IOException {
@@ -93,7 +93,7 @@ public class MemberService {
         // Kakao API 요청 : 멤버 정보를 가져온다.
         MemberDTO memberInfo = GetGoogleAccount.getMemberInfo(accessToken);
 
-        // DB에 저장된 회원 정보 조회
+        // DB에 저장된 멤버 정보 조회
         try {
             MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
             // 멤버의 닉네임 정보 업데이트
@@ -165,5 +165,13 @@ public class MemberService {
         return memberRepository.selectMemberByMemberEmail(memberEmail);
     }
 
-
+    /**
+     * 이메일과 식당번호로 즐겨찾기 여부를 반환한다.
+     * @param memberEmail 조회할 멤버의 이메일
+     * @param restaurantNo 조회할 식당 번호
+     * @return 즐겨찾기 여부
+     */
+    public boolean isMemberBookmarkedRestaurant(String memberEmail, String restaurantNo) {
+        return memberRepository.selectBookmarkByMemberEmailAndRestaurntNo(memberEmail, restaurantNo);
+    }
 }

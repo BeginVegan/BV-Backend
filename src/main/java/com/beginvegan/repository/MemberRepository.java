@@ -24,12 +24,12 @@ public interface MemberRepository {
     /**
      * 회원 정보 변경 사항을 반영한다.
      *
-     * @param memberInfo 회원 수정 정보
+     * @param memeberInfo 회원 수정 정보
      * @throws ModifyException DB의 회원 정보 수정에 실패할 경우 발생
      * @Description 1. 회원 정보 수정 사항 반영
      * 2. 회원의 포인트 변화(적립, 사용) 반영
      */
-    public void updateMember(MemberDTO memberInfo) throws ModifyException;
+    public void updateMember(MemberDTO memeberInfo) throws ModifyException;
 
     /**
      * 회원을 탈퇴한다.
@@ -47,14 +47,6 @@ public interface MemberRepository {
      * @throws FindException DB에서 회원 정보 조회에 실패할 경우 발생 또는 데이터가 없을 경우 발생
      */
     public MemberDTO selectMemberByMemberEmail(String memberEmail) throws FindException;
-
-    /**
-     * 회원의 포인트를 변경합니다.
-     *
-     * @param memberInfo 회원 변경 내용
-     * @throws ModifyException DB의 회원 정보 수정에 실패할 경우 발생
-     */
-    public void updateMemberPoint(MemberDTO memberInfo) throws ModifyException;
 
     /**
      * 포인트 변경 내역을 기록합니다.
@@ -100,5 +92,18 @@ public interface MemberRepository {
      */
     public List<BookmarkDTO> selectAllBookmarkByMemberEmail(String memberEmail) throws FindException;
 
+    /**
+     * 회원의 포인트 정보를 업데이트한다.
+     * @param memberInfo
+     * @throws ModifyException
+     */
+    public void updateMemberPoint(MemberDTO memberInfo) throws ModifyException;
 
+    /**
+     * 회원이 특정 식당을 즐겨찾기한 정보를 반환한다.
+     * @param memberEmail
+     * @param restaurantNo
+     * @return
+     */
+    public boolean selectBookmarkByMemberEmailAndRestaurntNo(String memberEmail, String restaurantNo);
 }
