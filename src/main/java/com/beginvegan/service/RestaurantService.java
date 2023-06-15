@@ -134,12 +134,21 @@ public class RestaurantService {
      * @throws FindException 조회에 실패할 경우 발생
      */
     public List<RestaurantDTO> findRestaurantByKeyword(String keyword) throws FindException {
+        // 모든 공백을 띄어쓰기 한칸으로 변경
         String dbKeyword = keyword.strip().replaceAll("\\s+"," ");
         Map<String, Object> searchMap = new HashMap<>();
         searchMap.put("entireKeyword", dbKeyword);
         String[] keywords = keyword.split(" ");
         searchMap.put("keywords", keywords);
-        return restaurantRepository.selectAllRestaurantByKeyword(searchMap);
+
+        List<RestaurantDTO> searchList = restaurantRepository.selectAllRestaurantByKeyword(searchMap);
+        for (RestaurantDTO rest : searchList) {
+            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
+            System.out.println(rest.getRestaurantPhotoDir());
+        }
+
+        return searchList;
     }
 
     public List<String> findAllAvailableReservationByRestaurantNo(int restaurantNo) throws FindException {
