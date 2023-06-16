@@ -19,7 +19,9 @@ import java.util.HashMap;
 @Slf4j
 @Service("memberService")
 public class MemberService {
-    private int MEMBER_INITIAL_POINT = 100;
+    private static final int MEMBER_INITIAL_POINT = 100;
+    private static final String MEMBER_ROLE_NORMAL = "normal";
+
 
     @Autowired
     private MemberRepository memberRepository;
@@ -66,7 +68,7 @@ public class MemberService {
                 memberRepository.updateMember(memberExistInfo);
             }
         } catch (Exception e) {
-            memberRepository.insertMember(memberInfo);
+            addMember(memberInfo);
         }
 
         MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
@@ -102,7 +104,7 @@ public class MemberService {
                 memberRepository.updateMember(memberExistInfo);
             }
         } catch (Exception e) {
-            memberRepository.insertMember(memberInfo);
+            addMember(memberInfo);
         }
 
         MemberDTO memberExistInfo = memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail());
@@ -132,6 +134,7 @@ public class MemberService {
      */
     public void addMember(MemberDTO memberInfo) throws AddException {
         memberInfo.setMemberPoint(MEMBER_INITIAL_POINT);
+        memberInfo.setMemberRole(MEMBER_ROLE_NORMAL);
         memberRepository.insertMember(memberInfo);
     }
 
