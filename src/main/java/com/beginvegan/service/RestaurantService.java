@@ -37,6 +37,9 @@ public class RestaurantService {
     @Autowired
     private S3Service s3Service;
 
+    private static final String DEFAULT_PHOTO_DIR = "restaurant/default.png";
+    private static final String S3_URL = "https://bv-image.s3.ap-northeast-2.amazonaws.com/";
+
     /**
      * 전체 식당을 조회한다.
      * @return 전체 식당 리스트
@@ -89,28 +92,27 @@ public class RestaurantService {
     public Map<String, Object> findBestRestaurant() throws FindException {
         Map<String, Object> bestMap = new HashMap<>();
 
-        List<RestaurantDTO> bestStarList = restaurantRepository.selectBestStarRestaurant();
-        for (RestaurantDTO rest : bestStarList) {
-            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
-            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
-        }
-        bestMap.put("star", bestStarList);
-
-        List<RestaurantDTO> bestReviewRestaurant = restaurantRepository.selectBestReviewRestaurant();
-        for (RestaurantDTO rest : bestReviewRestaurant) {
-            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
-            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
-        }
-        bestMap.put("review", bestReviewRestaurant);
-
-        List<RestaurantDTO> bestReservationList = restaurantRepository.selectBestReservationRestaurant();
-        for (RestaurantDTO rest : bestReservationList) {
-            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
-            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
-        }
-        bestMap.put("reservation", bestReservationList);
+        bestMap.put("star", applyPhotoDIr(restaurantRepository.selectBestStarRestaurant()));
+        bestMap.put("review", applyPhotoDIr(restaurantRepository.selectBestReviewRestaurant()));
+        bestMap.put("reservation", applyPhotoDIr(restaurantRepository.selectBestReservationRestaurant()));
 
         return bestMap;
+    }
+
+    /**
+     * restaurantPhotoDir에 S3 url을 붙여준다.
+     * @param bestList 베스트 식당 리스트
+     * @return S3 url이 적용된 식당 리스트
+     */
+    public List<RestaurantDTO> applyPhotoDIr(List<RestaurantDTO> bestList) {
+        for (RestaurantDTO rest : bestList) {
+            String fileName = DEFAULT_PHOTO_DIR;
+            if (rest.getRestaurantPhotoDir() != null) {
+                fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+            }
+            rest.setRestaurantPhotoDir(S3_URL + fileName);
+        }
+        return bestList;
     }
 
     /**
@@ -141,14 +143,7 @@ public class RestaurantService {
         String[] keywords = keyword.split(" ");
         searchMap.put("keywords", keywords);
 
-        List<RestaurantDTO> searchList = restaurantRepository.selectAllRestaurantByKeyword(searchMap);
-        for (RestaurantDTO rest : searchList) {
-            String fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
-            rest.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + fileName);
-            System.out.println(rest.getRestaurantPhotoDir());
-        }
-
-        return searchList;
+        return applyPhotoDIr(restaurantRepository.selectAllRestaurantByKeyword(searchMap));
     }
 
     public List<String> findAllAvailableReservationByRestaurantNo(int restaurantNo) throws FindException {
