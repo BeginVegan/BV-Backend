@@ -126,9 +126,11 @@
 
     <select id="selectRestaurantMenuByRestaurantNo" parameterType="int" resultMap="restaurantResultMap">
         SELECT Restaurant.*, Menu.*
-        FROM Restaurant, Menu
-        WHERE Restaurant.restaurant_no = Menu.restaurant_no AND Restaurant.restaurant_no = #{restaurantNo};
+        FROM Restaurant
+                 LEFT JOIN Menu ON Restaurant.restaurant_no = Menu.restaurant_no
+        WHERE Restaurant.restaurant_no = #{restaurantNo};
     </select>
+
 
     <select id="selectAllRestaurantByKeyword" parameterType="java.util.Map" resultType="RestaurantDTO">
         SELECT r.*
