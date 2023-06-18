@@ -137,4 +137,22 @@ public class MenuRepositoryMariaDB implements MenuRepository {
             log.info("deleteAllMenuByRestaurantNo 종료");
         }
     }
+
+    @Override
+    public int selectNextMenuNo() throws FindException {
+        log.info("selectNextMenuNo 시작");
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            return sqlSession.selectOne("com.beginvegan.mybatis.MenuMapper.selectNextMenuNo");
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectNextMenuNo 종료");
+        }
+    }
 }
