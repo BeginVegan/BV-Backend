@@ -87,7 +87,7 @@ public class MenuRepositoryMariaDB implements MenuRepository {
         try {
             session = sqlSessionFactory.openSession();
             List<MenuDTO> menuList = session.selectList("com.beginvegan.mybatis.MenuMapper.selectAllMenuByRestaurantNo", restaurantNo);
-            if(menuList == null) throw new FindException("해당 식당의 메뉴 정보가 없습니다.");
+            if(menuList == null || menuList.isEmpty()) throw new FindException("해당 식당의 메뉴 정보가 없습니다.");
             return menuList;
         } catch (Exception e) {
             e.printStackTrace();
