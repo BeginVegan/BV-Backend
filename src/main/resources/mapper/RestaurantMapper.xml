@@ -207,7 +207,7 @@
     <select id="selectBestReservationRestaurantTest" resultType="RestaurantDTO">
         SELECT *
         FROM Restaurant rest
-        ORDER BY (SELECT COUNT(*) FROM Reservation reserv WHERE rest.restaurant_no = reserv.restaurant_no) DESC, restaurant_no ASC
+        ORDER BY (SELECT COUNT(*) FROM Reservation reserv WHERE rest.restaurant_no = reserv.restaurant_no AND reserv.reservation_status='예약') DESC, restaurant_no ASC
         LIMIT 10;
     </select>
 

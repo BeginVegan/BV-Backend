@@ -1,6 +1,8 @@
 package com.beginvegan.repository;
 
 import com.beginvegan.dto.MenuDTO;
+import com.beginvegan.dto.ReservationDTO;
+import com.beginvegan.dto.ReservationMenuDTO;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.exception.*;
 import com.beginvegan.util.TimeUtil;
@@ -22,6 +24,9 @@ public class RestaurantRepositoryMariaDBTest {
 
     @Autowired
     private RestaurantRepositoryMariaDB restaurantRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
 //    @Autowired
 //    SchedulerFactoryBean schedulerFactoryBean;
@@ -307,7 +312,7 @@ public class RestaurantRepositoryMariaDBTest {
             restaurantRepository.insertRestaurantMenu(restaurant.getRestaurantNo(), menuList);
             RestaurantDTO selectedRestaurantMenu = restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertNotNull(selectedRestaurantMenu);
-            //Assertions.assertEquals(restaurant, selectedRestaurantMenu); //출력되는 문자열은 똑같은데 자꾸 다르다고 나옴
+            Assertions.assertEquals(selectedRestaurantMenu, restaurant); //출력되는 문자열은 똑같은데 자꾸 다르다고 나옴
 
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -391,6 +396,55 @@ public class RestaurantRepositoryMariaDBTest {
                 System.out.println("###검색결과: " + rest.getRestaurantName());
             }
             System.out.println(restaurantRepository.selectRestaurantByRestaurantNo(restaurant2.getRestaurantNo()));
+        } catch (AddException | FindException e) {
+            Assertions.fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    @Transactional
+    public void selectAllReservationByRestaurantNo() {
+        try {
+            RestaurantDTO restaurant = new RestaurantDTO();
+            restaurant.setRestaurantName("박복자 볶음밥");
+            restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
+            restaurant.setRestaurantAddressGu("종로구");
+            restaurant.setRestaurantX(37.570034);
+            restaurant.setRestaurantY(126.976785);
+            restaurant.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
+            restaurant.setRestaurantClose(TimeUtil.toTime("21:30:00"));
+            restaurant.setRestaurantPhone("02-2323-1212");
+            restaurant.setRestaurantDetail("상세정보1");
+            restaurant.setRestaurantAvgPrice(10000);
+            restaurant.setRestaurantTable(10);
+            restaurant.setRestaurantTableMember(4);
+            restaurant.setRestaurantVeganLevel(2);
+            restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
+            restaurant.setRestaurantStar(4.5);
+            restaurantRepository.insertRestaurant(restaurant);
+
+            int NextReservationNo = reservationRepository.selectNextReservationNo();
+            List<ReservationMenuDTO> reservationMenuList = new ArrayList<>();
+            ReservationMenuDTO reservationMenuDTO = new ReservationMenuDTO(1, restaurant.getRestaurantNo(), "메뉴1", 10000, "카테고리1", "메뉴1 설명", "https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg", NextReservationNo, 1);
+            reservationMenuList.add(reservationMenuDTO);
+            ReservationDTO reservation = new ReservationDTO(
+                    NextReservationNo,
+                    "asdf@naver.com",
+                    restaurant.getRestaurantNo(),
+                    TimeUtil.toDateTime("2023-06-23 00:00:00"),
+                    TimeUtil.toDateTime("2023-06-23 00:00:00"),
+                    "매장",
+                    2,
+                    1000,
+                    5000,
+                    "예약",
+                    reservationMenuList
+            );
+            reservationRepository.insertReservation(reservation);
+            List<ReservationDTO> reservationList = restaurantRepository.selectAllReservationByRestaurantNo(restaurant.getRestaurantNo());
+            Assertions.assertNotNull(reservationList);
+            reservation.setReservationMenuList(null);
+            Assertions.assertEquals(reservationList.get(0), reservation);
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -614,6 +668,35 @@ public class RestaurantRepositoryMariaDBTest {
             Assertions.assertNotNull(restaurantList2);
             Assertions.assertEquals(restaurantList1, restaurantList2);
         } catch (CreateException | FindException e) {
+            Assertions.fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    @Transactional
+    public void testSelectNextRestaurantNo() {
+        try {
+            RestaurantDTO restaurant = new RestaurantDTO();
+            restaurant.setRestaurantName("레스토랑1");
+            restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
+            restaurant.setRestaurantAddressGu("종로구");
+            restaurant.setRestaurantX(37.570034);
+            restaurant.setRestaurantY(126.976785);
+            restaurant.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
+            restaurant.setRestaurantClose(TimeUtil.toTime("21:30:00"));
+            restaurant.setRestaurantPhone("02-2323-1212");
+            restaurant.setRestaurantDetail("상세정보1");
+            restaurant.setRestaurantAvgPrice(10000);
+            restaurant.setRestaurantTable(10);
+            restaurant.setRestaurantTableMember(4);
+            restaurant.setRestaurantVeganLevel(2);
+            restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
+            restaurant.setRestaurantStar(4.5);
+
+            int nextRestaurantNo = restaurantRepository.selectNextRestaurantNo();
+            restaurantRepository.insertRestaurant(restaurant);
+            Assertions.assertEquals(nextRestaurantNo, restaurant.getRestaurantNo());
+        } catch (AddException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
     }
