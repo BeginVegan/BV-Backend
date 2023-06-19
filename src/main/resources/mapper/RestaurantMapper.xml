@@ -60,7 +60,7 @@
 
     <update id="updateRestaurant" parameterType="RestaurantDTO">
         UPDATE Restaurant
-        SET restaurant_name = #{restaurantName}, restaurant_address = #{restaurantAddress}, restaurant_address_gu = #{restaurantAddressGu}, restaurant_x = #{restaurantX}, restaurant_y = #{restaurantY}, restaurant_open = #{restaurantOpen}, restaurant_close = #{restaurantClose}, restaurant_phone = #{restaurantPhone}, restaurant_detail = #{restaurantDetail}, restaurant_avg_price = #{restaurantAvgPrice}, restaurant_table = #{restaurantTable}, restaurant_table_member = #{restaurantTableMember}, restaurant_vegan_level = #{restaurantVeganLevel}, restaurant_photo_dir = #{restaurantPhotoDir}, restaurant_star = #{restaurantStar}
+        SET restaurant_name = #{restaurantName}, restaurant_address = #{restaurantAddress}, restaurant_address_gu = #{restaurantAddressGu}, restaurant_x = #{restaurantX}, restaurant_y = #{restaurantY}, restaurant_open = #{restaurantOpen}, restaurant_close = #{restaurantClose}, restaurant_phone = #{restaurantPhone}, restaurant_detail = #{restaurantDetail}, restaurant_avg_price = #{restaurantAvgPrice}, restaurant_table = #{restaurantTable}, restaurant_table_member = #{restaurantTableMember}, restaurant_vegan_level = #{restaurantVeganLevel}
         WHERE restaurant_no = #{restaurantNo}
     </update>
 

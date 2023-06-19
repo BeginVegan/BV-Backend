@@ -19,10 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service("restaurantService")
@@ -43,7 +40,7 @@ public class RestaurantService {
     /**
      * 전체 식당을 조회한다.
      * @return 전체 식당 리스트
-     * @throws FindException 조회에 싫패한 경우 발생
+     * @throws FindException 조회에 실패한 경우 발생
      */
     public List<RestaurantDTO> findRestaurant() throws FindException {
         return restaurantRepository.selectAllRestaurant();
@@ -54,9 +51,9 @@ public class RestaurantService {
      * @param restaurantInfo 식당 정보
      * @throws AddException 추가에 실패한 경우 발생
      */
-    public int addRestaurant(RestaurantDTO restaurantInfo, List<MultipartFile> restaurantImages) throws AddException, IOException {
-        if(!restaurantImages.isEmpty()) {
-            s3Service.uploadMulti(restaurantImages,"restaurant/" + restaurantRepository.selectNextRestaurantNo());
+    public int addRestaurant(RestaurantDTO restaurantInfo, Optional<List<MultipartFile>> restaurantImages) throws AddException, IOException {
+        if(restaurantImages.isPresent()) {
+            s3Service.uploadMulti(restaurantImages.get(),"restaurant/" + restaurantRepository.selectNextRestaurantNo());
             restaurantInfo.setRestaurantPhotoDir("restaurant/" + restaurantRepository.selectNextRestaurantNo());
         }
 
@@ -69,10 +66,12 @@ public class RestaurantService {
      * @throws ModifyException 수정에 실패한 경우 발생
      */
     @Transactional
-    public void modifyRestaurant(RestaurantDTO restaurantInfo) throws ModifyException, RemoveException, AddException {
+    public void modifyRestaurant(RestaurantDTO restaurantInfo, Optional<List<MultipartFile>> restaurantImages) throws ModifyException, RemoveException, AddException, IOException {
+        if(restaurantImages.isPresent()) {
+            s3Service.removeFolderS3(restaurantInfo.getRestaurantPhotoDir());
+            s3Service.uploadMulti(restaurantImages.get(), restaurantInfo.getRestaurantPhotoDir());
+        }
         restaurantRepository.updateRestaurant(restaurantInfo);
-        restaurantRepository.deleteRestaurantMenu(restaurantInfo.getRestaurantNo());
-        restaurantRepository.insertRestaurantMenu(restaurantInfo.getRestaurantNo(), restaurantInfo.getMenuList());
     }
 
     /**
