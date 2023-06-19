@@ -2,6 +2,7 @@ package com.beginvegan.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Slf4j
 @RequiredArgsConstructor    // final 멤버변수가 있으면 생성자 항목에 포함시킴
@@ -133,7 +137,7 @@ public class S3Service {
         return Optional.empty();
     }
 
-    public List<String> getRestaurnatImages(String prefix) {
+    public List<String> getRestaurantImages(String prefix) {
         List<String> fileNames = new ArrayList<>();
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
         listObjectsRequest.setBucketName(bucket);
@@ -153,4 +157,43 @@ public class S3Service {
         return fileNames;
     }
 
+    public ByteArrayOutputStream downloadImage(String pathName) throws IOException {
+        // 파일 유무 확인
+        List<String> fileNames = getS3(pathName);
+
+        // 바이트를 ZIP 파일로 바꾸기 위한 변수들
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        ZipOutputStream zipOut = new ZipOutputStream(byteArray);
+
+        // 폴더안의 파일을 하나씩 zipOut에 추가
+        for(String fileName : fileNames) {
+            addFileToZip(zipOut, fileName, getS3ObjectInputStream(fileName));
+        }
+
+        // ZipOutputStream 종료
+        zipOut.close();
+
+        // 바이트 리턴
+        return byteArray;
+    }
+
+    private S3ObjectInputStream getS3ObjectInputStream(String fileName) {
+        S3Object s3Object = amazonS3Client.getObject(bucket, fileName);
+        return s3Object.getObjectContent();
+    }
+
+    private void addFileToZip(ZipOutputStream zipOut, String fileName, S3ObjectInputStream s3ObjectInputStream) throws IOException {
+        // ZipEntry 생성
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOut.putNextEntry(zipEntry);
+
+        // S3ObjectInputStream을 ZipOutputStream에 쓰기
+        IOUtils.copy(s3ObjectInputStream, zipOut);
+
+        // closeEntry 종료
+        zipOut.closeEntry();
+
+        // S3ObjectInputStream 종료
+        s3ObjectInputStream.close();
+    }
 }

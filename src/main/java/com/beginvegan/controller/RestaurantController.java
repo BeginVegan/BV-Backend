@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -59,13 +60,13 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<?> restaurantAdd(@RequestPart(value = "restaurantDTO") RestaurantDTO restaurantInfo, @RequestPart(value = "restaurantImages", required = false) List<MultipartFile> restaurantImages) throws AddException, IOException {
+    public ResponseEntity<?> restaurantAdd(@RequestPart(value = "restaurantDTO") RestaurantDTO restaurantInfo, @RequestPart(value = "restaurantImages", required = false) Optional<List<MultipartFile>> restaurantImages) throws AddException, IOException {
         return new ResponseEntity<>(restaurantService.addRestaurant(restaurantInfo, restaurantImages), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<?> restaurantModify(@RequestBody RestaurantDTO restaurantInfo) throws ModifyException, AddException, RemoveException {
-        restaurantService.modifyRestaurant(restaurantInfo);
+    public ResponseEntity<?> restaurantModify(@RequestPart(value = "restaurantDTO") RestaurantDTO restaurantInfo, @RequestPart(value = "restaurantImages", required = false) Optional<List<MultipartFile>> restaurantImages) throws ModifyException, AddException, RemoveException, IOException {
+        restaurantService.modifyRestaurant(restaurantInfo, restaurantImages);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -89,7 +90,7 @@ public class RestaurantController {
 
     @GetMapping("/img/restaurant/{dirName}")
     public ResponseEntity<?> imageList(@PathVariable String dirName) {
-        List<String> imageList = s3Service.getRestaurnatImages("restaurant/" + dirName);
+        List<String> imageList = s3Service.getRestaurantImages("restaurant/" + dirName);
         return new ResponseEntity<>(imageList, HttpStatus.OK);
     }
 }
