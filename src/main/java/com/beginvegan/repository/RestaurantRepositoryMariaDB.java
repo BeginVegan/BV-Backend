@@ -30,7 +30,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllRestaurant");
-            if(restaurantList == null) throw new FindException("식당 정보가 없습니다.");
+            if(restaurantList == null || restaurantList.isEmpty()) throw new FindException("식당 정보가 없습니다.");
             return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +115,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<MenuDTO> menuList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllMenuByRestaurantNo", restaurantNo);
-            if(menuList == null) throw new FindException("해당 식당의 메뉴 정보가 없습니다.");
+            if(menuList == null || menuList.isEmpty()) throw new FindException("해당 식당의 메뉴 정보가 없습니다.");
             return menuList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -195,7 +195,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllRestaurantByKeyword", searchMap);
-            if(restaurantList == null) throw new FindException("해당 키워드 검색 결과가 없습니다.");
+            if(restaurantList == null || restaurantList.isEmpty()) throw new FindException("해당 키워드 검색 결과가 없습니다.");
             return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -216,7 +216,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<ReservationDTO> reservationList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectAllReservationByRestaurantNo", restaurantNo);
-            if(reservationList == null) throw new FindException("해당 식당으로 예약된 정보가 없습니다.");
+            if(reservationList == null || reservationList.isEmpty()) throw new FindException("해당 식당으로 예약된 정보가 없습니다.");
             return reservationList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -314,7 +314,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestStarRestaurant");
-            if(restaurantList == null) throw new FindException("BestStar 식당 정보가 없습니다.");
+            if(restaurantList == null || restaurantList.isEmpty()) throw new FindException("BestStar 식당 정보가 없습니다.");
             return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -335,7 +335,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestReviewRestaurant");
-            if(restaurantList == null) throw new FindException("BestReview 식당 정보가 없습니다.");
+            if(restaurantList == null || restaurantList.isEmpty()) throw new FindException("BestReview 식당 정보가 없습니다.");
             return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -356,7 +356,7 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
         try {
             session = sqlSessionFactory.openSession();
             List<RestaurantDTO> restaurantList = session.selectList("com.beginvegan.mybatis.RestaurantMapper.selectBestReservationRestaurant");
-            if(restaurantList == null) throw new FindException("BestReservation 식당 정보가 없습니다.");
+            if(restaurantList == null || restaurantList.isEmpty()) throw new FindException("BestReservation 식당 정보가 없습니다.");
             return restaurantList;
         } catch (Exception e) {
             e.printStackTrace();

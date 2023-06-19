@@ -133,7 +133,7 @@
 
 
     <select id="selectAllRestaurantByKeyword" parameterType="java.util.Map" resultType="RestaurantDTO">
-        SELECT r.*
+        SELECT DISTINCT r.*
         FROM Restaurant r
              LEFT OUTER JOIN Menu m
              ON r.restaurant_no = m.restaurant_no
