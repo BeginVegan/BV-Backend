@@ -4,7 +4,7 @@
 
 <mapper namespace="com.beginvegan.mybatis.MenuMapper">
 
-    <insert id="insertMenu" parameterType="MenuDTO" useGeneratedKeys="true" keyProperty="restaurantNo">
+    <insert id="insertMenu" parameterType="MenuDTO" useGeneratedKeys="true" keyProperty="menuNo">
         INSERT INTO Menu (restaurant_no, menu_name, menu_price, menu_category, menu_detail, menu_photo_dir)
         VALUES (#{restaurantNo}, #{menuName}, #{menuPrice}, #{menuCategory}, #{menuDetail}, #{menuPhotoDir})
     </insert>
@@ -43,5 +43,11 @@
         DELETE FROM Menu
         WHERE restaurant_no = #{restaurantNo}
     </delete>
+
+    <select id="selectNextMenuNo" resultType="int">
+        SELECT AUTO_INCREMENT
+        FROM information_schema.tables
+        WHERE table_name = 'Menu' AND table_schema = DATABASE()
+    </select>
 
 </mapper>

@@ -2,12 +2,15 @@ package com.beginvegan.dto;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
 @ToString
+@EqualsAndHashCode
 public class MenuDTO {
     private int menuNo; // menu_no
     private int restaurantNo; // restaurant_no
@@ -16,5 +19,4 @@ public class MenuDTO {
     private String menuCategory; // menu_category
     private String menuDetail; // menu_detail
     private String menuPhotoDir; // menu_photo_dir
-
 }
