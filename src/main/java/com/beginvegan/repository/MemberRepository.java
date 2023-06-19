@@ -14,7 +14,6 @@ public interface MemberRepository {
 
     /**
      * 회원가입 정보를 추가한다.
-     *
      * @param memberInfo 회원 가입 정보
      * @throws AddException DB에 회원 정보 추가에 실패할 경우 발생
      * @Description 이메일 중복 체크 : 동일한 이메일로 가입을 시도하는 경우 예외를 발생시킵니다.
@@ -23,7 +22,6 @@ public interface MemberRepository {
 
     /**
      * 회원 정보 변경 사항을 반영한다.
-     *
      * @param memeberInfo 회원 수정 정보
      * @throws ModifyException DB의 회원 정보 수정에 실패할 경우 발생
      * @Description 1. 회원 정보 수정 사항 반영
@@ -33,7 +31,6 @@ public interface MemberRepository {
 
     /**
      * 회원을 탈퇴한다.
-     *
      * @param memberEmail 삭제할 회원의 이메일
      * @throws RemoveException DB에서 회원 정보 삭제에 실패할 겨우 발생
      */
@@ -41,7 +38,6 @@ public interface MemberRepository {
 
     /**
      * 회원의 정보를 반환한다.
-     *
      * @param memberEmail 조회할 회원의 이메일
      * @return 회원 정보
      * @throws FindException DB에서 회원 정보 조회에 실패할 경우 발생 또는 데이터가 없을 경우 발생
@@ -49,16 +45,21 @@ public interface MemberRepository {
     public MemberDTO selectMemberByMemberEmail(String memberEmail) throws FindException;
 
     /**
-     * 포인트 변경 내역을 기록합니다.
-     *
+     * 포인트 변경 내역을 기록한다.
      * @param pointInfo 포인트 변경 내용
      * @throws AddException DB에 포인트 변경 내역 추가에 실패할 경우 발생
      */
     public void insertPoint(PointDTO pointInfo) throws AddException;
 
     /**
+     * 모든 회원에게 포인트 변경 내역을 기록한다.
+     * @param pointInfo
+     * @throws AddException
+     */
+    public void insertPointAll(PointDTO pointInfo) throws AddException;
+
+    /**
      * 회원의 모든 포인트 내역(적립, 사용)을 가져옵니다.
-     *
      * @param memberEmail 조회할 회원의 이메일
      * @return 포인트 내역
      * @throws FindException DB의 포인트 내역 조회에 실패할 경우 발생
@@ -67,7 +68,6 @@ public interface MemberRepository {
 
     /**
      * 식당 즐겨찾기를 추가한다.
-     *
      * @param restaurantNo 즐겨찾기할 식당 번호
      * @param memberEmail  즐겨찾기를 변경할 회원의 이메일
      * @throws AddException DB에 즐겨찾기 정보 추가에 실패할 경우 발생
@@ -76,7 +76,6 @@ public interface MemberRepository {
 
     /**
      * 식당 즐겨찾기를 취소한다.
-     *
      * @param restaurantNo 즐겨찾기 취소할 식당 번호
      * @param memberEmail  즐겨찾기를 변경할 회원의 이메일
      * @throws RemoveException
@@ -85,7 +84,6 @@ public interface MemberRepository {
 
     /**
      * 회원의 즐겨찾기 목록을 반환한다.
-     *
      * @param memberEmail 즐겨찾기를 조회할 회원의 이메일
      * @return 회원의 즐겨찾기 목록
      * @throws FindException DB에서 회원의 즐겨찾기 목록 조회에 실패할 경우 발생
@@ -106,4 +104,23 @@ public interface MemberRepository {
      * @return
      */
     public boolean selectBookmarkByMemberEmailAndRestaurntNo(String memberEmail, String restaurantNo);
+
+    /**
+     * 모든 회원의 정보를 반환한다.
+     * @return 회원 정보 리스트
+     * @throws FindException DB에서 회원 정보 조회에 실패할 경우 발생 또는 데이터가 없을 경우 발생
+     */
+    public List<MemberDTO> selectMemberAll() throws FindException;
+
+    /**
+     * 모든 회원의 포인트 정보를 업데이트한다.
+     * @throws ModifyException DB에서 회원 정보 업데이트에 실패할 경우 발생
+     */
+    public void updateMemberPointAll(int pointsToAdd) throws ModifyException;
+
+    /**
+     * 회원의 권한 정보를 업데이트한다.
+     * @throws ModifyException DB에서 회원 정보 업데이트에 실패할 경우 발생
+     */
+    public void updateMemberRole(MemberDTO memberInfo) throws ModifyException;
 }

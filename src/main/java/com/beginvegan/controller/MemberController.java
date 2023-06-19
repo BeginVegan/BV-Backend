@@ -1,6 +1,7 @@
 package com.beginvegan.controller;
 
 import com.beginvegan.dto.MemberDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -128,6 +129,17 @@ public class MemberController {
     }
 
     /**
+     * 모든 멤버 정보를 반환한다.
+     * @return 멤버 정보 리스트
+     * @throws FindException 멤버 정보를 찾는데 실패할 경우 발생
+     */
+    @GetMapping("list")
+    public ResponseEntity<?> memberList() throws FindException{
+        return new ResponseEntity<>(memberService.findAllMember(), HttpStatus.OK);
+    }
+
+
+    /**
      * 멤버를 가입 요청 담당 컨트롤러
      * @param memberDTO 추가할 멤버의 정보
      * @return 상태 200 응답
@@ -136,6 +148,18 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<?> memberAdd(@RequestBody MemberDTO memberDTO) throws AddException {
         memberService.addMember(memberDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버 탈퇴 요청 담당 컨트롤러(관리자 용)
+     * @param memberInfo 탈퇴 처리할 멤버의 이메일
+     * @return 상태 200 응답
+     * @throws RemoveException 멤버 삭제에 실패할 경우 발생
+     */
+    @DeleteMapping("delete")
+    public ResponseEntity<?> memberRemove(@RequestBody MemberDTO memberInfo) throws RemoveException {
+        memberService.removeMember(memberInfo.getMemberEmail());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -162,6 +186,54 @@ public class MemberController {
         memberService.modifyMember(memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /**
+     * 모든 멤버에게 포인트를 지급한다.
+     * @param pointInfo 지급할 포인트 내역
+     * @throws ModifyException 포인트 지급 실패시 발생
+     */
+    @PutMapping("addAllPoint")
+    public ResponseEntity<?> memberPointAllModify(@RequestBody PointDTO pointInfo) throws ModifyException, AddException {
+        memberService.modifyAllMemberPoint(pointInfo);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버의 프인트를 변경한다.
+     * @param pointInfo 포인트 내역, 멤버 정보
+     * @return 상태 200 응답
+     * @throws ModifyException 권한 변경에 실패할 경우 발생
+     */
+    @PutMapping("modifyPoint")
+    public ResponseEntity<?> memberPointModify(@RequestBody PointDTO pointInfo) throws ModifyException, AddException {
+        memberService.modifyMemberPoint(pointInfo);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버의 권한을 관리자로 변경한다.
+     * @param memberInfo 변경할 멤버의 계정
+     * @return 상태 200 응답
+     * @throws ModifyException 권한 변경에 실패할 경우 발생
+     */
+    @PutMapping("role/admin")
+    public ResponseEntity<?> memberRoleAdminModify(@RequestBody MemberDTO memberInfo) throws ModifyException {
+        memberService.modifyMemberRoleAdmin(memberInfo.getMemberEmail());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 멤버의 권한을 회원으로 변경한다.
+     * @param memberInfo 변경할 멤버의 계정
+     * @return 상태 200 응답
+     * @throws ModifyException 권한 변경에 실패할 경우 발생
+     */
+    @PutMapping("role/normal")
+    public ResponseEntity<?> memberRoleNormalModify(@RequestBody MemberDTO memberInfo) throws ModifyException {
+        memberService.modifyMemberRoleNormal(memberInfo.getMemberEmail());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     /**
      * 멤버의 식당 즐겨찾기 여부를 반환한다.

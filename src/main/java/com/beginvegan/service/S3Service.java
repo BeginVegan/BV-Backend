@@ -57,8 +57,16 @@ public class S3Service {
     }
 
     private String upload(File uploadFile, String dirName, int index) {
-        String fileName = dirName + "/" + index;
-        String uploadImageUrl = putS3(uploadFile, fileName);
+        String fileName = uploadFile.getName();
+        String fileExtension = "";
+
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            fileExtension = fileName.substring(dotIndex + 1);
+        }
+
+        String uploadFileName = dirName + "/" + index + fileExtension;
+        String uploadImageUrl = putS3(uploadFile, uploadFileName);
 
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 

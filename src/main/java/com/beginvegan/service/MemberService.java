@@ -1,6 +1,7 @@
 package com.beginvegan.service;
 
 import com.beginvegan.dto.MemberDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service("memberService")
 public class MemberService {
     private static final int MEMBER_INITIAL_POINT = 100;
     private static final String MEMBER_ROLE_NORMAL = "normal";
+    private static final String MEMBER_ROLE_ADMIN = "admin";
 
 
     @Autowired
@@ -139,6 +142,62 @@ public class MemberService {
     }
 
     /**
+     * 모든 멤버의 정보를 반환한다.
+     * @return 모든 멤버의 정보 리스트
+     * @throws FindException 멤버 정보가 없을 경우 발생
+     */
+    public List<MemberDTO> findAllMember() throws FindException {
+        return memberRepository.selectMemberAll();
+    }
+
+    /**
+     * 멤버의 포인트를 변경하고, 내역을 기록한다.
+     * @param pointInfo 멤버 정보와 포인트 내역
+     * @throws ModifyException 멤버 정보 수정에 실패할 경우 발생
+     */
+    public void modifyMemberPoint(PointDTO pointInfo) throws ModifyException, AddException {
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(pointInfo.getMemberEmail());
+        memberInfo.setMemberPoint(pointInfo.getPointResult());
+        memberRepository.updateMemberPoint(memberInfo);
+        memberRepository.insertPoint(pointInfo);
+    }
+
+    /**
+     * 모든 멤버의 포인트를 지급한다.
+     * @param pointInfo 추가할 포인트 내역
+     * @throws ModifyException 멤버 정보 수정에 실패할 경우 발생
+     */
+    public void modifyAllMemberPoint(PointDTO pointInfo) throws ModifyException, AddException {
+        memberRepository.updateMemberPointAll(pointInfo.getPointChange());
+        memberRepository.insertPointAll(pointInfo);
+    }
+
+    /**
+     * 멤버의 권한 정보를 관리자로 변경한다.
+     * @param memberEmail 수정할 멤버 정보
+     * @throws ModifyException 멤버 정보 수정에 실패할 경우 발생
+     */
+    public void modifyMemberRoleAdmin(String memberEmail) throws ModifyException {
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+        memberInfo.setMemberRole(MEMBER_ROLE_ADMIN);
+        memberRepository.updateMemberRole(memberInfo);
+    }
+
+    /**
+     * 멤버의 권한 정보를 회원으로 변경한다.
+     * @param memberEmail 수정할 멤버 정보
+     * @throws ModifyException 멤버 정보 수정에 실패할 경우 발생
+     */
+    public void modifyMemberRoleNormal(String memberEmail) throws ModifyException {
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+        memberInfo.setMemberRole(MEMBER_ROLE_NORMAL);
+        memberRepository.updateMemberRole(memberInfo);
+    }
+
+    /**
      * DB의 멤버의 정보를 수정한다.
      * @param memberInfo 추가할 멤버 정보
      * @throws ModifyException 멤버 정보 수정에 실패할 경우 발생
@@ -156,6 +215,15 @@ public class MemberService {
     public void removeMember(HttpSession session, String memberEmail) throws RemoveException {
         memberRepository.deleteMember(memberEmail);
         session.invalidate();
+    }
+
+    /**
+     * 멤버 관련 정보를 DB에서 삭제한다.
+     * @param memberEmail 삭제할 멤버의 이메일
+     * @throws RemoveException 멤버 정보 삭제에 실패할 경우 발생
+     */
+    public void removeMember(String memberEmail) throws RemoveException {
+        memberRepository.deleteMember(memberEmail);
     }
 
     /**

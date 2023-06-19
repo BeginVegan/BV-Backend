@@ -156,6 +156,27 @@ public class MemberRepositoryMariaDB implements MemberRepository {
     }
 
     @Override
+    public void insertPointAll(PointDTO pointInfo) throws AddException {
+        log.info("insertPointAll 시작 - pointInfo : " + pointInfo.toString());
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.insert("com.beginvegan.mybatis.MemberMapper.insertAllMemberPoint", pointInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AddException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("insertPointAll 종료");
+        }
+    }
+
+    @Override
     public List<PointDTO> selectAllPointsByMemberEmail(String memberEmail) throws FindException {
         log.info("selectAllPointsByMemberEmail 시작 - memberEmail : " + memberEmail);
 
@@ -280,6 +301,72 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             }
 
             log.info("selectBookmarkByMemberEmailAndRestaurntNo 종료");
+        }
+    }
+
+    @Override
+    public List<MemberDTO> selectMemberAll() throws FindException {
+        log.info("selectMemberAll 시작");
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            List<MemberDTO> memberList = sqlSession.selectList("com.beginvegan.mybatis.MemberMapper.selectAllMember");
+            if(memberList == null) throw new FindException("멤버 정보가 없습니다.");
+            return memberList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FindException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("selectMemberAll 종료");
+        }
+    }
+
+    @Override
+    public void updateMemberPointAll(int pointsToAdd) throws ModifyException {
+        log.info("updateMemberPointAll 시작 - pointsToAdd : " + pointsToAdd);
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateAllMemberPoint", pointsToAdd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModifyException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("updateMemberPointAll 종료");
+        }
+    }
+
+    @Override
+    public void updateMemberRole(MemberDTO memberInfo) throws ModifyException {
+        log.info("updateMemberRole 시작 - memberInfo : " + memberInfo.toString());
+
+        SqlSession sqlSession = null;
+
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMemberRole", memberInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModifyException(e.getMessage());
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+
+            log.info("updateMemberRole 종료");
         }
     }
 
