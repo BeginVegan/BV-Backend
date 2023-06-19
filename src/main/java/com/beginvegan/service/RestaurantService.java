@@ -140,12 +140,18 @@ public class RestaurantService {
         String dbKeyword = keyword.strip().replaceAll("\\s+"," ");
         Map<String, Object> searchMap = new HashMap<>();
         searchMap.put("entireKeyword", dbKeyword);
-        String[] keywords = keyword.split(" ");
+        String[] keywords = dbKeyword.split(" ");
         searchMap.put("keywords", keywords);
 
         return applyPhotoDIr(restaurantRepository.selectAllRestaurantByKeyword(searchMap));
     }
 
+    /**
+     * 예약 가능한 시간을 모두 조회한다.
+     * @param restaurantNo 식당 번호
+     * @return 예약 가능한 시간을 문자열로 변환한 문자열 리스트
+     * @throws FindException 데이터 조회에 실패할 경우 발생
+     */
     public List<String> findAllAvailableReservationByRestaurantNo(int restaurantNo) throws FindException {
         LocalDateTime now = TimeUtil.dateTimeOfNow().withMinute(0).withSecond(0).withNano(0).plusHours(1);
         LocalDateTime nextMonth = now.plusMonths(1);
