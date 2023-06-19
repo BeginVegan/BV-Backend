@@ -6,6 +6,7 @@ import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -66,7 +67,7 @@ public class PaymentRepositoryMariaDB implements PaymentRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<PaymentDTO> PaymentList = sqlSession.selectList("com.beginvegan.mybatis.PaymentMapper.selectAllPayment");
-            if(PaymentList == null) throw new FindException("결제 정보가 없습니다.");
+            if(PaymentList == null || PaymentList.isEmpty()) throw new FindException("결제 정보가 없습니다.");
             return PaymentList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +86,7 @@ public class PaymentRepositoryMariaDB implements PaymentRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<PaymentDTO> PaymentList = sqlSession.selectList("com.beginvegan.mybatis.PaymentMapper.selectALLPaymentByMemberEmail", memberEmail);
-            if(PaymentList == null) throw new FindException("결제 정보가 없습니다.");
+            if(PaymentList == null || PaymentList.isEmpty()) throw new FindException("결제 정보가 없습니다.");
             return PaymentList;
         } catch (Exception e) {
             e.printStackTrace();

@@ -164,7 +164,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<PointDTO> pointList = sqlSession.selectList("com.beginvegan.mybatis.MemberMapper.selectAllPointsByMemberEmail", memberEmail);
-            if(pointList == null) throw new FindException("해당 멤버의 포인트 내역 정보가 없습니다.");
+            if(pointList == null || pointList.isEmpty()) throw new FindException("해당 멤버의 포인트 내역 정보가 없습니다.");
             return pointList;
 
         } catch (Exception e) {
@@ -240,7 +240,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<BookmarkDTO> bookmarkList = sqlSession.selectList("com.beginvegan.mybatis.MemberMapper.selectAllBookmarkByMemberEmail", memberEmail);
-            if(bookmarkList == null) throw new FindException("해당 멤버의 식당 즐겨찾기 정보가 없습니다.");
+            if(bookmarkList == null || bookmarkList.isEmpty()) throw new FindException("해당 멤버의 식당 즐겨찾기 정보가 없습니다.");
             return bookmarkList;
 
         } catch (Exception e) {
