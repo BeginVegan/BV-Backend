@@ -2,6 +2,7 @@ package com.beginvegan.service;
 
 import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.dto.RestaurantDTO;
+import com.beginvegan.dto.ReviewDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -124,7 +125,12 @@ public class RestaurantService {
         Map<String, Object> restaurantReviewMap = new HashMap<>();
         RestaurantDTO restaurant = restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurantNo);
         restaurantReviewMap.put("restaurant", restaurant);
+        try{
         restaurantReviewMap.put("review", reviewRepository.selectAllReviewByRestaurantId(restaurant.getRestaurantNo()));
+        } catch (FindException e) {
+            List<ReviewDTO> emptyReview = new ArrayList<>();
+            restaurantReviewMap.put("review", emptyReview);
+        }
         return restaurantReviewMap;
     }
 

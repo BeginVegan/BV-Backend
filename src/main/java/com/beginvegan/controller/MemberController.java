@@ -152,7 +152,7 @@ public class MemberController {
     }
 
     /**
-     * 멤버 탈퇴 요청 담당 컨트롤러(관리자 용)
+     * 멤버 탈퇴 요청 담당 컨트롤러(관리자용)
      * @param memberInfo 탈퇴 처리할 멤버의 이메일
      * @return 상태 200 응답
      * @throws RemoveException 멤버 삭제에 실패할 경우 발생

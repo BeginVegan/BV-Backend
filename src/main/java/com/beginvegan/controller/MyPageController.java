@@ -177,4 +177,10 @@ public class MyPageController {
         log.info("GET pointHistory By userEmail 종료");
         return new ResponseEntity<>(pointList, HttpStatus.OK);
     }
+
+    @PostMapping("point-history")
+    public ResponseEntity<?> getPointHistory(@RequestBody PointDTO pointInfo) throws FindException {
+        List<PointDTO> pointList = myPageService.findAllPointByMemberEmail(pointInfo.getMemberEmail());
+        return new ResponseEntity<>(pointList, HttpStatus.OK);
+    }
 }
