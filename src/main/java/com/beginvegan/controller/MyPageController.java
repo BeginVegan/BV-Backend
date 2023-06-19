@@ -30,10 +30,23 @@ public class MyPageController {
 
     @GetMapping("review/userEmail")
     public ResponseEntity<?> reviewList(HttpSession session) throws FindException {
-        String userEmail = session.getAttribute("memberEmail").toString();
         log.info("GET reviewList By userEmail 시작 ");
 
+        Object memberEmail = session.getAttribute("memberEmail");
+        if (memberEmail == null) {
+            // not logged in or session expired
+            log.info("User not logged in or session expired");
+            return new ResponseEntity<>("User not logged in or session expired", HttpStatus.UNAUTHORIZED);
+        }
+
+        String userEmail = memberEmail.toString();
+
         List<ReviewDTO> reviewList = myPageService.findAllReviewByMemberEmail(userEmail);
+        if (reviewList.isEmpty()) {
+            // review list is empty
+            log.info("No reviews found for user");
+            return new ResponseEntity<>("No reviews found for user", HttpStatus.NO_CONTENT);
+        }
 
         log.info("GET reviewList By userEmail 종료 ");
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
@@ -41,23 +54,31 @@ public class MyPageController {
 
     @GetMapping("review/restaurantId/{id}")
     public ResponseEntity<?> reviewList(@PathVariable int id, HttpSession session) throws FindException {
-        log.info("GET reviewList By reataurantId 시작 ");
+        log.info("GET reviewList By restaurantId 시작 ");
 
         List<ReviewDTO> reviewList = myPageService.findAllReviewByRestaurantId(id);
-        log.info("GET reviewList By reataurantId 종료 ");
+        if (reviewList.isEmpty()) {
+            log.info("No reviews found for restaurantId");
+            return new ResponseEntity<>("No reviews found for restaurantId", HttpStatus.NO_CONTENT);
+        }
+
+        log.info("GET reviewList By restaurantId 종료 ");
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
 
     @GetMapping("review/{reviewNo}")
-    public ResponseEntity<?> reviewList(@PathVariable int reviewNo) throws FindException {
-        log.info("GET reviewInfo By reviewNo  시작 ");
+    public ResponseEntity<?> reviewInfo(@PathVariable int reviewNo) throws FindException {
+        log.info("GET reviewInfo By reviewNo 시작 ");
 
-        ReviewDTO reviewList = myPageService.findReviewByReviewNo(reviewNo);
+        ReviewDTO review = myPageService.findReviewByReviewNo(reviewNo);
+        if (review == null) {
+            log.info("No review found for reviewNo");
+            return new ResponseEntity<>("No review found for reviewNo", HttpStatus.NOT_FOUND);
+        }
 
         log.info("GET reviewInfo By reviewNo 종료 ");
-        return new ResponseEntity<>(reviewList, HttpStatus.OK);
+        return new ResponseEntity<>(review, HttpStatus.OK);
     }
-
 
     @PostMapping("review")
     public ResponseEntity<?> reviewAdd(HttpSession session, @RequestPart(value = "reviewDTO") ReviewDTO reviewInfo, @RequestPart(value = "reviewImage", required = false) Optional<MultipartFile> reviewImage) throws AddException, IOException, ParseException {
@@ -111,18 +132,49 @@ public class MyPageController {
 
     @GetMapping("bookmark/userEmail")
     public ResponseEntity<?> bookmarkList(HttpSession session) throws FindException {
-        String userEmail = session.getAttribute("memberEmail").toString();
-        log.info("GET bookmarkList By userEmail 시작 : " + userEmail);
+        log.info("GET bookmarkList By userEmail 시작");
+
+        Object memberEmail = session.getAttribute("memberEmail");
+        if (memberEmail == null) {
+            // not logged in or session expired
+            log.info("User not logged in or session expired");
+            return new ResponseEntity<>("User not logged in or session expired", HttpStatus.UNAUTHORIZED);
+        }
+
+        String userEmail = memberEmail.toString();
 
         List<BookmarkDTO> bookmarkList = myPageService.findAllBookmarkByMemberEmail(userEmail);
+        if (bookmarkList.isEmpty()) {
+            // review list is empty
+            log.info("No bookmarks found for user");
+            return new ResponseEntity<>("No bookmarks found for user", HttpStatus.NO_CONTENT);
+        }
 
-        log.info("GET reviewList By userEmail 종료 ");
+        log.info("GET bookmarkList By userEmail 종료 ");
         return new ResponseEntity<>(bookmarkList, HttpStatus.OK);
     }
 
     @GetMapping("point-history")
     public ResponseEntity<?> getPointHistory(HttpSession session) throws FindException {
-        List<PointDTO> pointList = myPageService.findAllPointByMemberEmail((String) session.getAttribute("memberEmail"));
+        log.info("GET pointHistory By userEmail 시작");
+
+        Object memberEmail = session.getAttribute("memberEmail");
+        if (memberEmail == null) {
+            // not logged in or session expired
+            log.info("User not logged in or session expired");
+            return new ResponseEntity<>("User not logged in or session expired", HttpStatus.UNAUTHORIZED);
+        }
+
+        String userEmail = memberEmail.toString();
+
+        List<PointDTO> pointList = myPageService.findAllPointByMemberEmail(userEmail);
+        if (pointList.isEmpty()) {
+            // point history is empty
+            log.info("No point history found for user");
+            return new ResponseEntity<>("No point history found for user", HttpStatus.NO_CONTENT);
+        }
+
+        log.info("GET pointHistory By userEmail 종료");
         return new ResponseEntity<>(pointList, HttpStatus.OK);
     }
 }
