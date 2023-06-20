@@ -69,7 +69,7 @@ public class S3Service {
             fileExtension = fileName.substring(dotIndex + 1);
         }
 
-        String uploadFileName = dirName + "/" + index + fileExtension;
+        String uploadFileName = dirName + "/" + index + "." + fileExtension;
         String uploadImageUrl = putS3(uploadFile, uploadFileName);
 
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
