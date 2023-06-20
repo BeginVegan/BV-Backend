@@ -31,7 +31,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
         try {
             sqlSession = sqlSessionFactory.openSession();
             List<ReviewDTO> reviewList = sqlSession.selectList("com.beginvegan.mybatis.ReviewMapper.selectAllReviewByMemberEmail", userEmail);
-            if(reviewList == null || reviewList.isEmpty()) throw new FindException("해당 멤버의 리뷰 정보가 없습니다.");
+            if (reviewList == null || reviewList.isEmpty()) throw new FindException("해당 멤버의 리뷰 정보가 없습니다.");
             return reviewList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +54,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
         try {
             session = sqlSessionFactory.openSession();
             List<ReviewDTO> reviewList = session.selectList("com.beginvegan.mybatis.ReviewMapper.selectAllReviewByRestaurantId", id);
-            if(reviewList == null || reviewList.isEmpty()) throw new FindException("해당 식당의 리뷰 정보가 없습니다.");
+            if (reviewList == null || reviewList.isEmpty()) throw new FindException("해당 식당의 리뷰 정보가 없습니다.");
             return reviewList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,11 +77,11 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
         try {
             session = sqlSessionFactory.openSession();
             ReviewDTO retrievedReview = session.selectOne("com.beginvegan.mybatis.ReviewMapper.selectReviewByReviewNo", reviewNo);
-            if(retrievedReview == null) throw new FindException("해당 리뷰 정보가 없습니다.");
+            if (retrievedReview == null) throw new FindException("해당 리뷰 정보가 없습니다");
             return retrievedReview;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException("해당 리뷰 정보가 없습니다");
 
         } finally {
             if (session != null) {
@@ -123,7 +123,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
             sqlSession.delete("com.beginvegan.mybatis.ReviewMapper.deleteReview", reviewNo);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RemoveException("e.getMessage");
+            throw new RemoveException("리뷰 삭제에 실패했습니다");
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
@@ -148,7 +148,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
             sqlSession.update("com.beginvegan.mybatis.ReviewMapper.updateReview", map);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ModifyException("e.getMessage");
+            throw new ModifyException("리뷰 수정에 실패했습니다");
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();
