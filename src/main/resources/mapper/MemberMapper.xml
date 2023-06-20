@@ -11,7 +11,7 @@
 
     <update id="updateMember" parameterType="MemberDTO">
         UPDATE Member
-        SET member_name = #{memberName}, member_point = #{memberPoint}, memberRole = #{memberRole}
+        SET member_name = #{memberName}, member_point = #{memberPoint}, member_role = #{memberRole}
         WHERE member_email = #{memberEmail};
     </update>
 

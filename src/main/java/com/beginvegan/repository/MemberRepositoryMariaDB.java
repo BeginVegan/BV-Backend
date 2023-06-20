@@ -7,6 +7,7 @@ import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -55,7 +56,10 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         try {
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMember", memberInfo);
+            int rowsAffected = sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMember", memberInfo);
+            if (rowsAffected == 0) {
+                throw new ModifyException("해당 이메일의 멤버 정보가 없습니다.: " + memberInfo.getMemberEmail());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ModifyException(e.getMessage());
@@ -76,7 +80,10 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         try {
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.delete("com.beginvegan.mybatis.MemberMapper.deleteMember", memberEmail);
+            int rowsAffected = sqlSession.delete("com.beginvegan.mybatis.MemberMapper.deleteMember", memberEmail);
+            if (rowsAffected == 0) {
+                throw new RemoveException("해당 이메일의 멤버 정보가 없습니다.: " + memberEmail);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoveException(e.getMessage());
@@ -121,7 +128,10 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         try {
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMemberPoint", memberInfo);
+            int rowsAffected = sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMemberPoint", memberInfo);
+            if (rowsAffected == 0) {
+                throw new RemoveException("해당 이메일의 멤버 정보가 없습니다.: " + memberInfo.getMemberEmail());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ModifyException(e.getMessage());
@@ -238,8 +248,10 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         try {
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.insert("com.beginvegan.mybatis.MemberMapper.deleteBookmark", map);
-
+            int rowsAffected = sqlSession.insert("com.beginvegan.mybatis.MemberMapper.deleteBookmark", map);
+            if (rowsAffected == 0) {
+                throw new RemoveException("해당 이메일의 멤버 또는 식당 정보가 없습니다.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoveException(e.getMessage());
@@ -262,6 +274,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
             sqlSession = sqlSessionFactory.openSession();
             List<BookmarkDTO> bookmarkList = sqlSession.selectList("com.beginvegan.mybatis.MemberMapper.selectAllBookmarkByMemberEmail", memberEmail);
             if(bookmarkList == null || bookmarkList.isEmpty()) throw new FindException("해당 멤버의 식당 즐겨찾기 정보가 없습니다.");
+
             return bookmarkList;
 
         } catch (Exception e) {
@@ -357,7 +370,10 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
         try {
             sqlSession = sqlSessionFactory.openSession();
-            sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMemberRole", memberInfo);
+            int rowsAffected = sqlSession.update("com.beginvegan.mybatis.MemberMapper.updateMemberRole", memberInfo);
+            if (rowsAffected == 0) {
+                throw new ModifyException("해당 이메일의 멤버 정보가 없습니다.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ModifyException(e.getMessage());
@@ -372,6 +388,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
 
     //아래 메소드는 단위 테스트를 위한 CRUD 메소드입니다.
     // Selects a specific point for testing
+    @Generated
     public PointDTO selectPointTEST(PointDTO pointDTO) throws FindException {
         log.info("selectPointTEST 시작 - memberEmail : " + pointDTO.getMemberEmail() + ", getPointTime : " + pointDTO.getPointTime());
 
@@ -395,6 +412,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
     }
 
     // Deletes a specific point for testing
+    @Generated
     public void deletePointTEST(String memberEmail, LocalDateTime dateTime) throws RemoveException {
         log.info("deletePointTEST 시작 - memberEmail : " + memberEmail + ", dateTime : " + dateTime);
 
@@ -420,6 +438,7 @@ public class MemberRepositoryMariaDB implements MemberRepository {
     }
 
     // Selects a specific bookmark for testing
+    @Generated
     public BookmarkDTO selectBookmarkTEST(int restaurantNo, String memberEmail) throws FindException {
         log.info("selectBookmarkTEST 시작 - restaurantNo : " + restaurantNo + ", memberEmail : " + memberEmail);
 
