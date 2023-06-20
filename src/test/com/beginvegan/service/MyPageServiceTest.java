@@ -3,6 +3,7 @@ package com.beginvegan.service;
 import com.beginvegan.dto.*;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
+import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.*;
 import com.beginvegan.util.TimeUtil;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
@@ -93,11 +97,12 @@ public class MyPageServiceTest {
     @Autowired
     private ReservationRepository reservationRepository;
     //리뷰
-    @Autowired
-    private ReviewRepository reviewRepository;
+    @MockBean
+    private ReviewRepository mockReviewRepository;
     @Autowired
     private MyPageService myPageService;
-
+    @Autowired
+    private MemberService memberService;
     @BeforeAll
     void setTestData() throws AddException, JsonProcessingException {
         // 테스트용 멤버 생성
@@ -107,6 +112,8 @@ public class MyPageServiceTest {
         member.setMemberPoint(TEST_MEMBER_POINT);
 
         memberRepository.insertMember(member);
+//        memberService.addMember(member);
+//        mockMemberRepository.insertMember(member);
 
         // 테스트용 레스토랑 생성
         RestaurantDTO restaurant = new RestaurantDTO();
@@ -148,8 +155,8 @@ public class MyPageServiceTest {
 
         ReservationDTO reservation = new ReservationDTO(
                 TEST_RESERVATION_NO,
-                member.getMemberEmail(),
-                restaurant.getRestaurantNo(),
+                TEST_MEMBER_EMAIL,
+                TEST_RESTAURANT_NO,
                 TEST_RESERVATION_TIME,
                 TEST_RESERVATION_VISIT_TIME,
                 TEST_RESERVATION_TYPE,
@@ -198,7 +205,7 @@ public class MyPageServiceTest {
     @DisplayName("addReview 테스트 - DTO only")
     @Test
     @Transactional
-    void addReview_addReviewSuccessfully_reviewDTO_Only() throws AddException, FindException, IOException, ParseException, RemoveException {
+    void addReview_shouldAddReviewSuccessfully_reviewDTO_Only() throws AddException, FindException, IOException, ParseException, RemoveException {
         // 테스트용 리뷰 생성
         ReviewDTO review = new ReviewDTO();
         review.setMemberEmail(TEST_MEMBER_EMAIL);
@@ -213,21 +220,16 @@ public class MyPageServiceTest {
         // Act
         myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_ONLY));
 
-        TEST_REVIEW_NO = review.getReviewNo();
-        // Assert
-        ReviewDTO retrievedReview = reviewRepository.selectReviewByReviewNo(TEST_REVIEW_NO);
-        Assertions.assertEquals(review.getReviewContent(), retrievedReview.getReviewContent());
-        Assertions.assertEquals(review.getMemberEmail(), retrievedReview.getMemberEmail());
+        verify(mockReviewRepository, times(1)).insertReview(review);
 
         //삭제
-        reviewRepository.deleteReview(TEST_REVIEW_NO);
-
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
     }
 
     @DisplayName("addReview 테스트 - DTO with Image")
     @Test
     @Transactional
-    void addReview_addReviewSuccessfully_reviewDTO_Image() throws AddException, FindException, IOException, ParseException, RemoveException {
+    void addReview_shouldAddReviewSuccessfully_reviewDTO_Image() throws AddException, FindException, IOException, ParseException, RemoveException {
         // 테스트용 리뷰 생성
         ReviewDTO review = new ReviewDTO();
         review.setMemberEmail(TEST_MEMBER_EMAIL);
@@ -238,17 +240,260 @@ public class MyPageServiceTest {
         review.setRestaurantNo(TEST_RESTAURANT_NO);
         review.setReviewStar(TEST_REVIEW_STAR);
 
-
-        // Act
         myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
 
-        TEST_REVIEW_NO = review.getReviewNo();
-        // Assert
-        ReviewDTO retrievedReview = reviewRepository.selectReviewByReviewNo(TEST_REVIEW_NO);
-        Assertions.assertEquals(review.getReviewContent(), retrievedReview.getReviewContent());
-        Assertions.assertEquals(review.getMemberEmail(), retrievedReview.getMemberEmail());
+        // Act
+        verify(mockReviewRepository, times(1)).insertReview(review);
 
         //삭제
-        reviewRepository.deleteReview(TEST_REVIEW_NO);
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
     }
+
+    @DisplayName("findAllReviewByMemberEmail 테스트")
+    @Test
+    @Transactional
+    void findAllReviewByMemberEmail_shouldReturnReviewListSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException {
+        // 테스트용 리뷰 생성
+        ReviewDTO review = new ReviewDTO();
+        review.setMemberEmail(TEST_MEMBER_EMAIL);
+        review.setReviewTime(TEST_REVIEW_TIME);
+        review.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        review.setReviewContent(TEST_REVIEW_CONTENT);
+        review.setReservationNo(TEST_RESERVATION_NO);
+        review.setRestaurantNo(TEST_RESTAURANT_NO);
+        review.setReviewStar(TEST_REVIEW_STAR);
+
+        myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+
+
+        // Act
+        myPageService.findAllReviewByMemberEmail(TEST_MEMBER_EMAIL);
+        verify(mockReviewRepository, times(1)).selectAllReviewByMemberEmail(TEST_MEMBER_EMAIL);
+
+        //삭제
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
+    }
+
+    @DisplayName("findAllReviewByRestaurantId 테스트")
+    @Test
+    @Transactional
+    void findAllReviewByRestaurantId_shouldReturnReviewListSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException {
+        // 테스트용 리뷰 생성
+        ReviewDTO review = new ReviewDTO();
+        review.setMemberEmail(TEST_MEMBER_EMAIL);
+        review.setReviewTime(TEST_REVIEW_TIME);
+        review.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        review.setReviewContent(TEST_REVIEW_CONTENT);
+        review.setReservationNo(TEST_RESERVATION_NO);
+        review.setRestaurantNo(TEST_RESTAURANT_NO);
+        review.setReviewStar(TEST_REVIEW_STAR);
+
+        myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+
+        // Act
+        myPageService.findAllReviewByRestaurantId(TEST_RESTAURANT_NO);
+        verify(mockReviewRepository, times(1)).selectAllReviewByRestaurantId(TEST_RESTAURANT_NO);
+
+        //삭제
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
+    }
+
+    @DisplayName("findReviewByReviewNo 테스트")
+    @Test
+    @Transactional
+    void findReviewByReviewNo_shouldReturnReviewSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException {
+        // 테스트용 리뷰 생성
+        ReviewDTO review = new ReviewDTO();
+        review.setMemberEmail(TEST_MEMBER_EMAIL);
+        review.setReviewTime(TEST_REVIEW_TIME);
+        review.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        review.setReviewContent(TEST_REVIEW_CONTENT);
+        review.setReservationNo(TEST_RESERVATION_NO);
+        review.setRestaurantNo(TEST_RESTAURANT_NO);
+        review.setReviewStar(TEST_REVIEW_STAR);
+
+        myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+
+        // Act
+        myPageService.findReviewByReviewNo(review.getReviewNo());
+        verify(mockReviewRepository, times(1)).selectReviewByReviewNo(review.getReviewNo());
+
+        //삭제
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
+    }
+
+
+    @DisplayName("removeReview 테스트")
+    @Test
+    @Transactional
+    void removeReview_shouldRemoveReviewSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException {
+        // 테스트용 리뷰 생성
+        ReviewDTO review = new ReviewDTO();
+        review.setMemberEmail(TEST_MEMBER_EMAIL);
+        review.setReviewTime(TEST_REVIEW_TIME);
+        review.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        review.setReviewContent(TEST_REVIEW_CONTENT);
+        review.setReservationNo(TEST_RESERVATION_NO);
+        review.setRestaurantNo(TEST_RESTAURANT_NO);
+        review.setReviewStar(TEST_REVIEW_STAR);
+
+        myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+
+        // Act
+        myPageService.removeReview(review.getReviewNo());
+        verify(mockReviewRepository, times(1)).deleteReview(review.getReviewNo());
+
+        //삭제
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
+    }
+
+
+    @DisplayName("modifyReview 테스트 - DTO only")
+    @Test
+    @Transactional
+    void modifyReview_shouldModifyReviewSuccessfully_ReviewDTO_Only() throws AddException, FindException, IOException, ParseException, RemoveException, ModifyException {
+        // 테스트용 리뷰 생성
+        ReviewDTO review = new ReviewDTO();
+        review.setMemberEmail(TEST_MEMBER_EMAIL);
+        review.setReviewTime(TEST_REVIEW_TIME);
+        review.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        review.setReviewContent(TEST_REVIEW_CONTENT);
+        review.setReservationNo(TEST_RESERVATION_NO);
+        review.setRestaurantNo(TEST_RESTAURANT_NO);
+        review.setReviewStar(TEST_REVIEW_STAR);
+
+        // 업데이트용 리뷰 생성
+        ReviewDTO updateReview = new ReviewDTO();
+        updateReview.setMemberEmail(TEST_MEMBER_EMAIL);
+        updateReview.setReviewTime(TEST_REVIEW_TIME);
+        updateReview.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        updateReview.setReviewContent(TEST_REVIEW_CONTENT + "수정됨");
+        updateReview.setReservationNo(TEST_RESERVATION_NO);
+        updateReview.setRestaurantNo(TEST_RESTAURANT_NO);
+        updateReview.setReviewStar(TEST_REVIEW_STAR);
+
+        myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_ONLY));
+
+        // Act
+        myPageService.modifyReview(review.getReviewNo(), updateReview);
+        verify(mockReviewRepository, times(1)).updateReview(review.getReviewNo(),updateReview);
+
+        //삭제
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
+    }
+
+
+    @DisplayName("modifyReview 테스트 - DTO with Image")
+    @Test
+    @Transactional
+    void modifyReview_shouldModifyReviewSuccessfully_ReviewDTO_Image() throws AddException, FindException, IOException, ParseException, RemoveException, ModifyException {
+        // 테스트용 리뷰 생성
+        ReviewDTO review = new ReviewDTO();
+        review.setMemberEmail(TEST_MEMBER_EMAIL);
+        review.setReviewTime(TEST_REVIEW_TIME);
+        review.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        review.setReviewContent(TEST_REVIEW_CONTENT);
+        review.setReservationNo(TEST_RESERVATION_NO);
+        review.setRestaurantNo(TEST_RESTAURANT_NO);
+        review.setReviewStar(TEST_REVIEW_STAR);
+
+        // 업데이트용 리뷰 생성
+        ReviewDTO updateReview = new ReviewDTO();
+        updateReview.setMemberEmail(TEST_MEMBER_EMAIL);
+        updateReview.setReviewTime(TEST_REVIEW_TIME);
+        updateReview.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+        updateReview.setReviewContent(TEST_REVIEW_CONTENT + "수정됨");
+        updateReview.setReservationNo(TEST_RESERVATION_NO);
+        updateReview.setRestaurantNo(TEST_RESTAURANT_NO);
+        updateReview.setReviewStar(TEST_REVIEW_STAR);
+
+        myPageService.addReview(review, TEST_MEMBER_EMAIL, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+
+        // Act
+        myPageService.modifyReview(review.getReviewNo(), updateReview);
+        verify(mockReviewRepository, times(1)).updateReview(review.getReviewNo(),updateReview);
+
+        //삭제
+        mockReviewRepository.deleteReview(TEST_REVIEW_NO);
+    }
+
+
+    @DisplayName("addBookmark 테스트")
+    @Test
+    @Transactional
+    void addBookmark_shouldAddBookmarkSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException, ModifyException {
+
+        // 테스트용 북마크 생성
+        BookmarkDTO bookmarkDTO = new BookmarkDTO();
+        bookmarkDTO.setRestaurantNo(TEST_RESTAURANT_NO);
+        bookmarkDTO.setMemberEmail(TEST_MEMBER_EMAIL);
+
+        // Act
+        myPageService.addBookmark(TEST_MEMBER_EMAIL,TEST_RESTAURANT_NO);
+
+        // 검증
+        List<BookmarkDTO> bookmarkList = memberRepository.selectAllBookmarkByMemberEmail(TEST_MEMBER_EMAIL);
+        Assertions.assertTrue(bookmarkList.contains(bookmarkDTO));
+        //삭제
+        memberRepository.deleteBookmark(TEST_RESTAURANT_NO,TEST_MEMBER_EMAIL);
+    }
+
+
+    @DisplayName("removeBookmark 테스트")
+    @Test
+    @Transactional
+    void removeBookmark_shouldRemoveBookmarkSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException, ModifyException {
+
+        // 테스트용 북마크 생성
+        BookmarkDTO bookmarkDTO = new BookmarkDTO();
+        bookmarkDTO.setRestaurantNo(TEST_RESTAURANT_NO);
+        bookmarkDTO.setMemberEmail(TEST_MEMBER_EMAIL);
+
+        // Act
+        myPageService.addBookmark(TEST_MEMBER_EMAIL,TEST_RESTAURANT_NO);
+
+        // 검증
+        List<BookmarkDTO> bookmarkList_before_delete = memberRepository.selectAllBookmarkByMemberEmail(TEST_MEMBER_EMAIL);
+        Assertions.assertTrue(bookmarkList_before_delete.contains(bookmarkDTO));
+        //삭제
+        memberRepository.deleteBookmark(TEST_RESTAURANT_NO,TEST_MEMBER_EMAIL);
+
+        //검증
+        Assertions.assertThrows(FindException.class,()->memberRepository.selectAllBookmarkByMemberEmail(TEST_MEMBER_EMAIL));
+    }
+
+    @DisplayName("findAllBookmarkByMemberEmail 테스트")
+    @Test
+    @Transactional
+    void findAllBookmarkByMemberEmail_shouldReturnBookmarkListSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException, ModifyException {
+        // 테스트용 북마크 생성
+        BookmarkDTO bookmarkDTO = new BookmarkDTO();
+        bookmarkDTO.setRestaurantNo(TEST_RESTAURANT_NO);
+        bookmarkDTO.setMemberEmail(TEST_MEMBER_EMAIL);
+
+        // Act
+        myPageService.addBookmark(TEST_MEMBER_EMAIL,TEST_RESTAURANT_NO);
+
+        // 검증
+        List<BookmarkDTO> bookmarkList = memberRepository.selectAllBookmarkByMemberEmail(TEST_MEMBER_EMAIL);
+        Assertions.assertTrue(bookmarkList.contains(bookmarkDTO));
+        Assertions.assertEquals(bookmarkList.get(0).getMemberEmail(), TEST_MEMBER_EMAIL);
+        //삭제
+        memberRepository.deleteBookmark(TEST_RESTAURANT_NO,TEST_MEMBER_EMAIL);
+    }
+
+    @DisplayName("findAllPointByMemberEmail 테스트")
+    @Test
+    @Transactional
+    void findAllPointByMemberEmail_shouldReturnPointListSuccessfully() throws AddException, FindException, IOException, ParseException, RemoveException, ModifyException {
+        // 테스트용 포인트 생성
+        PointDTO point = new PointDTO(TEST_MEMBER_EMAIL,"TEST", TEST_RESERVATION_TIME, 1234, 1234);
+        memberRepository.insertPoint(point);
+        // Act
+        List<PointDTO> pointList = myPageService.findAllPointByMemberEmail(TEST_MEMBER_EMAIL);
+        log.info(pointList.toString() + " !!!!!");
+        Assertions.assertEquals(1234, pointList.get(pointList.size() -1).getPointChange());
+
+    }
+
 }
