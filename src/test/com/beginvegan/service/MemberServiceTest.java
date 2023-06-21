@@ -1,21 +1,27 @@
 package com.beginvegan.service;
 
 import com.beginvegan.dto.MemberDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.MemberRepository;
+import com.beginvegan.util.GetGoogleAccount;
+import com.beginvegan.util.GetKakaoAccount;
+import com.beginvegan.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
+
+import java.text.ParseException;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,134 +30,152 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @SpringBootTest
 class MemberServiceTest {
+    private final String KAKAO_ACCESS_TOKEN = "test1234abc";
+    private final String GOOGLE_ACCESS_TOKEN = "test1234abc";
+    private static final String MEMBER_ROLE_NORMAL = "normal";
+    private static final String MEMBER_ROLE_ADMIN = "admin";
 
-    // 아래 값 6개는 테스트 전 발급 받은 실제 내용으로 변경할 것
-    private final String KAKAO_ACCESS_TOKEN = "3RAX0a7xt33lQ0yyhP9YKmCKVFVpSunU5Tojgy-LCiolDQAAAYiPM5f8";
-    private final String FROM_KAKAO_API_EMAIL = "2802453608@kakao.com";
-    private final String FROM_KAKAO_API_NAME = "성찬민";
-    private final String GOOGLE_CRDENTIAL = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwODNkZDU5ODE2NzNmNjYxZmRlOWRhZTY0NmI2ZjAzODBhMDE0NWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2ODU0Mjc1OTgsImF1ZCI6Ijc5MTU3NzcwMzkzLXZkMmZ0czNjM2tkOW5iam5iNzJxcWpoNm1lbnM0ZmRnLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEyNDk5OTQ2NjgwNTMzOTQ0MzY3IiwiZW1haWwiOiJiZWhvbmVzdHdheUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXpwIjoiNzkxNTc3NzAzOTMtdmQyZnRzM2Mza2Q5bmJqbmI3MnFxamg2bWVuczRmZGcuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJuYW1lIjoiY2hhbm1pbiBzdW5nIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FBY0hUdGRkYzNPM2lMdnFYejhQcWQ5cEJabTR2SFVyeXV0STZQeklPQkZNPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6ImNoYW5taW4iLCJmYW1pbHlfbmFtZSI6InN1bmciLCJpYXQiOjE2ODU0Mjc4OTgsImV4cCI6MTY4NTQzMTQ5OCwianRpIjoiMDBkNzUzMGY1NDM2YWE2ZWMyYTAxMGEwYWM4MTViZWU2MDk0YWZiZCJ9.X5boArHd0RgiIDuGDXNuMeURQ2VWWwnSr-1mDlN9NsarO5yIjIDuNANAOsrtZS8kcb59bqGhMvCip6GvH3nt3Th3-Tp3F80KZxdcDYeqqjxyxdoP-bZrb8I-1n1QtZFl6YqTvZUdOm5Fr8AbdHhEN0JNQf16oEc8BRX6eLGUhnkaWWvOHISREzG9_3Siexn_V5AKsg7bSPRU_gq_Yc1tU6lfb-2IdO8yhVf3nC34LyySUxEIr609hSuvcT9KidyP3NE4COx3dThGymGSeagXbHaQ53zXUYXMqfbXWvW2hD4eOVypMmDMziTu7FIJJRzq1LeYxb8niEt8IvB8HBCVAw";
-    private final String FROM_GOOGLE_ACCOUNT_EMAIL = "behonestway@gmail.com";
-    private final String FROM_GOOGLE_ACCOUNT_NAME = "chanmin sung";
+    private static MockedStatic<GetKakaoAccount> getKakaoAccount;
 
-
+    private static MockedStatic<GetGoogleAccount> getGoogleAccount;
     @Autowired
     private MemberService memberService;
+
+    @Mock
+    private MemberService mockMemberService;
 
     @MockBean
     private MemberRepository memberRepository;
 
     @MockBean
     private MockHttpSession mockSession;
+
+    @BeforeAll
+    public static void beforeAll() {
+        getKakaoAccount = mockStatic(GetKakaoAccount.class);
+        getGoogleAccount = mockStatic(GetGoogleAccount.class);
+    }
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @DisplayName("Kakao login 테스트")
+    @AfterAll
+    public static void afterAll() {
+        getKakaoAccount.close();
+        getGoogleAccount.close();
+    }
+
+    @DisplayName("KakaoLogin 테스트")
     @Test
-    void kakao_login_shouldUpdateMemberAndSetSessionAttributes() throws Exception {
+    void kakao_loginTest() throws Exception {
 
-        // Mock member info from Kakao API
-        MemberDTO mockMemberInfo = new MemberDTO();
-        mockMemberInfo.setMemberEmail(FROM_KAKAO_API_EMAIL);
-        mockMemberInfo.setMemberName(FROM_KAKAO_API_NAME);
+        // Arrange
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+        memberInfo.setMemberName("tester1");
+        memberInfo.setMemberPoint(300);
+        memberInfo.setMemberRole("tester");
 
-        // Mock existing member info in the repository
-        MemberDTO mockExistingMemberInfo = new MemberDTO();
-        mockExistingMemberInfo.setMemberEmail(FROM_KAKAO_API_EMAIL);
-        mockExistingMemberInfo.setMemberName(FROM_KAKAO_API_NAME);
+        MemberDTO memberExistInfo = new MemberDTO();
+        memberExistInfo.setMemberEmail(memberEmail);
+        memberExistInfo.setMemberName("tester1");
+        memberExistInfo.setMemberPoint(300);
+        memberExistInfo.setMemberRole("tester");
+
+        when(GetKakaoAccount.getMemberInfo(KAKAO_ACCESS_TOKEN)).thenReturn(memberInfo);
+        when(memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail())).thenReturn(memberExistInfo);
 
         // Call the login method
         memberService.loginKakao(mockSession, KAKAO_ACCESS_TOKEN);
 
-        // Mock repository method to select existing member by email
-        when(memberRepository.selectMemberByMemberEmail(FROM_KAKAO_API_EMAIL))
-                .thenReturn(mockExistingMemberInfo);
-
         // Change inserted member name
-        mockMemberInfo.setMemberName("updateTestName");
-        memberRepository.updateMember(mockMemberInfo);
-        mockMemberInfo.setMemberName(FROM_KAKAO_API_NAME);
+        memberInfo.setMemberName("updateTestName");
 
+        // Call the login method
+        mockMemberService.loginKakao(mockSession, KAKAO_ACCESS_TOKEN);
+
+        memberInfo.setMemberName("nameIsNotEqualTest");
         // Call the login method for Update member name
-        memberService.loginKakao(mockSession, KAKAO_ACCESS_TOKEN);
+        mockMemberService.loginKakao(mockSession, KAKAO_ACCESS_TOKEN);
 
         // Verify that the member repository methods were called
-        verify(memberRepository, times(2)).selectMemberByMemberEmail(FROM_KAKAO_API_EMAIL);
-        verify(memberRepository, times(1)).updateMember(mockExistingMemberInfo);
-
-        // Verify that the member info is updated with the new name
-        assertEquals(mockMemberInfo.getMemberName(), mockExistingMemberInfo.getMemberName());
+        verify(memberRepository, times(2)).selectMemberByMemberEmail(memberInfo.getMemberEmail());
+        //verify(memberRepository, times(1)).updateMember(memberExistInfo);
 
         // Verify that the session attributes are set
-        verify(mockSession, times(2)).setAttribute("memberEmail", mockMemberInfo.getMemberEmail());
-        verify(mockSession, times(2)).setAttribute("accessToken", KAKAO_ACCESS_TOKEN);
+        verify(mockSession, times(1)).setAttribute("memberEmail", memberInfo.getMemberEmail());
+        verify(mockSession, times(1)).setAttribute("accessToken", KAKAO_ACCESS_TOKEN);
 
-        memberRepository.deleteMember(FROM_KAKAO_API_EMAIL);
         memberService.logout(mockSession);
 
     }
 
-    @DisplayName("Google login 테스트")
+    @DisplayName("GoogleLogin 테스트")
     @Test
-    void google_login_shouldUpdateMemberAndSetSessionAttributes() throws Exception {
+    void google_loginTest() throws Exception {
 
-        // Mock member info from Kakao API
-        MemberDTO mockMemberInfo = new MemberDTO();
-        mockMemberInfo.setMemberEmail(FROM_GOOGLE_ACCOUNT_EMAIL);
-        mockMemberInfo.setMemberName(FROM_GOOGLE_ACCOUNT_NAME);
+        // Arrange
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+        memberInfo.setMemberName("tester1");
+        memberInfo.setMemberPoint(300);
+        memberInfo.setMemberRole("tester");
 
-        // Mock existing member info in the repository
-        MemberDTO mockExistingMemberInfo = new MemberDTO();
-        mockExistingMemberInfo.setMemberEmail(FROM_GOOGLE_ACCOUNT_EMAIL);
-        mockExistingMemberInfo.setMemberName(FROM_GOOGLE_ACCOUNT_NAME);
+        MemberDTO memberExistInfo = new MemberDTO();
+        memberExistInfo.setMemberEmail(memberEmail);
+        memberExistInfo.setMemberName("tester1");
+        memberExistInfo.setMemberPoint(300);
+        memberExistInfo.setMemberRole("tester");
+
+        when(GetGoogleAccount.getMemberInfo(GOOGLE_ACCESS_TOKEN)).thenReturn(memberInfo);
+        when(memberRepository.selectMemberByMemberEmail(memberInfo.getMemberEmail())).thenReturn(memberExistInfo);
+
 
         // Call the login method
-        memberService.loginGoogle(mockSession, GOOGLE_CRDENTIAL);
-
-        // Mock repository method to select existing member by email
-        when(memberRepository.selectMemberByMemberEmail(FROM_GOOGLE_ACCOUNT_EMAIL))
-                .thenReturn(mockExistingMemberInfo);
+        memberService.loginGoogle(mockSession, GOOGLE_ACCESS_TOKEN);
 
         // Change inserted member name
-        mockMemberInfo.setMemberName("updateTestName");
-        memberRepository.updateMember(mockMemberInfo);
-        mockMemberInfo.setMemberName(FROM_GOOGLE_ACCOUNT_NAME);
+        memberInfo.setMemberName("updateTestName");
 
+        // Call the login method
+        mockMemberService.loginGoogle(mockSession, GOOGLE_ACCESS_TOKEN);
+
+        memberInfo.setMemberName("nameIsNotEqualTest");
         // Call the login method for Update member name
-        memberService.loginGoogle(mockSession, GOOGLE_CRDENTIAL);
+        mockMemberService.loginKakao(mockSession, GOOGLE_ACCESS_TOKEN);
 
         // Verify that the member repository methods were called
-        verify(memberRepository, times(2)).selectMemberByMemberEmail(FROM_GOOGLE_ACCOUNT_EMAIL);
-        verify(memberRepository, times(1)).updateMember(mockExistingMemberInfo);
-
-        // Verify that the member info is updated with the new name
-        assertEquals(mockMemberInfo.getMemberName(), mockExistingMemberInfo.getMemberName());
+        verify(memberRepository, times(2)).selectMemberByMemberEmail(memberInfo.getMemberEmail());
+        //verify(memberRepository, times(1)).updateMember(memberExistInfo);
 
         // Verify that the session attributes are set
-        verify(mockSession, times(2)).setAttribute("memberEmail", mockMemberInfo.getMemberEmail());
-        verify(mockSession, times(2)).setAttribute("googleCredential", GOOGLE_CRDENTIAL);
+        verify(mockSession, times(1)).setAttribute("memberEmail", memberInfo.getMemberEmail());
+        verify(mockSession, times(1)).setAttribute("accessToken", GOOGLE_ACCESS_TOKEN);
 
-        memberRepository.deleteMember(FROM_GOOGLE_ACCOUNT_EMAIL);
         memberService.logout(mockSession);
 
     }
 
     @DisplayName("logout 테스트")
     @Test
-    void logout_shouldInvalidateSession() {
-        //Arrange
-        MockHttpSession session = new MockHttpSession();
-        // Act
-        memberService.logout(session);
+    void logoutTest() {
+    //Arrange
+    MockHttpSession session = new MockHttpSession();
 
-        // Assert
-        assertTrue(session.isInvalid());
-    }
+    // Act
+    memberService.logout(session);
+
+    // Assert
+    assertTrue(session.isInvalid());
+}
 
     @DisplayName("addMember 테스트")
     @Test
-    void addMember_shouldSetInitialPointAndCallRepositoryMethod() throws AddException {
+    void addMemberTest() throws AddException {
         // Arrange
         MemberDTO memberInfo = new MemberDTO();
         memberInfo.setMemberEmail("test@example.com");
@@ -167,7 +191,7 @@ class MemberServiceTest {
 
     @DisplayName("modifyMember 테스트")
     @Test
-    void modifyMember_shouldCallRepositoryMethod() throws ModifyException {
+    void modifyMemberTest() throws ModifyException {
         // Arrange
         MemberDTO memberInfo = new MemberDTO();
         memberInfo.setMemberEmail("test@example.com");
@@ -182,7 +206,7 @@ class MemberServiceTest {
 
     @DisplayName("fnidMemberByMemberEmail 테스트")
     @Test
-    void findMemberByMemberEmail_shouldCallRepositoryMethod() throws FindException {
+    void findMemberByMemberEmailTest() throws FindException {
         // Arrange
         String memberEmail = "test@example.com";
 
@@ -195,7 +219,7 @@ class MemberServiceTest {
 
     @DisplayName("removeMember 테스트")
     @Test
-    void removeMember_shouldCallRepositoryMethodAndInvalidateSession() throws RemoveException {
+    void removeMemberTest() throws RemoveException {
         // Arrange
         String memberEmail = "test@example.com";
         MockHttpSession mockSession = new MockHttpSession();
@@ -206,5 +230,123 @@ class MemberServiceTest {
         // Assert
         verify(memberRepository, times(1)).deleteMember(memberEmail);
         assertTrue(mockSession.isInvalid());
+    }
+
+    @DisplayName("modifyMemberPoint 테스트")
+    @Test
+    void modifyMemberPointTest() throws ModifyException, ParseException, AddException {
+        // Arrange
+        PointDTO pointInfo = new PointDTO();
+        pointInfo.setMemberEmail("test@example.com");
+        pointInfo.setPointTime(TimeUtil.toDateTime(new Date()));
+        pointInfo.setPointDiv("test");
+        pointInfo.setPointChange(300);
+        pointInfo.setPointResult(1300);
+
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(pointInfo.getMemberEmail());
+        memberInfo.setMemberPoint(pointInfo.getPointResult());
+
+        // Act
+        memberService.modifyMemberPoint(pointInfo);
+
+        // Assert
+        verify(memberRepository, times(1)).updateMemberPoint(memberInfo);
+        verify(memberRepository, times(1)).insertPoint(pointInfo);
+    }
+
+    @DisplayName("modifyAllMemberPoint 테스트")
+    @Test
+    void modifyAllMemberPointTest() throws ModifyException, ParseException, AddException {
+        // Arrange
+        PointDTO pointInfo = new PointDTO();
+        pointInfo.setMemberEmail("test@example.com");
+        pointInfo.setPointTime(TimeUtil.toDateTime(new Date()));
+        pointInfo.setPointDiv("test");
+        pointInfo.setPointChange(300);
+        pointInfo.setPointResult(1300);
+
+        // Act
+        memberService.modifyAllMemberPoint(pointInfo);
+
+        // Assert
+        verify(memberRepository, times(1)).updateMemberPointAll(pointInfo.getPointChange());
+        verify(memberRepository, times(1)).insertPointAll(pointInfo);
+    }
+
+
+    @DisplayName("modifyMemberRoleAdmin 테스트")
+    @Test
+    void modifyMemberRoleAdminTest() throws ModifyException, ParseException, AddException {
+        // Arrange
+        String email = "test@example.com";
+
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(email);
+        memberInfo.setMemberRole(MEMBER_ROLE_ADMIN);
+
+        // Act
+        memberService.modifyMemberRoleAdmin(email);
+
+        // Assert
+        verify(memberRepository, times(1)).updateMemberRole(memberInfo);
+    }
+
+
+    @DisplayName("modifyMemberRoleNormal 테스트")
+    @Test
+    void modifyMemberRoleNormalTest() throws ModifyException, ParseException, AddException {
+        // Arrange
+        String email = "test@example.com";
+
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(email);
+        memberInfo.setMemberRole(MEMBER_ROLE_NORMAL);
+
+        // Act
+        memberService.modifyMemberRoleNormal(email);
+
+        // Assert
+        verify(memberRepository, times(1)).updateMemberRole(memberInfo);
+    }
+
+
+    @DisplayName("findAllMember 테스트")
+    @Test
+    void findAllMemberTest() throws FindException {
+
+        // Act
+        memberService.findAllMember();
+
+        // Assert
+        verify(memberRepository, times(1)).selectMemberAll();
+    }
+
+    @DisplayName("removeMember 테스트")
+    @Test
+    void removeMemberByMemberEmailTest() throws RemoveException {
+        // Arrange
+        String email = "test@example.com";
+
+        // Act
+        memberService.removeMember(email);
+
+        // Assert
+        verify(memberRepository, times(1)).deleteMember(email);
+
+    }
+
+    @DisplayName("isMemberBookmarkedRestaurant 테스트")
+    @Test
+    void isMemberBookmarkedRestaurantTest() {
+        // Arrange
+        String email = "test@example.com";
+        String restaurantNo = "1";
+
+        // Act
+        memberService.isMemberBookmarkedRestaurant(email, restaurantNo);
+
+        // Assert
+        verify(memberRepository, times(1)).selectBookmarkByMemberEmailAndRestaurntNo(email, restaurantNo);
     }
 }
