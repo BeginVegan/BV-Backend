@@ -3,6 +3,7 @@ package com.beginvegan.controller;
 import com.beginvegan.dto.*;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
+import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.*;
 import com.beginvegan.service.MyPageService;
@@ -13,14 +14,18 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -28,6 +33,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
@@ -101,24 +109,19 @@ public class MyPageControllerTest {
     @Autowired
     private ReservationRepository reservationRepository;
     //리뷰
-    @MockBean
+    @Autowired
     private ReviewRepository reviewRepository;
-
     //세션
     @MockBean
     private MockHttpSession mockSession;
 
-    @InjectMocks
+    @Autowired
     private MyPageController myPageController;
 
-    @MockBean
+    @Autowired
     private  MyPageService myPageService;
     @BeforeAll
     void setTestData() throws AddException, JsonProcessingException {
-        // 테스트용 세션 생성
-        MockitoAnnotations.openMocks(this);
-        mockSession = new MockHttpSession();
-        mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
 
         // 테스트용 멤버 생성
         MemberDTO member = new MemberDTO();
@@ -217,28 +220,424 @@ public class MyPageControllerTest {
         memberRepository.deleteMember(TEST_MEMBER_EMAIL);
     }
 
-
-    @DisplayName("reviewList 메소드 테스트")
+    @DisplayName("GET review/userEmail 테스트 - with image")
     @Test
     @Transactional
-    void reviewList_shouldReturnCorrectHttpResponse() {
+    void reviewList_shouldReturnCorrectHttpResponse_DTO_IMAGE() {
         try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
             // 리뷰 insert
-            log.info("!!!!"+mockSession + TEST_REVIEW_DTO.toString() + TEST_MULTI_PART_FILE_DTO_IMAGE);
             myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
-            log.info("!!!!"+ "after review add");
             TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
             // 성공 확인
-            List<ReviewDTO> retrievedReviewList = reviewRepository.selectAllReviewByMemberEmail(TEST_MEMBER_EMAIL);
-            log.info("!!!!"+ TEST_REVIEW_NO +  retrievedReviewList);
-
+            ResponseEntity responseEntity = myPageController.reviewList(mockSession);
+            List<ReviewDTO> retrievedReviewList = (List<ReviewDTO>) responseEntity.getBody();
             Assertions.assertTrue(retrievedReviewList.contains(TEST_REVIEW_DTO));
-
             // 삭제
             reviewRepository.deleteReview(TEST_REVIEW_NO);
         } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
             e.printStackTrace();
             Assertions.fail("Exception occurred: " + e.getMessage());
         }
+    }
+    @DisplayName("GET review/userEmail 테스트 - dto only" )
+    @Test
+    @Transactional
+    void reviewList_shouldReturnCorrectHttpResponse_DTO_ONLY() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_ONLY));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewList(mockSession);
+
+            List<ReviewDTO> retrievedReviewList = (List<ReviewDTO>) responseEntity.getBody();
+            Assertions.assertTrue(retrievedReviewList.contains(TEST_REVIEW_DTO));
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @DisplayName("GET review/restaurantId/{id} 테스트 - with image")
+    @Test
+    @Transactional
+    void reviewList_restaurantID_shouldReturnCorrectHttpResponse_DTO_IMAGE() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+            TEST_RESTAURANT_NO = TEST_REVIEW_DTO.getRestaurantNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewList(TEST_RESTAURANT_NO, mockSession);
+            List<ReviewDTO> retrievedReviewList = (List<ReviewDTO>) responseEntity.getBody();
+            Assertions.assertTrue(retrievedReviewList.contains(TEST_REVIEW_DTO));
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @DisplayName("GET review/restaurantId/{id} 테스트 - dto only")
+    @Test
+    @Transactional
+    void reviewList_restaurantID_shouldReturnCorrectHttpResponse_DTO_ONLY() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_ONLY));
+            TEST_RESTAURANT_NO = TEST_REVIEW_DTO.getRestaurantNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewList(TEST_RESTAURANT_NO, mockSession);
+            List<ReviewDTO> retrievedReviewList = (List<ReviewDTO>) responseEntity.getBody();
+            Assertions.assertTrue(retrievedReviewList.contains(TEST_REVIEW_DTO));
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("GET review/{reviewNo} 테스트 - dto only")
+    @Test
+    @Transactional
+    void reviewInfo_reviewNo_shouldReturnCorrectHttpResponse_DTO_ONLY() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_ONLY));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewInfo(TEST_REVIEW_NO);
+            ReviewDTO retrievedReview = (ReviewDTO) responseEntity.getBody();
+            Assertions.assertEquals(retrievedReview, TEST_REVIEW_DTO);
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("GET review/{reviewNo} 테스트 - with image")
+    @Test
+    @Transactional
+    void reviewInfo_reviewNo_shouldReturnCorrectHttpResponse_DTO_IMAGE() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewInfo(TEST_REVIEW_NO);
+            ReviewDTO retrievedReview = (ReviewDTO) responseEntity.getBody();
+            Assertions.assertEquals(retrievedReview, TEST_REVIEW_DTO);
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+
+    @DisplayName("POST review/ 테스트 - dto only")
+    @Test
+    @Transactional
+    void reviewAdd_shouldReturnCorrectHttpResponse_DTO_ONLY() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_ONLY));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewInfo(TEST_REVIEW_NO);
+            ReviewDTO retrievedReview = (ReviewDTO) responseEntity.getBody();
+            Assertions.assertEquals(retrievedReview, TEST_REVIEW_DTO);
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("POST review/ 테스트 - with image")
+    @Test
+    @Transactional
+    void reviewAdd_shouldReturnCorrectHttpResponse_DTO_IMAGE() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewInfo(TEST_REVIEW_NO);
+            ReviewDTO retrievedReview = (ReviewDTO) responseEntity.getBody();
+            Assertions.assertEquals(retrievedReview, TEST_REVIEW_DTO);
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException | FindException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("DELETE review/{reviewNo} 테스트")
+    @Test
+    @Transactional
+    void reviewRemove_shouldReturnCorrectHttpResponse() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewRemove(TEST_REVIEW_NO, mockSession);
+            Assertions.assertEquals(responseEntity.getStatusCode().toString(), "200 OK");
+
+
+            Assertions.assertThrows(FindException.class, ()->myPageController.reviewInfo(TEST_REVIEW_NO));
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException| ParseException| AddException  | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("PUT review/{reviewNo} 테스트")
+    @Test
+    @Transactional
+    void reviewModify_shouldReturnCorrectHttpResponse() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 업데이트용 리뷰 생성
+            ReviewDTO updateReview = new ReviewDTO();
+            updateReview.setMemberEmail(TEST_MEMBER_EMAIL);
+            updateReview.setReviewTime(TEST_REVIEW_TIME);
+            updateReview.setReviewPhotoDir(TEST_MENU_PHOTO_DIR);
+            updateReview.setReviewContent(TEST_REVIEW_CONTENT + "수정됨");
+            updateReview.setReservationNo(TEST_RESERVATION_NO);
+            updateReview.setRestaurantNo(TEST_RESTAURANT_NO);
+            updateReview.setReviewStar(TEST_REVIEW_STAR);
+
+            // 리뷰 insert
+            myPageController.reviewAdd(mockSession,TEST_REVIEW_DTO, Optional.ofNullable(TEST_MULTI_PART_FILE_DTO_IMAGE));
+            TEST_REVIEW_NO = TEST_REVIEW_DTO.getReviewNo();
+
+
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.reviewModify(TEST_REVIEW_NO,updateReview, mockSession);
+            Assertions.assertEquals(responseEntity.getStatusCode().toString(), "200 OK");
+
+            ResponseEntity responseEntity_after_modify = myPageController.reviewInfo(TEST_REVIEW_NO);
+            ReviewDTO retrievedReview = (ReviewDTO) responseEntity_after_modify.getBody();
+            Assertions.assertEquals(retrievedReview.getReviewContent(), updateReview.getReviewContent());
+
+            // 삭제
+            reviewRepository.deleteReview(TEST_REVIEW_NO);
+        } catch (IOException | FindException|ParseException | RuntimeException | AddException | RemoveException | ModifyException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("GET bookmark/userEmail 테스트")
+    @Test
+    @Transactional
+    void bookmarkList_shouldReturnCorrectHttpResponse() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 북마크 insert
+            myPageController.bookmarkAdd(TEST_RESTAURANT_NO,mockSession);
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.bookmarkList(mockSession);
+            List<BookmarkDTO> retrievedBookmarkList = (List<BookmarkDTO>) responseEntity.getBody();
+            Assertions.assertFalse(retrievedBookmarkList.isEmpty());
+            Assertions.assertEquals(responseEntity.getStatusCode().toString(), "200 OK");
+            // 삭제
+            myPageController.bookmarkRemove(TEST_RESTAURANT_NO, mockSession);
+        } catch (FindException | AddException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @DisplayName("DELETE bookmark/{restaurantNo} 테스트")
+    @Test
+    @Transactional
+    void bookmarkRemove_shouldReturnCorrectHttpResponse() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 북마크 insert
+            myPageController.bookmarkAdd(TEST_RESTAURANT_NO,mockSession);
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.bookmarkList(mockSession);
+            List<BookmarkDTO> retrievedBookmarkList = (List<BookmarkDTO>) responseEntity.getBody();
+            Assertions.assertFalse(retrievedBookmarkList.isEmpty());
+            Assertions.assertEquals(responseEntity.getStatusCode().toString(), "200 OK");
+
+            ResponseEntity responseEntity_after_remove1 = myPageController.bookmarkRemove(TEST_RESTAURANT_NO,mockSession);
+            Assertions.assertEquals(responseEntity_after_remove1.getStatusCode().toString(), "200 OK");
+
+            Assertions.assertThrows(FindException.class, ()->myPageController.bookmarkList(mockSession));
+        } catch (FindException | AddException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @DisplayName("POST bookmark/{restaurantNo} 테스트")
+    @Test
+    @Transactional
+    void bookmarkAdd_shouldReturnCorrectHttpResponse() {
+        try {
+            // 테스트용 세션 생성
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+            // 북마크 insert
+            myPageController.bookmarkAdd(TEST_RESTAURANT_NO,mockSession);
+            // 성공 확인
+            ResponseEntity responseEntity = myPageController.bookmarkList(mockSession);
+            List<BookmarkDTO> retrievedBookmarkList = (List<BookmarkDTO>) responseEntity.getBody();
+            Assertions.assertFalse(retrievedBookmarkList.isEmpty());
+            Assertions.assertEquals(responseEntity.getStatusCode().toString(), "200 OK");
+            // 삭제
+            myPageController.bookmarkRemove(TEST_RESTAURANT_NO, mockSession);
+        } catch (FindException | AddException | RemoveException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+
+    @DisplayName("GET point-history 테스트")
+    @Test
+    @Transactional
+    void getPointHistory_shouldReturnCorrectHttpResponse() {
+        // 테스트용 세션 생성
+        MockitoAnnotations.openMocks(this);
+        mockSession = new MockHttpSession();
+        mockSession.setAttribute("memberEmail", TEST_MEMBER_EMAIL);
+
+        Assertions.assertThrows(FindException.class, ()->myPageController.getPointHistory(mockSession));
+    }
+
+    @DisplayName("GET point-history 테스트 - null email")
+    @Test
+    @Transactional
+    void getPointHistory_shouldReturnCorrectHttpResponse_null_email()  {
+        // 테스트용 세션 생성
+        try {
+            MockitoAnnotations.openMocks(this);
+            mockSession = new MockHttpSession();
+            mockSession.setAttribute("memberEmail", null);
+
+            ResponseEntity responseEntity =myPageController.getPointHistory(mockSession);
+            String retrievedMsg = (String) responseEntity.getBody();
+            Assertions.assertEquals(retrievedMsg, "User not logged in or session expired");
+        } catch (FindException e) {
+            e.printStackTrace();
+            Assertions.fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @DisplayName("POST point-history 테스트 - null email")
+    @Test
+    @Transactional
+    void getPointHistory_shouldReturnCorrectHttpResponse_post_null_email()  {
+        // 테스트용 포인트 생성
+        PointDTO pointDTO = new PointDTO(null,"TEST", TEST_RESERVATION_TIME, 1234, 1234);
+        Assertions.assertThrows(FindException.class, ()->myPageController.getPointHistory(pointDTO));
+
+    }
+
+    @DisplayName("POST point-history 테스트")
+    @Test
+    @Transactional
+    void getPointHistory_shouldReturnCorrectHttpResponse_post()  {
+        // 테스트용 포인트 생성
+        PointDTO pointDTO = new PointDTO(TEST_MEMBER_EMAIL,"TEST", TEST_RESERVATION_TIME, 1234, 1234);
+        Assertions.assertThrows(FindException.class, ()->myPageController.getPointHistory(pointDTO));
+    }
+
+    @DisplayName("GET point-history 테스트 - service exception no email")
+    @Test
+    @Transactional
+    void getPointHistory_shouldThrowException_whenServiceException()  {
+        // This line tells Mockito to throw a new FindException when findAllPointByMemberEmail is called
+        Assertions.assertThrows(FindException.class, ()->myPageService.findAllPointByMemberEmail(TEST_MEMBER_EMAIL));
+    }
+
+
+    @DisplayName("GET point-history 테스트 - service exception null")
+    @Test
+    @Transactional
+    void getPointHistory_shouldThrowException_whenServiceException_null() {
+        // This line tells Mockito to throw a new FindException when findAllPointByMemberEmail is called
+        Assertions.assertThrows(FindException.class, ()->myPageService.findAllPointByMemberEmail(null));
     }
 }
