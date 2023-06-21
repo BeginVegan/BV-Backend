@@ -46,63 +46,6 @@ public class RestaurantServiceTest {
     @Autowired
     private RestaurantService restaurantService;
 
-
-//    private int RESTAURANT_NO;
-//    private MockMultipartFile RESTAURANT_INFO = null;
-//    private MockMultipartFile RESTAURANT_IMAGE = null;
-//
-//    private List<MultipartFile> imageList = new ArrayList<>();
-//    RestaurantDTO restaurant = new RestaurantDTO();
-
-
-    @BeforeEach
-    void setUp() throws JsonProcessingException, AddException {
-        // @Mock 이 붙은 필드를 Mock 객체로 초기화하고, @InjectMocks 이 붙은 필드에는 객체를 주입해준다.
-//        MockitoAnnotations.openMocks(this);
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-
-        // 테스트용 레스토랑 생성
-//        RestaurantDTO restaurant = new RestaurantDTO();
-//        restaurant.setRestaurantName("테스트코드");
-//        restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
-//        restaurant.setRestaurantAddressGu("종로구");
-//        restaurant.setRestaurantX(37.570034);
-//        restaurant.setRestaurantY(126.976785);
-//        restaurant.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
-//        restaurant.setRestaurantClose(TimeUtil.toTime("21:30:00"));
-//        restaurant.setRestaurantPhone("02-2323-1212");
-//        restaurant.setRestaurantDetail("상세정보1");
-//        restaurant.setRestaurantAvgPrice(10000);
-//        restaurant.setRestaurantTable(10);
-//        restaurant.setRestaurantTableMember(4);
-//        restaurant.setRestaurantVeganLevel(2);
-////        restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
-//        restaurant.setRestaurantStar(4.5);
-//        restaurantRepository.insertRestaurant(restaurant);
-//        RESTAURANT_NO = restaurant.getRestaurantNo();
-
-
-//        String jsonContent = objectMapper.writeValueAsString(restaurant);
-//        MockMultipartFile restaurantInfo = new MockMultipartFile("restaurant", "restaurant.jpg", "application/json", jsonContent.getBytes());
-//
-//        imageList.add(new MockMultipartFile("restaurantImage1", "restaurant1.jpg", "image/jpeg", "image data".getBytes()));
-//        imageList.add(new MockMultipartFile("restaurantImage2", "restaurant2.jpg", "image/jpeg", "image data".getBytes()));
-//        imageList.add(new MockMultipartFile("restaurantImage3", "restaurant3.jpg", "image/jpeg", "image data".getBytes()));
-////
-//        RESTAURANT_INFO = restaurantInfo;
-//        RESTAURANT_IMAGE = restaurantImage;
-    }
-
-//    @BeforeAll
-//    void setTestData() throws JsonProcessingException {
-//
-//
-//
-//
-//    }
-
     @Test
     void testFindRestaurant() throws Exception {
         // Act
@@ -135,9 +78,6 @@ public class RestaurantServiceTest {
         restaurant.setRestaurantVeganLevel(2);
         restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
         restaurant.setRestaurantStar(4.5);
-
-//        String jsonContent = objectMapper.writeValueAsString(restaurant);
-//        MockMultipartFile restaurantInfo = new MockMultipartFile("restaurant", "restaurant.jpg", "application/json", jsonContent.getBytes());
 
         List<MultipartFile> imageList = new ArrayList<>();
         imageList.add(new MockMultipartFile("restaurantImage1", "restaurant1.jpg", "image/jpeg", "image data".getBytes()));
@@ -201,8 +141,6 @@ public class RestaurantServiceTest {
 
         // Assert
         verify(restaurantRepository, times(1)).updateRestaurant(restaurant);
-//        verify(restaurantRepository, times(1)).deleteRestaurantMenu(restaurant.getRestaurantNo());
-//        verify(restaurantRepository, times(1)).insertRestaurantMenu(restaurant.getRestaurantNo(), restaurant.getMenuList());
     }
 
     @Test
@@ -326,54 +264,48 @@ public class RestaurantServiceTest {
 
         when(restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurant1.getRestaurantNo())).thenReturn(restaurant);
         when(reviewRepository.selectAllReviewByRestaurantId(restaurant1.getRestaurantNo())).thenThrow(FindException.class);
-//        Assertions.assertThrows(FindException.class, () -> {restaurantService.findRestaurantByRestaurantNo(restaurant1.getRestaurantNo());});
 
         when(restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurant.getRestaurantNo())).thenReturn(restaurant);
         when(reviewRepository.selectAllReviewByRestaurantId(restaurant.getRestaurantNo())).thenReturn(reviewList);
         restaurantService.findRestaurantByRestaurantNo(restaurant.getRestaurantNo());
         verify(restaurantRepository, times(1)).selectRestaurantMenuByRestaurantNo(restaurant.getRestaurantNo());
         verify(reviewRepository, times(1)).selectAllReviewByRestaurantId(restaurant.getRestaurantNo());
-
-//        Assertions.assertThrows(FindException.class, () -> {restaurantService.findRestaurantByRestaurantNo(99999);});
     }
 
-//    @Test
-//    void testFindRestaurantByKeyword() throws Exception {
-//        // Arrange
-//        RestaurantDTO restaurant = new RestaurantDTO();
-//        restaurant.setRestaurantName("레스토랑1");
-//        restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
-//        restaurant.setRestaurantAddressGu("종로구");
-//        restaurant.setRestaurantX(37.570034);
-//        restaurant.setRestaurantY(126.976785);
-//        restaurant.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
-//        restaurant.setRestaurantClose(TimeUtil.toTime("21:30:00"));
-//        restaurant.setRestaurantPhone("02-2323-1212");
-//        restaurant.setRestaurantDetail("상세정보1");
-//        restaurant.setRestaurantAvgPrice(10000);
-//        restaurant.setRestaurantTable(10);
-//        restaurant.setRestaurantTableMember(4);
-//        restaurant.setRestaurantVeganLevel(2);
-//        restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
-//        restaurant.setRestaurantStar(4.5);
-//
-//        String keyword = "강남 레스토랑".strip().replaceAll("\\s+"," ");
-//        Map<String, Object> searchMap = new HashMap<>();
-//        searchMap.put("entireKeyword", keyword);
-//        String[] keywords = keyword.split(" ");
-//        searchMap.put("keywords", keywords);
-//
-//        List<RestaurantDTO> restaurantList = new ArrayList<>();
-//        restaurantList.add(restaurant);
-//
-//        when(restaurantRepository.selectAllRestaurantByKeyword(searchMap)).thenReturn(restaurantList);
-//
-//        // Act
-//        restaurantService.findRestaurantByKeyword(keyword);
-//
-//        // Assert
-//        verify(restaurantRepository, times(1)).selectAllRestaurantByKeyword(searchMap);
-//    }
+    @Test
+    void testFindRestaurantByKeyword() throws Exception {
+        // Arrange
+        RestaurantDTO restaurant = new RestaurantDTO();
+        restaurant.setRestaurantName("레스토랑1");
+        restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
+        restaurant.setRestaurantAddressGu("종로구");
+        restaurant.setRestaurantX(37.570034);
+        restaurant.setRestaurantY(126.976785);
+        restaurant.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
+        restaurant.setRestaurantClose(TimeUtil.toTime("21:30:00"));
+        restaurant.setRestaurantPhone("02-2323-1212");
+        restaurant.setRestaurantDetail("상세정보1");
+        restaurant.setRestaurantAvgPrice(10000);
+        restaurant.setRestaurantTable(10);
+        restaurant.setRestaurantTableMember(4);
+        restaurant.setRestaurantVeganLevel(2);
+        restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
+        restaurant.setRestaurantStar(4.5);
+
+        String keyword = "강남 레스토랑";
+
+        List<RestaurantDTO> restaurantList = new ArrayList<>();
+        restaurantList.add(restaurant);
+
+        when(restaurantRepository.selectAllRestaurantByKeyword(any())).thenReturn(restaurantList);
+
+        // Act
+        List<RestaurantDTO> result = restaurantService.findRestaurantByKeyword(keyword);
+
+        // Assert
+        Assertions.assertEquals(restaurantList, result);
+        verify(restaurantRepository, times(1)).selectAllRestaurantByKeyword(any());
+    }
 
     @Test
     void findAllAvailableReservationByRestaurantNo() throws Exception {

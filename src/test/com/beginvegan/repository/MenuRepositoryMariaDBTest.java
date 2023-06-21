@@ -46,23 +46,37 @@ public class MenuRepositoryMariaDBTest {
             restaurant.setRestaurantStar(4.5);
             restaurantRepository.insertRestaurant(restaurant);
 
-            MenuDTO menu = new MenuDTO();
-            menu.setRestaurantNo(restaurant.getRestaurantNo());
-            menu.setMenuName("메뉴1");
-            menu.setMenuPrice(10000);
-            menu.setMenuCategory("식사");
-            menu.setMenuDetail("메뉴 설명");
-            menu.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            List<MenuDTO> menuList = new ArrayList();
+            MenuDTO menu1 = new MenuDTO();
+            menu1.setMenuNo(menuRepository.selectNextMenuNo());
+            menu1.setRestaurantNo(restaurant.getRestaurantNo());
+            menu1.setMenuName("메뉴1");
+            menu1.setMenuPrice(10000);
+            menu1.setMenuCategory("식사");
+            menu1.setMenuDetail("메뉴1 설명");
+            menu1.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            menuList.add(menu1);
 
-            int insertedRows = menuRepository.insertMenu(menu);
+            MenuDTO menu2 = new MenuDTO();
+            menu2.setMenuNo(menuRepository.selectNextMenuNo() + 1);
+            menu2.setRestaurantNo(99999);
+            menu2.setMenuName("메뉴2");
+            menu2.setMenuPrice(10000);
+            menu2.setMenuCategory("식사");
+            menu2.setMenuDetail("메뉴2 설명");
+            menu2.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            menuList.add(menu2);
+
+            int insertedRows = menuRepository.insertMenu(menu1);
             Assertions.assertEquals(1, insertedRows);
 
-            MenuDTO selectedMenu = menuRepository.selectMenuByMenuNo(menu.getMenuNo());
+            MenuDTO selectedMenu = menuRepository.selectMenuByMenuNo(menu1.getMenuNo());
             Assertions.assertNotNull(selectedMenu);
-            Assertions.assertEquals(selectedMenu, menu);
+            Assertions.assertEquals(selectedMenu, menu1);
 
-            menuRepository.deleteMenuByMenuNo(menu.getMenuNo());
-            Assertions.assertThrows(FindException.class, () -> {menuRepository.selectMenuByMenuNo(menu.getMenuNo());});
+            menuRepository.deleteMenuByMenuNo(menu1.getMenuNo());
+            Assertions.assertThrows(FindException.class, () -> {menuRepository.selectMenuByMenuNo(menu1.getMenuNo());});
+            Assertions.assertThrows(AddException.class, () -> {menuRepository.insertMenu(menu2);});
 
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -120,6 +134,9 @@ public class MenuRepositoryMariaDBTest {
             menuRepository.deleteAllMenuByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertThrows(FindException.class, () -> {menuRepository.selectAllMenuByRestaurantNo(restaurant.getRestaurantNo());});
 
+            menuList.get(0).setRestaurantNo(99999);
+            Assertions.assertThrows(AddException.class, () -> {menuRepository.insertAllMenu(menuList);});
+
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -147,23 +164,37 @@ public class MenuRepositoryMariaDBTest {
             restaurant.setRestaurantStar(4.5);
             restaurantRepository.insertRestaurant(restaurant);
 
-            MenuDTO menu = new MenuDTO();
-            menu.setRestaurantNo(restaurant.getRestaurantNo());
-            menu.setMenuName("메뉴1");
-            menu.setMenuPrice(10000);
-            menu.setMenuCategory("식사");
-            menu.setMenuDetail("메뉴 설명");
-            menu.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            List<MenuDTO> menuList = new ArrayList();
+            MenuDTO menu1 = new MenuDTO();
+            menu1.setMenuNo(menuRepository.selectNextMenuNo());
+            menu1.setRestaurantNo(restaurant.getRestaurantNo());
+            menu1.setMenuName("메뉴1");
+            menu1.setMenuPrice(10000);
+            menu1.setMenuCategory("식사");
+            menu1.setMenuDetail("메뉴1 설명");
+            menu1.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            menuList.add(menu1);
 
-            int insertedRows = menuRepository.insertMenu(menu);
+            MenuDTO menu2 = new MenuDTO();
+            menu2.setMenuNo(menuRepository.selectNextMenuNo() + 1);
+            menu2.setRestaurantNo(99999);
+            menu2.setMenuName("메뉴2");
+            menu2.setMenuPrice(10000);
+            menu2.setMenuCategory("식사");
+            menu2.setMenuDetail("메뉴2 설명");
+            menu2.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            menuList.add(menu2);
+
+            int insertedRows = menuRepository.insertMenu(menu1);
             Assertions.assertEquals(1, insertedRows);
 
-            MenuDTO selectedMenu = menuRepository.selectMenuByMenuNo(menu.getMenuNo());
+            MenuDTO selectedMenu = menuRepository.selectMenuByMenuNo(menu1.getMenuNo());
             Assertions.assertNotNull(selectedMenu);
-            Assertions.assertEquals(selectedMenu, menu);
+            Assertions.assertEquals(selectedMenu, menu1);
 
-            menuRepository.deleteMenuByMenuNo(menu.getMenuNo());
-            Assertions.assertThrows(FindException.class, () -> {menuRepository.selectMenuByMenuNo(menu.getMenuNo());});
+            menuRepository.deleteMenuByMenuNo(menu1.getMenuNo());
+            Assertions.assertThrows(FindException.class, () -> {menuRepository.selectMenuByMenuNo(menu1.getMenuNo());});
+            Assertions.assertThrows(AddException.class, () -> {menuRepository.insertMenu(menu2);});
 
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -221,6 +252,9 @@ public class MenuRepositoryMariaDBTest {
             menuRepository.deleteAllMenuByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertThrows(FindException.class, () -> {menuRepository.selectAllMenuByRestaurantNo(restaurant.getRestaurantNo());});
 
+            menuList.get(0).setRestaurantNo(99999);
+            Assertions.assertThrows(AddException.class, () -> {menuRepository.insertAllMenu(menuList);});
+
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -248,23 +282,37 @@ public class MenuRepositoryMariaDBTest {
             restaurant.setRestaurantStar(4.5);
             restaurantRepository.insertRestaurant(restaurant);
 
-            MenuDTO menu = new MenuDTO();
-            menu.setRestaurantNo(restaurant.getRestaurantNo());
-            menu.setMenuName("메뉴1");
-            menu.setMenuPrice(10000);
-            menu.setMenuCategory("식사");
-            menu.setMenuDetail("메뉴 설명");
-            menu.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            List<MenuDTO> menuList = new ArrayList();
+            MenuDTO menu1 = new MenuDTO();
+            menu1.setMenuNo(menuRepository.selectNextMenuNo());
+            menu1.setRestaurantNo(restaurant.getRestaurantNo());
+            menu1.setMenuName("메뉴1");
+            menu1.setMenuPrice(10000);
+            menu1.setMenuCategory("식사");
+            menu1.setMenuDetail("메뉴1 설명");
+            menu1.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            menuList.add(menu1);
 
-            int insertedRows = menuRepository.insertMenu(menu);
+            MenuDTO menu2 = new MenuDTO();
+            menu2.setMenuNo(menuRepository.selectNextMenuNo() + 1);
+            menu2.setRestaurantNo(99999);
+            menu2.setMenuName("메뉴2");
+            menu2.setMenuPrice(10000);
+            menu2.setMenuCategory("식사");
+            menu2.setMenuDetail("메뉴2 설명");
+            menu2.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
+            menuList.add(menu2);
+
+            int insertedRows = menuRepository.insertMenu(menu1);
             Assertions.assertEquals(1, insertedRows);
 
-            MenuDTO selectedMenu = menuRepository.selectMenuByMenuNo(menu.getMenuNo());
+            MenuDTO selectedMenu = menuRepository.selectMenuByMenuNo(menu1.getMenuNo());
             Assertions.assertNotNull(selectedMenu);
-            Assertions.assertEquals(selectedMenu, menu);
+            Assertions.assertEquals(selectedMenu, menu1);
 
-            menuRepository.deleteMenuByMenuNo(menu.getMenuNo());
-            Assertions.assertThrows(FindException.class, () -> {menuRepository.selectMenuByMenuNo(menu.getMenuNo());});
+            menuRepository.deleteMenuByMenuNo(menu1.getMenuNo());
+            Assertions.assertThrows(FindException.class, () -> {menuRepository.selectMenuByMenuNo(menu1.getMenuNo());});
+            Assertions.assertThrows(AddException.class, () -> {menuRepository.insertMenu(menu2);});
 
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -321,6 +369,9 @@ public class MenuRepositoryMariaDBTest {
 
             menuRepository.deleteAllMenuByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertThrows(FindException.class, () -> {menuRepository.selectAllMenuByRestaurantNo(restaurant.getRestaurantNo());});
+
+            menuList.get(0).setRestaurantNo(99999);
+            Assertions.assertThrows(AddException.class, () -> {menuRepository.insertAllMenu(menuList);});
 
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
