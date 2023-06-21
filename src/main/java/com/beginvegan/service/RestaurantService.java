@@ -126,10 +126,11 @@ public class RestaurantService {
         RestaurantDTO restaurant = restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurantNo);
         restaurantReviewMap.put("restaurant", restaurant);
         try{
-        restaurantReviewMap.put("review", reviewRepository.selectAllReviewByRestaurantId(restaurant.getRestaurantNo()));
+            restaurantReviewMap.put("review", reviewRepository.selectAllReviewByRestaurantId(restaurant.getRestaurantNo()));
         } catch (FindException e) {
             List<ReviewDTO> emptyReview = new ArrayList<>();
             restaurantReviewMap.put("review", emptyReview);
+            throw e;
         }
         return restaurantReviewMap;
     }
@@ -142,10 +143,10 @@ public class RestaurantService {
      */
     public List<RestaurantDTO> findRestaurantByKeyword(String keyword) throws FindException {
         // 모든 공백을 띄어쓰기 한칸으로 변경
-        String dbKeyword = keyword.strip().replaceAll("\\s+"," ");
+        keyword = keyword.strip().replaceAll("\\s+"," ");
         Map<String, Object> searchMap = new HashMap<>();
-        searchMap.put("entireKeyword", dbKeyword);
-        String[] keywords = dbKeyword.split(" ");
+        searchMap.put("entireKeyword", keyword);
+        String[] keywords = keyword.split(" ");
         searchMap.put("keywords", keywords);
 
         return applyPhotoDIr(restaurantRepository.selectAllRestaurantByKeyword(searchMap));
@@ -161,7 +162,7 @@ public class RestaurantService {
         LocalDateTime now = TimeUtil.dateTimeOfNow().withMinute(0).withSecond(0).withNano(0).plusHours(1);
         LocalDateTime nextMonth = now.plusMonths(1);
         List<LocalDateTime> availableTimeList = new ArrayList<>();
-        List<ReservationDTO> reservationList = restaurantRepository.selectAllReservationByRestaurantNo(restaurantNo);
+        List<ReservationDTO> reservationList = null;
 
         // 현재 시각부터 다음달까지의 시간을 모두 구하여 리스트에 넣는다.
         while (now.isBefore(nextMonth)) {
@@ -169,22 +170,34 @@ public class RestaurantService {
             now = now.plusHours(1);
         }
 
-        // 예약시간만으로 구성된 리스트를 만든다.
-        List<LocalDateTime> reservationTimeList = new ArrayList<>();
-        for (ReservationDTO reservation : reservationList) {
-            reservationTimeList.add(reservation.getReservationVisitTime());
+        try {
+            reservationList = restaurantRepository.selectAllReservationByRestaurantNo(restaurantNo);
+
+            // 예약시간만으로 구성된 리스트를 만든다.
+            List<LocalDateTime> reservationTimeList = new ArrayList<>();
+            for (ReservationDTO reservation : reservationList) {
+                reservationTimeList.add(reservation.getReservationVisitTime());
+            }
+
+            // 전체 시간에서 예약된 시간을 제거한다.
+            availableTimeList.removeAll(reservationTimeList);
+
+        } catch (FindException e) {
+            e.printStackTrace();
+        } finally {
+            // String으로 변환한다.
+            List<String> timeList = new ArrayList<>();
+            for (LocalDateTime data : availableTimeList) {
+                timeList.add(TimeUtil.localDateTimetoString(data));
+            }
+            return timeList;
         }
 
-        // 전체 시간에서 예약된 시간을 제거한다.
-        availableTimeList.removeAll(reservationTimeList);
 
-        // String으로 변환한다.
-        List<String> timeList = new ArrayList<>();
-        for (LocalDateTime data : availableTimeList) {
-            timeList.add(TimeUtil.localDateTimetoString(data));
-        }
 
-        return timeList;
+
+
+
     }
 
 }

@@ -62,6 +62,8 @@ public class RestaurantRepositoryMariaDBTest {
             restaurantRepository.insertRestaurant(restaurant);
             RestaurantDTO selectedRestaurant = restaurantRepository.selectRestaurantByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertEquals(restaurant, selectedRestaurant);
+            restaurant.setRestaurantName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            Assertions.assertThrows(AddException.class, () -> {restaurantRepository.insertRestaurant(restaurant);});
             restaurantRepository.deleteRestaurant(restaurant.getRestaurantNo());
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -92,6 +94,7 @@ public class RestaurantRepositoryMariaDBTest {
             restaurantRepository.insertRestaurant(restaurant);
             RestaurantDTO selectedRestaurant = restaurantRepository.selectRestaurantByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertEquals(restaurant, selectedRestaurant);
+            Assertions.assertThrows(FindException.class, () -> {restaurantRepository.selectRestaurantByRestaurantNo(99999);});
             restaurantRepository.deleteRestaurant(restaurant.getRestaurantNo());
         } catch (AddException | FindException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -201,6 +204,8 @@ public class RestaurantRepositoryMariaDBTest {
 
             Assertions.assertEquals(selectedMenuList.get(1).getRestaurantNo(), menu2.getRestaurantNo());
             Assertions.assertEquals(selectedMenuList.get(1).getMenuName(), menu2.getMenuName());
+
+            Assertions.assertThrows(AddException.class, () -> {restaurantRepository.insertRestaurantMenu(99999, menuList);});
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -256,6 +261,8 @@ public class RestaurantRepositoryMariaDBTest {
 
             Assertions.assertEquals(selectedMenuList.get(1).getRestaurantNo(), menu2.getRestaurantNo());
             Assertions.assertEquals(selectedMenuList.get(1).getMenuName(), menu2.getMenuName());
+
+            Assertions.assertThrows(FindException.class, () -> {restaurantRepository.selectAllMenuByRestaurantNo(99999);});
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -312,7 +319,9 @@ public class RestaurantRepositoryMariaDBTest {
             restaurantRepository.insertRestaurantMenu(restaurant.getRestaurantNo(), menuList);
             RestaurantDTO selectedRestaurantMenu = restaurantRepository.selectRestaurantMenuByRestaurantNo(restaurant.getRestaurantNo());
             Assertions.assertNotNull(selectedRestaurantMenu);
-            Assertions.assertEquals(selectedRestaurantMenu, restaurant); //출력되는 문자열은 똑같은데 자꾸 다르다고 나옴
+            Assertions.assertEquals(selectedRestaurantMenu, restaurant);
+
+            Assertions.assertThrows(FindException.class, () -> {restaurantRepository.selectRestaurantMenuByRestaurantNo(99999);});
 
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -321,7 +330,7 @@ public class RestaurantRepositoryMariaDBTest {
 
     @Test
     @Transactional
-    public void selectAllRestaurantByKeyword() { //TODO: 미완성코드임
+    public void selectAllRestaurantByKeyword() {
         RestaurantDTO restaurant = new RestaurantDTO();
         restaurant.setRestaurantName("박복자 볶음밥");
         restaurant.setRestaurantAddress("서울특별시 종로구 종로 1");
@@ -339,63 +348,25 @@ public class RestaurantRepositoryMariaDBTest {
         restaurant.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
         restaurant.setRestaurantStar(4.5);
 
-        MenuDTO menu1 = new MenuDTO();
-        menu1.setMenuName("김치볶음밥");
-        menu1.setMenuPrice(10000);
-        menu1.setMenuCategory("식사");
-        menu1.setMenuDetail("메뉴1 설명");
-        menu1.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
-
-        MenuDTO menu2 = new MenuDTO();
-        menu2.setMenuName("오므라이스");
-        menu2.setMenuPrice(3000);
-        menu2.setMenuCategory("음료");
-        menu2.setMenuDetail("메뉴2 설명");
-        menu2.setMenuPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/menu/sandwich.jpg");
-
-        RestaurantDTO restaurant2 = new RestaurantDTO();
-        restaurant2.setRestaurantName("식당2");
-        restaurant2.setRestaurantAddress("서울특별시 강남구 강남대로 1");
-        restaurant2.setRestaurantAddressGu("강남구");
-        restaurant2.setRestaurantX(37.495985);
-        restaurant2.setRestaurantY(127.027546);
-        restaurant2.setRestaurantOpen(TimeUtil.toTime("10:00:00"));
-        restaurant2.setRestaurantClose(TimeUtil.toTime("21:30:00"));
-        restaurant2.setRestaurantDetail("상세정보2");
-        restaurant2.setRestaurantAvgPrice(15000);
-        restaurant2.setRestaurantTable(8);
-        restaurant2.setRestaurantTableMember(2);
-        restaurant2.setRestaurantVeganLevel(3);
-        restaurant2.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
-        restaurant2.setRestaurantStar(4.2);
-
         try {
-            List<MenuDTO> menuList = new ArrayList<>();
             restaurantRepository.insertRestaurant(restaurant);
-            restaurantRepository.insertRestaurant(restaurant2);
 
-            // restaurantNo와 menuNo를 설정해줌
-            menu1.setRestaurantNo(restaurant.getRestaurantNo());
-            menu1.setMenuNo(restaurantRepository.selectNextMenuNo());
-            menu2.setRestaurantNo(restaurant.getRestaurantNo());
-            menu2.setMenuNo(restaurantRepository.selectNextMenuNo() + 1);
-            menuList.add(menu1);
-            menuList.add(menu2);
-            restaurant.setMenuList((ArrayList)menuList);
-
-            String keyword = "강남 레스토랑";
+            String keyword = "박복자";
             Map<String, Object> keywordMap = new HashMap<>();
             keywordMap.put("entireKeyword", keyword);
             String[] keywords = keyword.split(" ");
             keywordMap.put("keywords", keywords);
 
-            restaurantRepository.insertRestaurantMenu(restaurant.getRestaurantNo(), menuList);
+            restaurantRepository.insertRestaurant(restaurant);
             List<RestaurantDTO> selectedRestaurantList = restaurantRepository.selectAllRestaurantByKeyword(keywordMap);
             Assertions.assertNotNull(selectedRestaurantList);
-            for (RestaurantDTO rest : selectedRestaurantList) {
-                System.out.println("###검색결과: " + rest.getRestaurantName());
-            }
-            System.out.println(restaurantRepository.selectRestaurantByRestaurantNo(restaurant2.getRestaurantNo()));
+            Assertions.assertTrue(selectedRestaurantList.contains(restaurant));
+
+            keyword = "없는가게이름입니다이런가게는없어요";
+            keywordMap.put("entireKeyword", keyword);
+            keywords = keyword.split(" ");
+            keywordMap.put("keywords", keywords);
+            Assertions.assertThrows(FindException.class, () -> {restaurantRepository.selectAllRestaurantByKeyword(keywordMap);});
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -445,6 +416,7 @@ public class RestaurantRepositoryMariaDBTest {
             Assertions.assertNotNull(reservationList);
             reservation.setReservationMenuList(null);
             Assertions.assertEquals(reservationList.get(0), reservation);
+            Assertions.assertThrows(FindException.class, () -> {restaurantRepository.selectAllReservationByRestaurantNo(99999);});
         } catch (AddException | FindException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
         }
@@ -485,15 +457,15 @@ public class RestaurantRepositoryMariaDBTest {
         restaurant2.setRestaurantTableMember(2);
         restaurant2.setRestaurantVeganLevel(3);
         restaurant2.setRestaurantPhotoDir("https://bv-image.s3.ap-northeast-2.amazonaws.com/restaurant/restaurant.jpg");
-        restaurant2.setRestaurantStar(4.2);
+        restaurant2.setRestaurantStar(4.5);
 
         try {
             restaurantRepository.insertRestaurant(restaurant1);
             restaurant2.setRestaurantNo(restaurant1.getRestaurantNo());
             restaurantRepository.updateRestaurant(restaurant2);
-            RestaurantDTO selectedRestaruant = restaurantRepository.selectRestaurantByRestaurantNo(restaurant1.getRestaurantNo());
-            Assertions.assertNotEquals(restaurant1, selectedRestaruant);
-            Assertions.assertEquals(restaurant2, selectedRestaruant);
+            RestaurantDTO selectedRestaurant = restaurantRepository.selectRestaurantByRestaurantNo(restaurant1.getRestaurantNo());
+            Assertions.assertNotEquals(restaurant1, selectedRestaurant);
+            Assertions.assertEquals(restaurant2, selectedRestaurant);
             restaurantRepository.deleteRestaurant(restaurant1.getRestaurantNo());
         } catch (AddException | FindException | ModifyException | RemoveException e) {
             Assertions.fail("Exception thrown: " + e.getMessage());
@@ -573,8 +545,7 @@ public class RestaurantRepositoryMariaDBTest {
             menu2.setRestaurantNo(restaurant.getRestaurantNo());
             restaurantRepository.insertRestaurantMenu(restaurant.getRestaurantNo(), menuList);
             restaurantRepository.deleteRestaurantMenu(restaurant.getRestaurantNo());
-            List<MenuDTO> selectedMenuList = restaurantRepository.selectAllMenuByRestaurantNo(restaurant.getRestaurantNo());
-            Assertions.assertTrue(selectedMenuList.isEmpty());
+            Assertions.assertThrows(FindException.class, () -> {restaurantRepository.selectAllMenuByRestaurantNo(restaurant.getRestaurantNo());});
             restaurantRepository.deleteRestaurant(restaurant.getRestaurantNo());
             Assertions.assertFalse(restaurantRepository.selectAllRestaurant().contains(restaurant));
         } catch (FindException | AddException | RemoveException e) {
