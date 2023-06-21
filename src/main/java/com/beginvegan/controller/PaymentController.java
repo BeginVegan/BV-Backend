@@ -89,6 +89,6 @@ public class PaymentController {
         IamportResponse<Payment> cancel = tossService.cancelImpPayment(impUid);
         paymentService.deletePayment(impUid); // db 삭제
 
-        return new ResponseEntity<>(cancel, HttpStatus.OK);
+        return new ResponseEntity<>(cancel.toString(), HttpStatus.OK);
     }
 }
