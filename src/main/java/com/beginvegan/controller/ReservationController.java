@@ -49,7 +49,6 @@ public class ReservationController {
     @GetMapping("list/memberEmail")
     public ResponseEntity<?> reservationList(HttpSession session) throws FindException {
         List<ReservationDTO> reservations = reservationService.findAllReservationByMemberEmail((String) session.getAttribute("memberEmail"));
-        log.info(reservations.toString());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
