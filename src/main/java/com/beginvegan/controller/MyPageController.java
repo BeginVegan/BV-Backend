@@ -83,9 +83,10 @@ public class MyPageController {
     @PostMapping("review")
     public ResponseEntity<?> reviewAdd(HttpSession session, @RequestPart(value = "reviewDTO") ReviewDTO reviewInfo, @RequestPart(value = "reviewImage", required = false) Optional<MultipartFile> reviewImage) throws AddException, IOException, ParseException {
         log.info("reviewAdd 시작: " + reviewInfo.getReviewNo() + "/" + reviewInfo.getReservationNo() + "/" + reviewInfo.getRestaurantNo() + "/" + reviewInfo.getMemberEmail() + "/" + reviewInfo.getReviewStar() + "/" + reviewInfo.getReviewContent() + "/" + reviewInfo.getReviewTime() + "/" + reviewInfo.getReviewPhotoDir());
-
+        log.info(session.toString() + "/" + session.getAttribute("memberEmail")+ "!!!!");
         String userEmail = session.getAttribute("memberEmail").toString();
 
+        log.info((userEmail) + "!!!!");
         myPageService.addReview(reviewInfo, userEmail, reviewImage);
         log.info("reviewAdd 종료");
 
