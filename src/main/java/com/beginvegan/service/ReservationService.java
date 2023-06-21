@@ -102,7 +102,7 @@ public class ReservationService {
 
     public ReservationDTO modifyReservation(ReservationDTO reservationDTO) throws Exception {
         cancelReservation(reservationDTO.getReservationNo());
-        ReservationDTO reservationInfo = addReservation(reservationDTO, null);
+        ReservationDTO reservationInfo = addReservation(reservationDTO, Optional.empty());
 
         return reservationInfo;
     }

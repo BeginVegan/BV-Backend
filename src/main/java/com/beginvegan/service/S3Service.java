@@ -3,6 +3,7 @@ package com.beginvegan.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor    // final 멤버변수가 있으면 생성자 항목에 포함시킴
 @Component
 @Service
+@Generated
 public class S3Service {
 
     @Autowired
