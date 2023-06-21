@@ -1,6 +1,7 @@
 package com.beginvegan.controller;
 
 import com.beginvegan.service.S3Service;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,6 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("s3")
+@Generated
 public class S3Controller {
 
     @Autowired
@@ -37,7 +39,6 @@ public class S3Controller {
     @GetMapping("/download")
     public ResponseEntity<?> imageDownload(@RequestParam String dirName) throws IOException {
         String decodedDirName = java.net.URLDecoder.decode(dirName, "UTF-8");
-        log.info(dirName, decodedDirName);
         ByteArrayOutputStream byteArrayOutputStream = s3Service.downloadImage(decodedDirName);
 
         byte[] byteArray = byteArrayOutputStream.toByteArray();

@@ -9,6 +9,7 @@ import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.MemberRepository;
 import com.beginvegan.util.GetGoogleAccount;
 import com.beginvegan.util.GetKakaoAccount;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     // 테스트 로그인용
+    @Generated
     public MemberDTO loginTest(HttpSession session, HashMap<String, Object> param) {
         MemberDTO memberInfo;
         try {
@@ -56,6 +58,7 @@ public class MemberService {
      * @param accessToken API accessToken
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
+
     public MemberDTO loginKakao(HttpSession session, String accessToken) throws AddException, FindException, IOException {
         log.info("login 시작 - Kakao API");
 
@@ -92,6 +95,7 @@ public class MemberService {
      * @param accessToken accessToken
      * @throws Exception 로그인 과정 중 오류에의해 발생
      */
+
     public MemberDTO loginGoogle(HttpSession session, String accessToken) throws AddException, FindException, IOException {
         log.info("login 시작 - Google API");
 

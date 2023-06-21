@@ -1,12 +1,12 @@
 package com.beginvegan.controller;
 
 import com.beginvegan.dto.MemberDTO;
+import com.beginvegan.dto.PointDTO;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.MemberService;
-import com.beginvegan.service.MyPageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,16 +18,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class MemberControllerTest {
     // 아래 두개의 토큰은 테스트 마다 발급받은 실제 토큰 값으로 대체 필요
-    private final String KAKAO_ACCESS_TOKEN = "3RAX0a7xt33lQ0yyhP9YKmCKVFVpSunU5Tojgy-LCiolDQAAAYiPM5f8";
-    private final String GOOGLE_CREDENTIAL = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwODNkZDU5ODE2NzNmNjYxZmRlOWRhZTY0NmI2ZjAzODBhMDE0NWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2ODU1ODE4OTYsImF1ZCI6Ijc5MTU3NzcwMzkzLXZkMmZ0czNjM2tkOW5iam5iNzJxcWpoNm1lbnM0ZmRnLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEyNDk5OTQ2NjgwNTMzOTQ0MzY3IiwiZW1haWwiOiJiZWhvbmVzdHdheUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXpwIjoiNzkxNTc3NzAzOTMtdmQyZnRzM2Mza2Q5bmJqbmI3MnFxamg2bWVuczRmZGcuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJuYW1lIjoiY2hhbm1pbiBzdW5nIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FBY0hUdGRkYzNPM2lMdnFYejhQcWQ5cEJabTR2SFVyeXV0STZQeklPQkZNPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6ImNoYW5taW4iLCJmYW1pbHlfbmFtZSI6InN1bmciLCJpYXQiOjE2ODU1ODIxOTYsImV4cCI6MTY4NTU4NTc5NiwianRpIjoiYTUxMWRlMGI2NzFhNTZiNThjZmRkODRhNWM0NmM2NTk2MTNlM2UwOSJ9.BNA81IiIuBYOTlFf7K3UgwJKfinZbEWQ8RJCJCxbGEdO8N-b7d3CRAcfowJWqVn5KerTdoixTs_Rg-WCF-XlkgHGUm15KOxh7ze7jW6LPV0Ty8XgT62Xqw40XfeJTSXB_z5UJz1Nt248elQnADC97XJ9EnnzGDoUxsFiawK4w0phI973yxje_rscn_vdu28AqtAXDYPrOUZDFvIDCBlN8gqJ9EBnO2JBce1N-bujRope2CmmV6x3SV-a56H5MdNr7ir14j651YVtODk6rRnuKufdzDwF1N_OQShJ-pxkypwl-a68S5zaRGZIGbfUuYx43bLDwZUrPHYho-D-OHUf6Q";
-
+    private final String KAKAO_ACCESS_TOKEN = "test1234abc";
+    private final String GOOGLE_ACCESS_TOKEN = "test1234abc";
     @Mock
     private MemberService memberService;
 
@@ -45,10 +47,15 @@ class MemberControllerTest {
     }
 
     @Test
-    void loginKakao() throws AddException, FindException, IOException {
+    void loginKakaoTest() throws AddException, FindException, IOException {
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+
         // Given
         HashMap<String, Object> param = new HashMap<>();
         param.put("accessToken", KAKAO_ACCESS_TOKEN);
+        when(memberService.loginKakao(mockSession, KAKAO_ACCESS_TOKEN)).thenReturn(memberInfo);
 
         // When
         ResponseEntity<?> response = memberController.loginKakao(param, mockSession);
@@ -56,24 +63,31 @@ class MemberControllerTest {
         // Then
         verify(memberService).loginKakao(mockSession, KAKAO_ACCESS_TOKEN);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(memberInfo, response.getBody());
     }
 
     @Test
-    void loginGoogle() throws AddException, FindException, IOException {
+    void loginGoogleTest() throws AddException, FindException, IOException {
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+
+
         // Given
         HashMap<String, Object> param = new HashMap<>();
-        param.put("googleCredential", GOOGLE_CREDENTIAL);
+        param.put("accessToken", GOOGLE_ACCESS_TOKEN);
+        when(memberService.loginGoogle(mockSession, GOOGLE_ACCESS_TOKEN)).thenReturn(memberInfo);
 
         // When
         ResponseEntity<?> response = memberController.loginGoogle(param, mockSession);
 
         // Then
-        verify(memberService).loginGoogle(mockSession, GOOGLE_CREDENTIAL);
+        verify(memberService).loginGoogle(mockSession, GOOGLE_ACCESS_TOKEN);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    void logout() {
+    void logoutTest() {
         // When
         ResponseEntity<?> response = memberController.logout(mockSession);
 
@@ -83,7 +97,61 @@ class MemberControllerTest {
     }
 
     @Test
-    void memberAdd() throws AddException {
+    void memberDetailsTest() throws FindException {
+        //given
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail((String) mockSession.getAttribute("memberEmail"));
+        when(memberService.findMemberByMemberEmail((String) mockSession.getAttribute("memberEmail"))).thenReturn(memberInfo);
+
+        // When
+        ResponseEntity<?> response = memberController.memberDetails(mockSession);
+
+        // Then
+        verify(memberService).findMemberByMemberEmail((String) mockSession.getAttribute("memberEmail"));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(memberInfo, response.getBody());
+    }
+
+    @Test
+    void memberInfoByMemberEmailTest() throws FindException {
+        // Arrange
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+        when(memberService.findMemberByMemberEmail(memberEmail)).thenReturn(memberInfo);
+
+        // Act
+        ResponseEntity<?> response = memberController.memberInfoByMemberEmail(memberEmail);
+
+        // Assert
+        verify(memberService).findMemberByMemberEmail(memberEmail);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(memberInfo, response.getBody());
+    }
+
+    @Test
+    void memberListTest() throws FindException {
+        // Arrange
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+
+        List<MemberDTO> memberList = new ArrayList<>();
+        memberList.add(memberInfo);
+
+        when(memberService.findAllMember()).thenReturn(memberList);
+
+        // Act
+        ResponseEntity<?> response = memberController.memberList();
+
+        // Assert
+        verify(memberService).findAllMember();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(memberList, response.getBody());
+    }
+
+    @Test
+    void memberAddTest() throws AddException {
         // Given
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberEmail("test@example.com");
@@ -98,7 +166,31 @@ class MemberControllerTest {
     }
 
     @Test
-    void memberModify() throws ModifyException {
+    void memberRemoveByMemberInfoTest() throws RemoveException {
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+
+        // When
+        ResponseEntity<?> response = memberController.memberRemove(memberInfo);
+
+        // Then
+        verify(memberService).removeMember(memberInfo.getMemberEmail());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void memberRemoveTest() throws RemoveException {
+        // When
+        ResponseEntity<?> response = memberController.memberRemove(mockSession);
+
+        // Then
+        verify(memberService).removeMember(mockSession, (String) mockSession.getAttribute("memberEmail"));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void memberModifyTest() throws ModifyException {
         // Given
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberEmail("test@example.com");
@@ -113,22 +205,77 @@ class MemberControllerTest {
     }
 
     @Test
-    void memberDetails() throws FindException {
-        // When
-        ResponseEntity<?> response = memberController.memberDetails(mockSession);
+    void memberPointAllModifyTest() throws ModifyException, AddException {
+        // Arrange
+        PointDTO pointInfo = new PointDTO();
+        pointInfo.setPointChange(300);
 
-        // Then
-        verify(memberService).findMemberByMemberEmail((String) mockSession.getAttribute("memberEmail"));
+        // Act
+        ResponseEntity<?> response = memberController.memberPointAllModify(pointInfo);
+
+        // Assert
+        verify(memberService).modifyAllMemberPoint(pointInfo);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    void memberRemove() throws RemoveException {
-        // When
-        ResponseEntity<?> response = memberController.memberRemove(mockSession);
+    void memberPointModifyTest() throws ModifyException, AddException {
+        // Arrange
+        PointDTO pointInfo = new PointDTO();
+        pointInfo.setPointChange(300);
 
-        // Then
-        verify(memberService).removeMember(mockSession, (String) mockSession.getAttribute("memberEmail"));
+        // Act
+        ResponseEntity<?> response = memberController.memberPointModify(pointInfo);
+
+        // Assert
+        verify(memberService).modifyMemberPoint(pointInfo);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+
+    @Test
+    void memberRoleAdminModifyAdminTest() throws ModifyException {
+        // Arrange
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+
+        // Act
+        ResponseEntity<?> response = memberController.memberRoleAdminModify(memberInfo);
+
+        // Assert
+        verify(memberService).modifyMemberRoleAdmin(memberInfo.getMemberEmail());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void memberRoleAdminModifyNormalTest() throws ModifyException {
+        // Arrange
+        String memberEmail = "test@example.com";
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setMemberEmail(memberEmail);
+
+        // Act
+        ResponseEntity<?> response = memberController.memberRoleNormalModify(memberInfo);
+
+        // Assert
+        verify(memberService).modifyMemberRoleNormal(memberInfo.getMemberEmail());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void isBookmarkTest() throws FindException {
+        // Arrange
+        String resNo = "1";
+
+        when(memberService.isMemberBookmarkedRestaurant((String)mockSession.getAttribute("memberEmail"), resNo)).thenReturn(true);
+
+        // Act
+        ResponseEntity<?> response = memberController.isBookmark(resNo, mockSession);
+
+        // Assert
+        verify(memberService).isMemberBookmarkedRestaurant((String)mockSession.getAttribute("memberEmail"), resNo);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(true, response.getBody());
     }
 }

@@ -7,6 +7,7 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.MemberService;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class MemberController {
     private MemberService memberService;
 
     // TEST Controller : Session 확인용
+    @Generated
     @GetMapping("session")
     public ResponseEntity<?> getSession(HttpSession session) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -58,6 +60,7 @@ public class MemberController {
      * @param session 로그인 요청 유저의 session 정보
      * @return 멤버 DTO 반환
      */
+    @Generated
     @PostMapping("login/test")
     public ResponseEntity<?> loginTEST(@RequestBody HashMap<String, Object> param, HttpSession session) {
         MemberDTO memberInfo = memberService.loginTest(session, param);
@@ -73,6 +76,7 @@ public class MemberController {
      * @throws FindException 멤버 정보를 찾는데 실패할 경우 발생
      * @throws IOException API 요청 실패시 발생
      */
+    @Generated
     @PostMapping("login/kakao")
     public ResponseEntity<?> loginKakao(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
         MemberDTO memberInfo = memberService.loginKakao(session, (String) param.get("accessToken"));
@@ -88,6 +92,7 @@ public class MemberController {
      * @throws FindException 멤버 정보를 찾는데 실패할 경우 발생
      * @throws IOException API 요청 실패시 발생
      */
+    @Generated
     @PostMapping("login/google")
     public ResponseEntity<?> loginGoogle(@RequestBody HashMap<String, Object> param, HttpSession session) throws AddException, FindException, IOException {
         MemberDTO memberInfo = memberService.loginGoogle(session, (String) param.get("accessToken"));
@@ -113,8 +118,7 @@ public class MemberController {
      */
     @GetMapping
     public ResponseEntity<?> memberDetails(HttpSession session) throws FindException {
-        memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail"));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>( memberService.findMemberByMemberEmail((String) session.getAttribute("memberEmail")), HttpStatus.OK);
     }
 
     /**

@@ -50,7 +50,7 @@ public class MyPageService {
     public void addReview(ReviewDTO reviewInfo, String userEmail, Optional<MultipartFile> reviewImage) throws AddException, IOException, ParseException {
         reviewInfo.setMemberEmail(userEmail);
         reviewInfo.setReviewTime(TimeUtil.toDateTime(new Date()));
-        if (reviewImage.isPresent()) {
+        if (reviewImage != null && reviewImage.isPresent()) {
             String uploadUrl = S3Service.upload(reviewImage.get(), "review/" + reviewInfo.getReservationNo());
             reviewInfo.setReviewPhotoDir(uploadUrl);
         }
