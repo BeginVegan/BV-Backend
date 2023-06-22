@@ -99,6 +99,7 @@ public class S3Service {
         do {
             s3Objects = amazonS3Client.listObjects(listObjectsRequest);
             for (S3ObjectSummary s3ObjectSummary : s3Objects.getObjectSummaries()) {
+                if(s3ObjectSummary.getKey().equals(prefix+"/")) continue;
                 fileNames.add(s3ObjectSummary.getKey());
             }
             listObjectsRequest.setMarker(s3Objects.getNextMarker());
@@ -151,6 +152,7 @@ public class S3Service {
         do {
             s3Objects = amazonS3Client.listObjects(listObjectsRequest);
             for (S3ObjectSummary s3ObjectSummary : s3Objects.getObjectSummaries()) {
+                if(s3ObjectSummary.getKey().equals(prefix)) continue;
                 fileNames.add("https://bv-image.s3.ap-northeast-2.amazonaws.com/" + s3ObjectSummary.getKey());
             }
             listObjectsRequest.setMarker(s3Objects.getNextMarker());

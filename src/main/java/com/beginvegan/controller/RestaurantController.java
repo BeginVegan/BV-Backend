@@ -90,7 +90,7 @@ public class RestaurantController {
 
     @GetMapping("/img/restaurant/{dirName}")
     public ResponseEntity<?> imageList(@PathVariable String dirName) {
-        List<String> imageList = s3Service.getRestaurantImages("restaurant/" + dirName);
+        List<String> imageList = s3Service.getRestaurantImages("restaurant/" + dirName + "/");
         return new ResponseEntity<>(imageList, HttpStatus.OK);
     }
 }
