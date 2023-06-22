@@ -78,12 +78,16 @@ public class TossService {
         // 실제로 결제된 금액과 아임포트 서버쪽 결제내역 금액과 같은지 확인
         // BigDecimal - 주로 금융쪽에서 정확한 값표현을 위해씀.
         // int형으로 비교해주기 위해 형변환 필요.
-        if(lookUp.getResponse().getAmount().intValue() != amount)
+        if(lookUp.getResponse().getAmount().intValue() != amount) {
+            cancelData(lookUp);
             throw new Exception("실제 결제된 금액과 아임포트 결제 금액이 다름");
+        }
 
         // DB에서 메뉴가격과 실제 결제금액이 일치하는지 확인하기. 만약 다르면 예외 발생시키기.
-        if(amount != totalMenuPrice)
+        if(amount != totalMenuPrice) {
+            cancelData(lookUp);
             throw new Exception("물건 가격과 결제 금액이 다름");
+        }
 
         PaymentDTO paymentInfo = PaymentDTO.builder()
                 .impUid(lookUp.getResponse().getImpUid())
