@@ -1,10 +1,6 @@
 package com.beginvegan.service;
 
-import com.beginvegan.controller.PaymentController;
-import com.beginvegan.dto.MemberDTO;
-import com.beginvegan.dto.PaymentDTO;
-import com.beginvegan.dto.PointDTO;
-import com.beginvegan.dto.ReservationDTO;
+import com.beginvegan.dto.*;
 import com.beginvegan.exception.AddException;
 import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
@@ -12,6 +8,7 @@ import com.beginvegan.exception.RemoveException;
 import com.beginvegan.repository.MemberRepository;
 import com.beginvegan.repository.PaymentRepository;
 import com.beginvegan.repository.ReservationRepository;
+import com.beginvegan.repository.RestaurantRepository;
 import com.beginvegan.util.TimeUtil;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -33,12 +30,14 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
     private final MemberRepository memberRepository;
+    private final RestaurantRepository restaurantRepository;
     private final TossService tossService;
 
-    public ReservationService(ReservationRepository reservationRepository, PaymentRepository paymentRepository, MemberRepository memberRepository, TossService tossService) {
+    public ReservationService(ReservationRepository reservationRepository, PaymentRepository paymentRepository, MemberRepository memberRepository, RestaurantRepository restaurantRepository, TossService tossService) {
         this.reservationRepository = reservationRepository;
         this.paymentRepository = paymentRepository;
         this.memberRepository = memberRepository;
+        this.restaurantRepository = restaurantRepository;
         this.tossService = tossService;
     }
 
@@ -73,8 +72,20 @@ public class ReservationService {
     }
 
     @Transactional
+    public ReservationDTO verifyReserveTime(ReservationDTO reservationDTO) throws Exception {
+        List<ReservationDTO> reservationList = restaurantRepository.selectAllReservationByRestaurantNo(reservationDTO.getRestaurantNo());
+
+        for (ReservationDTO reservation : reservationList) {
+            if(reservation.getReservationVisitTime().isEqual(reservationDTO.getReservationVisitTime()))
+                throw new Exception("이미 예약이 되어있는 시간입니다.");
+        }
+
+        return reservationRepository.insertReservation(reservationDTO);
+    }
+
+    @Transactional
     public ReservationDTO addReservation(ReservationDTO reservationDTO, Optional<String> impUid) throws Exception {
-        ReservationDTO reservationInfo = reservationRepository.insertReservation(reservationDTO);
+        ReservationDTO reservationInfo = verifyReserveTime(reservationDTO);
 
         if(impUid.isPresent()) {
             PaymentDTO paymentDTO = PaymentDTO.builder()
