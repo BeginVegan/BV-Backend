@@ -2,14 +2,13 @@ package com.beginvegan.job;
 
 import com.beginvegan.exception.CreateException;
 import com.beginvegan.repository.RestaurantRepository;
-import lombok.Generated;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-@Generated
+
 @Component
 public class BestViewJob implements Job {
 

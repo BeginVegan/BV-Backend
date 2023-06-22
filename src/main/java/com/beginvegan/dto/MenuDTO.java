@@ -2,13 +2,11 @@ package com.beginvegan.dto;
 
 import lombok.*;
 
-import java.util.Objects;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Generated
+
 @ToString
 @EqualsAndHashCode
 public class MenuDTO {

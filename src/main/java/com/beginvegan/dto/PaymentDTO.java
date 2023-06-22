@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Generated
+
 @Builder
 public class PaymentDTO {
     private String impUid; // imp_uid

@@ -8,7 +8,7 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@Generated
+
 public class ReservationMenuDTO extends MenuDTO {
     private int reservationNo; // reservation_no
     private int menuNo; // menu_no

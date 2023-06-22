@@ -8,6 +8,7 @@ import com.beginvegan.exception.FindException;
 import com.beginvegan.exception.ModifyException;
 import com.beginvegan.exception.RemoveException;
 import com.beginvegan.service.MyPageService;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -83,7 +84,7 @@ public class MyPageController {
     @PostMapping("review")
     public ResponseEntity<?> reviewAdd(HttpSession session, @RequestPart(value = "reviewDTO") ReviewDTO reviewInfo, @RequestPart(value = "reviewImage", required = false) Optional<MultipartFile> reviewImage) throws AddException, IOException, ParseException {
         log.info("reviewAdd 시작: " + reviewInfo.getReviewNo() + "/" + reviewInfo.getReservationNo() + "/" + reviewInfo.getRestaurantNo() + "/" + reviewInfo.getMemberEmail() + "/" + reviewInfo.getReviewStar() + "/" + reviewInfo.getReviewContent() + "/" + reviewInfo.getReviewTime() + "/" + reviewInfo.getReviewPhotoDir());
-        log.info(session.toString() + "/" + session.getAttribute("memberEmail")+ "!!!!");
+        log.info(session.toString() + "/" + session.getAttribute("memberEmail") + "!!!!");
         String userEmail = session.getAttribute("memberEmail").toString();
 
         log.info((userEmail) + "!!!!");
@@ -179,6 +180,7 @@ public class MyPageController {
         return new ResponseEntity<>(pointList, HttpStatus.OK);
     }
 
+    @Generated
     @PostMapping("point-history")
     public ResponseEntity<?> getPointHistory(@RequestBody PointDTO pointInfo) throws FindException {
         List<PointDTO> pointList = myPageService.findAllPointByMemberEmail(pointInfo.getMemberEmail());

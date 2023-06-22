@@ -2,12 +2,11 @@ package com.beginvegan.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.Generated;
 
 import java.time.LocalDateTime;
 
 @Data
-@Generated
+
 public class ReviewDTO {
     private int reviewNo; // review_no
     private int reservationNo; // reservation_no

@@ -3,10 +3,8 @@ package com.beginvegan.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -14,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Generated
+
 public class RestaurantDTO {
     private int restaurantNo; // restaurant_no
     private String restaurantName; // restaurant_name

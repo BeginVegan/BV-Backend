@@ -14,10 +14,14 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DatabaseConfig {
-    @Value("${datasource.driver-class-name}") private String setDriverClassName;
-    @Value("${datasource.url}") private String setJdbcUrl;
-    @Value("${datasource.username}") private String setUsername;
-    @Value("${datasource.password}") private String setPassword;
+    @Value("${datasource.driver-class-name}")
+    private String setDriverClassName;
+    @Value("${datasource.url}")
+    private String setJdbcUrl;
+    @Value("${datasource.username}")
+    private String setUsername;
+    @Value("${datasource.password}")
+    private String setPassword;
 
     @Bean
     HikariConfig hikariConfig() {
@@ -27,9 +31,9 @@ public class DatabaseConfig {
         config.setUsername(setUsername);
         config.setPassword(setPassword);
         config.setMinimumIdle(3);
-//        config.addDataSourceProperty("useUnicode", "true");
-//        config.addDataSourceProperty("characterEncoding", "UTF-8");
+        config.setMaximumPoolSize(200);
         config.addDataSourceProperty("allowMultiQueries", "true");
+        config.addDataSourceProperty("removeAbandoned", "true");
         return config;
     }
 

@@ -176,6 +176,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <includes>
+                        <include>com/beginvegan/repository/**</include>
+                        <include>com/beginvegan/service/**</include>
+                        <include>com/beginvegan/controller/**</include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
