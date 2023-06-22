@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Generated
+
 @Builder
 public class ReservationDTO {
     private int reservationNo; // reservation_no

@@ -1,13 +1,11 @@
 package com.beginvegan.util;
 
-import lombok.Generated;
-
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-@Generated
+
 public class TimeUtil {
     // 디폴트 타임존과 시간을 기준으로 Clock 설정
     private static Clock clock = Clock.systemDefaultZone();

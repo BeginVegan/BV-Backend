@@ -1,13 +1,12 @@
 package com.beginvegan.util;
 
-import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.FileWriter;
 import java.io.IOException;
-@Generated
+
 @Component
 public class LogFileAppender {
 

@@ -4,7 +4,6 @@ import com.beginvegan.dto.MemberDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,10 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Map;
 
-@Generated
+
 @Slf4j
 public class GetGoogleAccount {
     private static final String GOOGLE_API = "https://www.googleapis.com/oauth2/v1/userinfo";
@@ -47,7 +45,7 @@ public class GetGoogleAccount {
 
     }
 
-    public static  ResponseEntity<String> googleAPI(String accessToken) throws IOException {
+    public static ResponseEntity<String> googleAPI(String accessToken) throws IOException {
         WebClient client = WebClient.builder().baseUrl(GOOGLE_API).build();
 
         ResponseEntity<String> response = client.get()
@@ -66,10 +64,10 @@ public class GetGoogleAccount {
 
     public static Map<String, Object> responseParser(ResponseEntity<String> response) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> googleAccountInfo = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> googleAccountInfo = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {
+        });
         return googleAccountInfo;
     }
-
 
 
 //    public static String base64Decoder(String googleCredential) {

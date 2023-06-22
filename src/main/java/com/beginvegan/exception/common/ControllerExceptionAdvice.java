@@ -1,6 +1,5 @@
 package com.beginvegan.exception.common;
 
-import lombok.Generated;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.charset.StandardCharsets;
 
-@Generated
 @RestControllerAdvice
 public class ControllerExceptionAdvice {
     /**

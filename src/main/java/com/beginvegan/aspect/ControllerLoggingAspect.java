@@ -1,7 +1,6 @@
 package com.beginvegan.aspect;
 
 import com.beginvegan.util.LogFileAppender;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 @Slf4j
 @Aspect
-@Generated
+
 @Component
 public class ControllerLoggingAspect {
     @Pointcut("execution(* com.beginvegan.controller.*.*(..))")

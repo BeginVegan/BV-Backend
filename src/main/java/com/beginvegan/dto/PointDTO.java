@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Generated
+
 @Builder
 public class PointDTO {
     private String memberEmail; // member_email
