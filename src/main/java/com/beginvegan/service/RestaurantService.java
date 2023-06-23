@@ -108,9 +108,12 @@ public class RestaurantService {
         for (RestaurantDTO rest : restaurantList) {
             String fileName = DEFAULT_PHOTO_DIR;
             if (rest.getRestaurantPhotoDir() != null) {
-                fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+                try {
+                    fileName = s3Service.getS3(rest.getRestaurantPhotoDir()).get(0);
+                    rest.setRestaurantPhotoDir(S3_URL + fileName);
+                } catch (Exception e) {
+                }
             }
-            rest.setRestaurantPhotoDir(S3_URL + fileName);
         }
         return restaurantList;
     }
