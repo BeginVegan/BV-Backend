@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @Slf4j
@@ -85,7 +86,7 @@ public class PaymentController {
 
     @DeleteMapping
     @Transactional
-    public ResponseEntity<?> paymentRemove(@RequestParam String impUid) throws RemoveException, IamportResponseException, IOException {
+    public ResponseEntity<?> paymentRemove(@RequestParam String impUid) throws RemoveException, IamportResponseException, IOException, FindException, ModifyException, ParseException, AddException {
         IamportResponse<Payment> cancel = tossService.cancelImpPayment(impUid);
         paymentService.deletePayment(impUid); // db 삭제
 
