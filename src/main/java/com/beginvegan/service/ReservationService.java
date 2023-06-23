@@ -73,13 +73,16 @@ public class ReservationService {
 
     @Transactional
     public ReservationDTO verifyReserveTime(ReservationDTO reservationDTO) throws Exception {
-        List<ReservationDTO> reservationList = restaurantRepository.selectAllReservationByRestaurantNo(reservationDTO.getRestaurantNo());
+        try {
+            List<ReservationDTO> reservationList = restaurantRepository.selectAllReservationByRestaurantNo(reservationDTO.getRestaurantNo());
 
-        for (ReservationDTO reservation : reservationList) {
-            if(reservation.getReservationVisitTime().isEqual(reservationDTO.getReservationVisitTime()))
-                throw new Exception("이미 예약이 되어있는 시간입니다.");
+            for (ReservationDTO reservation : reservationList) {
+                if(reservation.getReservationVisitTime().isEqual(reservationDTO.getReservationVisitTime()))
+                    throw new Exception("이미 예약이 되어있는 시간입니다.");
+            }
+        } catch (FindException e){
+            return reservationRepository.insertReservation(reservationDTO);
         }
-
         return reservationRepository.insertReservation(reservationDTO);
     }
 
