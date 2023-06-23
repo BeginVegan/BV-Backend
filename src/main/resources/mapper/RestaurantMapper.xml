@@ -190,6 +190,21 @@
         );
     </select>
 
+    <update id="updateRestaurantStar">
+        UPDATE Restaurant
+        SET restaurant_star = (
+            SELECT AVG(review_star)
+            FROM Review
+            WHERE Review.restaurant_no = Restaurant.restaurant_no
+            GROUP BY restaurant_no
+        )
+        WHERE restaurant_no IN (
+            SELECT restaurant_no
+            FROM Review
+            GROUP BY restaurant_no
+        );
+    </update>
+
     <!-- 아래는 테스트를 위한 쿼리문입니다. -->
     <select id="selectBestStarRestaurantTest" resultType="RestaurantDTO">
         SELECT * FROM Restaurant

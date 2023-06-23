@@ -33,42 +33,46 @@ public class RepositoryLoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
         Map<String, Object> params = new HashMap<>();
-
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
-        String memberEmail = session.getAttribute("memberEmail") != null ? (String) session.getAttribute("memberEmail") : "";
-
         try {
-            params.put("class", className);
-            params.put("method", methodName);
-            params.put("params", args);
-            params.put("log_time", LocalDateTime.now());
-            params.put("member_email", memberEmail);
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession();
+            String memberEmail = session.getAttribute("memberEmail") != null ? (String) session.getAttribute("memberEmail") : "";
 
+            try {
+                params.put("class", className);
+                params.put("method", methodName);
+                params.put("params", args);
+                params.put("log_time", LocalDateTime.now());
+                params.put("member_email", memberEmail);
+
+            } catch (Exception e) {
+                log.error("RepositoryLoggingAspect error", e);
+            }
+
+            String logMessage = String.format(
+                    "\n" +
+                            "●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●" +
+                            "      <<Repository Log>>\n" +
+                            "      ▶ Repository: %s\t\t\t▶ Method: %s\n" +
+                            "      ▶ Params: %s\t\t\t▶ Log Time: %s\n" +
+                            "      ▶ MemberEmail: %s\n" +
+                            "●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●",
+                    params.get("class"),
+                    params.get("method"),
+                    params.get("params"),
+                    params.get("log_time"),
+                    params.get("member_email")
+            );
+
+            log.info(logMessage);
+            LogFileAppender.appendLog(logMessage);
+
+
+            Object result = joinPoint.proceed();
+            return result;
         } catch (Exception e) {
-            log.error("RepositoryLoggingAspect error", e);
+            Object result = joinPoint.proceed();
+            return result;
         }
-
-        String logMessage = String.format(
-                "\n" +
-                        "●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●" +
-                        "      <<Repository Log>>\n" +
-                        "      ▶ Repository: %s\t\t\t▶ Method: %s\n" +
-                        "      ▶ Params: %s\t\t\t▶ Log Time: %s\n" +
-                        "      ▶ MemberEmail: %s\n" +
-                        "●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●",
-                params.get("class"),
-                params.get("method"),
-                params.get("params"),
-                params.get("log_time"),
-                params.get("member_email")
-        );
-
-        log.info(logMessage);
-        LogFileAppender.appendLog(logMessage);
-
-
-        Object result = joinPoint.proceed();
-        return result;
     }
 }

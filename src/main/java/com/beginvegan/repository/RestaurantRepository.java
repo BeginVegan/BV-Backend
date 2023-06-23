@@ -138,6 +138,12 @@ public interface RestaurantRepository {
     List<RestaurantDTO> selectBestReservationRestaurant() throws FindException;
 
     /**
+     * 리뷰 테이블의 평점을 식당별로 집계하여 Restaurant 테이블의 restaurant_star 컬럼에 반영한다.
+     * @throws ModifyException 수정에 실패할 경우 발생
+     */
+    void updateRestaurantStar() throws ModifyException;
+
+    /**
      * 다음 생성될 식당 번호를 가져온다
      * @return 다음 생성될 식당 번호
      */
