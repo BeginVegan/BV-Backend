@@ -5,6 +5,7 @@ import com.beginvegan.dto.ReservationDTO;
 import com.beginvegan.dto.RestaurantDTO;
 import com.beginvegan.dto.ReviewDTO;
 import com.beginvegan.exception.*;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -366,6 +367,26 @@ public class RestaurantRepositoryMariaDB implements RestaurantRepository{
                 session.close();
             }
             log.info("selectBestReservationRestaurant 종료");
+        }
+    }
+
+    @Override
+    @Generated
+    public void updateRestaurantStar() throws ModifyException {
+        log.info("updateRestaurantStar 시작");
+        SqlSession session = null;
+
+        try {
+            session = sqlSessionFactory.openSession();
+            session.update("com.beginvegan.mybatis.RestaurantMapper.updateRestaurantStar");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModifyException(e.getMessage());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            log.info("updateRestaurantStar 종료");
         }
     }
 
