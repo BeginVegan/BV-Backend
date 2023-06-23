@@ -13,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ public class ControllerLoggingAspect {
     public Object controllerLogging(ProceedingJoinPoint joinPoint) throws Throwable {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        String memberEmail = session.getAttribute("memberEmail") != null ? (String) session.getAttribute("memberEmail") : "";
 
         String controllerName = joinPoint.getSignature().getDeclaringType().getName();
         String methodName = joinPoint.getSignature().getName();
@@ -43,6 +46,7 @@ public class ControllerLoggingAspect {
             params.put("log_time", LocalDateTime.now());
             params.put("request_uri", request.getRequestURI());
             params.put("http_method", request.getMethod());
+            params.put("member_email", memberEmail);
         } catch (Exception e) {
             log.error("LoggerAspect error", e);
         }
@@ -51,14 +55,16 @@ public class ControllerLoggingAspect {
                 "\n" +
                         "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" +
                         "      <<Controller Log>>\n" +
-                        "      ▶ Controller: %s\t\t▶ Method: %s\n" +
-                        "      ▶ Params: %s\t\t▶ Log Time: %s\t\t\n" +
-                        "      ▶ Request URI: %s\t\t▶ HTTP Method: %s\n" +
+                        "      ▶ Controller: %s\t\t\t▶ Method: %s\n" +
+                        "      ▶ Params: %s\t\t\t▶ Log Time: %s\t\t\n" +
+                        "      ▶ MemberEmail: %s\n" +
+                        "      ▶ Request URI: %s\t\t\t▶ HTTP Method: %s\n" +
                         "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
                 params.get("controller"),
                 params.get("method"),
                 params.get("params"),
                 params.get("log_time"),
+                params.get("member_email"),
                 params.get("request_uri"),
                 params.get("http_method")
         );

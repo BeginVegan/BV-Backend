@@ -20,7 +20,7 @@ public class PaymentRepositoryMariaDB implements PaymentRepository {
 
     public PaymentRepositoryMariaDB(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
-    };
+    }
 
     @Override
     public PaymentDTO selectPaymentByImpUid(String impUid) throws FindException {
