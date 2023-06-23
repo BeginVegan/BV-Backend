@@ -171,6 +171,7 @@ public class S3Service {
 
         // 폴더안의 파일을 하나씩 zipOut에 추가
         for(String fileName : fileNames) {
+            if(fileName.equals(pathName)) continue;
             addFileToZip(zipOut, fileName, getS3ObjectInputStream(fileName));
         }
 
