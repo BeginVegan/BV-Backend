@@ -142,6 +142,13 @@
             <artifactId>iamport-rest-client-java</artifactId>
             <version>0.2.21</version>
         </dependency>
+
+        <!-- 멀티파트 라이브러리 -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
 
     <build>
