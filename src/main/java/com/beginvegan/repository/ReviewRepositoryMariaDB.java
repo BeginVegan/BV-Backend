@@ -35,7 +35,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
             return reviewList;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
 
         } finally {
             if (sqlSession != null) {
@@ -58,7 +58,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
             return reviewList;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FindException("e.getMessage");
+            throw new FindException(e.getMessage());
 
         } finally {
             if (session != null) {
@@ -102,7 +102,7 @@ public class ReviewRepositoryMariaDB implements ReviewRepository {
             sqlSession.insert("com.beginvegan.mybatis.ReviewMapper.insertReview", reviewInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AddException("e.getMessage");
+            throw new AddException(e.getMessage());
         } finally {
             if (sqlSession != null) {
                 sqlSession.close();

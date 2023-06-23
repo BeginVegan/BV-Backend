@@ -130,7 +130,6 @@ public class RestaurantService {
         } catch (FindException e) {
             List<ReviewDTO> emptyReview = new ArrayList<>();
             restaurantReviewMap.put("review", emptyReview);
-            throw e;
         }
         return restaurantReviewMap;
     }
