@@ -17,11 +17,11 @@ import javax.servlet.http.HttpSession;
 
 @Component
 public class ControllerAuthorityAspect {
-    @Pointcut("execution(* com.beginvegan.controller.MemberController.memberList(..))")
+    @Pointcut("execution(* com.beginvegan.controller.MemberController.memberList())")
     public void memberListPointcut() {
     }
 
-    @Pointcut("execution(* com.beginvegan.controller.ReservationController.reservationList(..))")
+    @Pointcut("execution(* com.beginvegan.controller.ReservationController.reservationList())")
     public void reservationListPointcut() {
     }
 
